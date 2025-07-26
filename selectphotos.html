@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Your Photos</title>
+    <link rel="stylesheet" href="selectphotos.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <a href="home.php" class="logo">PhotoBooth</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Select Your Photos</h1>
+        <p>Click on the photos you want to keep. Selected photos will be highlighted.</p>
+        
+        <div class="strip-options">
+            <h2>Choose Your Strip Style</h2>
+            
+            <div class="strip-templates">
+                <div class="strip-template" data-template="classic">
+                    <div class="photo-placeholder">
+                        <img src="placeholder.jpg" alt="Photo 1">
+                    </div>
+                    <div class="photo-placeholder">
+                        <img src="placeholder.jpg" alt="Photo 2">
+                    </div>
+                    <div class="photo-placeholder">
+                        <img src="placeholder.jpg" alt="Photo 3">
+                    </div>
+                    <div class="photo-placeholder">
+                        <img src="placeholder.jpg" alt="Photo 4">
+                    </div>
+                </div>
+            </div>
+
+            <h3>Choose Strip Color</h3>
+            <div class="color-options">
+                <div class="color-option selected" data-color="White" title="White"></div>
+                <div class="color-option" data-color="Red" title="Red"></div>
+                <div class="color-option" data-color="Blue" title="Blue"></div>
+                <div class="color-option" data-color="Yellow" title="Yellow"></div>
+                <div class="color-option" data-color="Purple" title="Purple"></div>
+                <div class="color-option" data-color="Green" title="Green"></div>
+                <div class="color-option" data-color="Copper" title="Copper"></div>
+            </div>
+
+            <h3>Choose Photo Effect</h3>
+            <div class="effect-options">
+                <div class="effect-option selected" data-effect="none">Normal</div>
+                <div class="effect-option" data-effect="grayscale">Black & White</div>
+                <div class="effect-option" data-effect="sepia">Sepia</div>
+                <div class="effect-option" data-effect="vintage">Vintage</div>
+                <div class="effect-option" data-effect="contrast">High Contrast</div>
+            </div>
+        </div>
+
+        <div class="photos-grid" id="photosGrid">
+            <!-- Photos will be loaded here -->
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-primary" id="downloadBtn">Download Selected</button>
+            <button class="btn btn-primary" id="downloadStripBtn">Download PhotoStrip</button>
+            <button class="btn btn-secondary" onclick="window.location.href='Picture.php'">Take New Photos</button>
+        </div>
+    </div>
+    
+    <script src="selectphotos.js"></script>
+</body>
+</html>
