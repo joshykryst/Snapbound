@@ -1,144 +1,117 @@
+// Global variables
+let stream;
+let timerValue = 0;
+let remainingShots = 10;
+let isRecording = false;
+let isPaused = false;
+
+// DOM Elements
 const video = document.getElementById('webcam');
 const canvas = document.getElementById('canvas');
-const captureButton = document.getElementById('capture');
+const captureBtn = document.getElementById('capture');
 const pauseBtn = document.getElementById('pauseBtn');
 const stopBtn = document.getElementById('stopBtn');
 const countdown = document.getElementById('countdown');
 const shotsCounter = document.getElementById('shotsCounter');
+const timerButtons = document.querySelectorAll('.timer-btn');
 const gallery = document.getElementById('gallery');
 
-let stream = null;
-let selectedTimer = 0;
-let isCountingDown = false;
-let currentShots = 0;
-const maxShots = 10;
-let isPaused = false;
-
 // Initialize webcam
-async function initWebcam() {
+async function initializeWebcam() {
     try {
-        stream = await navigator.mediaDevices.getUserMedia({
-            video: {
-                width: { ideal: 1280 },
-                height: { ideal: 720 }
-            }
+        stream = await navigator.mediaDevices.getUserMedia({ 
+            video: true,
+            audio: false
         });
         video.srcObject = stream;
-        await video.play();
-        
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        
-        updateShotsCounter();
-        enableControls();
+        isRecording = true;
     } catch (err) {
-        console.error("Error accessing camera:", err);
-        alert("Error accessing camera. Please ensure camera permissions are granted.");
+        console.error('Error accessing webcam:', err);
+        alert('Could not access webcam. Please check permissions.');
     }
 }
 
-// Timer functionality
-document.querySelectorAll('.timer-btn').forEach(btn => {
+// Timer buttons functionality
+timerButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-        document.querySelectorAll('.timer-btn').forEach(b => b.classList.remove('active'));
+        timerButtons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        selectedTimer = parseInt(btn.dataset.seconds);
+        timerValue = parseInt(btn.dataset.seconds);
     });
 });
 
-// Start countdown
-async function startCountdown(seconds) {
-    if (isCountingDown) return;
-    isCountingDown = true;
-    countdown.style.display = 'block';
-    
-    for (let i = seconds; i > 0; i--) {
-        countdown.textContent = i;
-        await new Promise(resolve => setTimeout(resolve, 1000));
-    }
-    
-    countdown.style.display = 'none';
-    isCountingDown = false;
-    return takePicture();
-}
-
-// Take picture functionality
-async function takePicture() {
-    if (currentShots >= maxShots) {
-        alert('Maximum number of shots reached!');
+// Capture functionality
+async function captureImage() {
+    if (remainingShots <= 0) {
+        alert('No shots remaining!');
         return;
     }
 
+    if (timerValue > 0) {
+        // Start countdown
+        let timeLeft = timerValue;
+        countdown.style.display = 'block';
+        
+        const countdownInterval = setInterval(() => {
+            countdown.textContent = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(countdownInterval);
+                countdown.style.display = 'none';
+                takePhoto();
+            }
+            timeLeft--;
+        }, 1000);
+    } else {
+        takePhoto();
+    }
+}
+
+function takePhoto() {
+    if (!isRecording || isPaused) return;
+
+    // Set canvas dimensions to match video
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    
+    // Draw video frame to canvas
     const context = canvas.getContext('2d');
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
     
-    const imageData = canvas.toDataURL('image/jpeg');
-    addToGallery(imageData);
+    // Convert to image and add to gallery
+    const img = document.createElement('img');
+    img.src = canvas.toDataURL('image/jpeg');
+    gallery.insertBefore(img, gallery.firstChild);
     
-    currentShots++;
-    updateShotsCounter();
-    
-    // Save to localStorage
-    const photos = JSON.parse(localStorage.getItem('capturedPhotos') || '[]');
-    photos.push(imageData);
-    localStorage.setItem('capturedPhotos', JSON.stringify(photos));
+    // Update shots counter
+    remainingShots--;
+    shotsCounter.textContent = `Shots remaining: ${remainingShots}`;
 }
 
-// Capture button click handler
-captureButton.addEventListener('click', async () => {
-    if (selectedTimer > 0) {
-        await startCountdown(selectedTimer);
-    } else {
-        await takePicture();
-    }
-});
-
-// Pause functionality
+// Pause/Resume functionality
 pauseBtn.addEventListener('click', () => {
-    if (stream) {
-        if (!isPaused) {
-            video.pause();
-            pauseBtn.textContent = 'Resume';
-        } else {
-            video.play();
-            pauseBtn.textContent = 'Pause';
-        }
-        isPaused = !isPaused;
+    if (!isRecording) return;
+    
+    isPaused = !isPaused;
+    pauseBtn.textContent = isPaused ? 'Resume' : 'Pause';
+    
+    if (isPaused) {
+        video.pause();
+    } else {
+        video.play();
     }
 });
 
 // Stop functionality
 stopBtn.addEventListener('click', () => {
+    isRecording = false;
     if (stream) {
         stream.getTracks().forEach(track => track.stop());
-        video.srcObject = null;
-        disableControls();
     }
+    video.srcObject = null;
+    captureBtn.disabled = true;
+    pauseBtn.disabled = true;
 });
 
-// Helper functions
-function updateShotsCounter() {
-    shotsCounter.textContent = `Shots remaining: ${maxShots - currentShots}`;
-}
-
-function addToGallery(imageData) {
-    const img = document.createElement('img');
-    img.src = imageData;
-    img.className = 'captured-image';
-    gallery.insertBefore(img, gallery.firstChild);
-}
-
-function enableControls() {
-    captureButton.disabled = false;
-    pauseBtn.disabled = false;
-    stopBtn.disabled = false;
-}
-
-function disableControls() {
-    captureButton.disabled = true;
-    pauseBtn.disabled = true;
-    stopBtn.disabled = true;
-}
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', initWebcam);
+// Event listeners
+captureBtn.addEventListener('click', captureImage);
+document.addEventListener('DOMContentLoaded', initializeWebcam);
