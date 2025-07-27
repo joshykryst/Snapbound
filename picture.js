@@ -40,6 +40,12 @@ timerButtons.forEach(btn => {
     });
 });
 
+// Show control buttons after first picture
+function showControlButtons() {
+    const controlButtons = document.querySelector('.control-buttons');
+    controlButtons.style.display = 'flex';
+}
+
 // Capture functionality
 async function captureImage() {
     if (remainingShots <= 0) {
@@ -58,11 +64,13 @@ async function captureImage() {
                 clearInterval(countdownInterval);
                 countdown.style.display = 'none';
                 takePhoto();
+                showControlButtons(); // Show controls after first photo
             }
             timeLeft--;
         }, 1000);
     } else {
         takePhoto();
+        showControlButtons(); // Show controls after first photo
     }
 }
 
@@ -111,8 +119,10 @@ stopBtn.addEventListener('click', () => {
     captureBtn.disabled = true;
     pauseBtn.disabled = true;
     
-    // Add redirection
-    window.location.href = 'selectphotos.html'; // or whatever your photo selection page URL is
+    // Save captured images to localStorage or your backend here
+    
+    // Redirect to select photos page
+    window.location.href = 'selectphotos.html';
 });
 
 // Event listeners
