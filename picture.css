@@ -89,21 +89,20 @@ body {
     width: auto;
     padding: 1rem 3rem;
     margin-top: 2rem;
-    background-color: #FF5757;
+    background-color: #ff7676;
     color: white;
     border: none;
-    border-radius: 25px;
+    border-radius: 20px;
     font-family: 'Fredoka', sans-serif;
     font-size: 1.2rem;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: background-color 0.3s;
     position: relative;
     z-index: 2;
 }
 
 .capture-btn:hover {
-    background-color: #ff4242;
-    transform: scale(1.05);
+    background-color: #ff5252;
 }
 
 /* Gallery section styles */
@@ -145,10 +144,10 @@ body {
 
 /* Control buttons */
 .control-buttons {
-    display: none;  /* Hide buttons by default */
-    gap: 10px;
+    display: flex;
     justify-content: center;
-    margin-top: 15px;
+    gap: 10px;
+    margin-top: 20px;
 }
 
 .control-buttons.visible {
@@ -163,14 +162,18 @@ body {
 .control-btn {
     display: inline-block;
     padding: 1rem 2.5rem;
-    border-radius: 25px;
+    border-radius: 20px;
     font-family: 'Fredoka', sans-serif;
     font-size: 1.1rem;
     cursor: pointer;
     transition: all 0.3s;
-    border: 2px solid;
+    border: 1px solid #ccc;
     position: relative;
     z-index: 2;
+}
+
+.control-btn:hover {
+    background-color: #f0f0f0;
 }
 
 /* Countdown styles */
