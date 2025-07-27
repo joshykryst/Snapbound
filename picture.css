@@ -54,33 +54,33 @@ body {
 /* Photobooth container styles */
 .booth-container {
     max-width: 1200px;
-    margin: 2rem auto;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2rem;
+    padding: 1rem;
+    height: calc(100vh - 70px); /* Subtract navbar height */
+    overflow: hidden;
 }
 
 .camera-section {
     position: relative;
     width: 100%;
     max-width: 800px;
+    height: 60vh; /* Fixed height */
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0 auto;
-    z-index: 1;
+    margin: 1rem auto;
 }
 
 #webcam {
     width: 100%;
-    max-width: 800px;
-    aspect-ratio: 16/9;
+    height: 100%;
+    object-fit: cover;
     border-radius: 10px;
     background-color: #1a1a1a;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    display: block;
-    object-fit: cover;
 }
 
 /* Button styles */
@@ -155,8 +155,13 @@ body {
 
 /* Control buttons */
 .control-buttons {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
+    z-index: 10;
     margin-top: 2rem;
     align-items: center;
     position: relative;
