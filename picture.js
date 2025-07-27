@@ -5,6 +5,7 @@ let remainingShots = 10;
 let isRecording = false;
 let isPaused = false;
 let hasStartedCapturing = false;
+let capturedImages = []; // Add this at the start of your file with other variables
 
 // DOM Elements
 const video = document.getElementById('webcam');
@@ -78,13 +79,6 @@ async function captureImage() {
 function takePhoto() {
     if (!isRecording || isPaused) return;
 
-    if (!hasStartedCapturing) {
-        // Show control buttons after first photo
-        const controlButtons = document.querySelector('.control-buttons');
-        controlButtons.classList.add('visible');
-        hasStartedCapturing = true;
-    }
-
     // Set canvas dimensions to match video
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
@@ -93,9 +87,13 @@ function takePhoto() {
     const context = canvas.getContext('2d');
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
     
+    // Get image data and store it
+    const imageData = canvas.toDataURL('image/jpeg');
+    capturedImages.push(imageData);
+    
     // Convert to image and add to gallery
     const img = document.createElement('img');
-    img.src = canvas.toDataURL('image/jpeg');
+    img.src = imageData;
     gallery.insertBefore(img, gallery.firstChild);
     
     // Update shots counter
@@ -125,11 +123,11 @@ stopBtn.addEventListener('click', () => {
     }
     video.srcObject = null;
     
-    // Store captured images if needed
-    // ...
-
-    // Redirect to select photos page - using absolute path
-    window.location.href = window.location.origin + '/PhotoBooth/selectphotos.html';
+    // Store captured images in localStorage
+    localStorage.setItem('capturedImages', JSON.stringify(capturedImages));
+    
+    // Redirect to select photos page
+    window.location.href = 'selectphotos.html';
 });
 
 // Event listeners
