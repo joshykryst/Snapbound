@@ -11,6 +11,7 @@ function downloadPhotoStrip() {
         const bgImage = new Image();
         bgImage.crossOrigin = "anonymous";
         const selectedColorName = document.querySelector('.color-option.selected').dataset.color;
+        // Update path to match your file names directly
         bgImage.src = `Photo/${selectedColorName}.png`;
         
         bgImage.onload = () => {
@@ -116,5 +117,27 @@ document.getElementById('downloadStripBtn').addEventListener('click', () => {
     downloadPhotoStrip().catch(error => {
         console.error('Error creating photo strip:', error);
         alert('Error creating photo strip. Please try again.');
+    });
+});
+
+// Add this function to update the preview
+function updatePhotoStrip() {
+    const stripTemplate = document.querySelector('.strip-template');
+    const selectedColorName = document.querySelector('.color-option.selected').dataset.color;
+    
+    // Update background image based on selected color with new path
+    stripTemplate.style.cssText = `
+        background: url('Photo/colored_strips/${selectedColorName}.png') no-repeat center center;
+        background-size: contain;
+    `;
+}
+
+// Update color options click handler
+document.querySelectorAll('.color-option').forEach(option => {
+    option.addEventListener('click', () => {
+        document.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+        option.classList.add('selected');
+        selectedColor = option.dataset.color;
+        updatePhotoStrip();
     });
 });

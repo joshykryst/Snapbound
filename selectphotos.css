@@ -170,6 +170,8 @@ body {
     border: 2px solid transparent;
     transition: transform 0.3s;
     margin: 0.5rem;
+    background-size: cover;
+    background-position: center;
 }
 
 /* Effect options */
@@ -190,4 +192,27 @@ body {
     background: #f0f0f0;
     transition: all 0.3s;
     border: 2px solid transparent;
+}
+
+.color-option[data-color="White"] { 
+    background-image: url('Photo/White.png');
+    border: 2px solid #e0e0e0;
+}
+.color-option[data-color="Red"] { 
+    background-image: url('Photo/Red.png');
+}
+.color-option[data-color="Blue"] { 
+    background-image: url('Photo/Blue.png');
+}
+.color-option[data-color="Yellow"] { 
+    background-image: url('Photo/Yellow.png');
+}
+.color-option[data-color="Purple"] { 
+    background-image: url('Photo/Purple.png');
+}
+.color-option[data-color="Green"] { 
+    background-image: url('Photo/Green.png');
+}
+.color-option[data-color="Copper"] { 
+    background-image: url('Photo/Copper.png');
 }
