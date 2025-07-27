@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>PhotoBooth - Take Pictures</title>
+    <link rel="stylesheet" href="picture.css">
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <a href="home.php" class="logo">
+                <img src="your-logo.png" alt="Logo" style="height: 40px;">
+                PhotoBooth
+            </a>
+            <div class="nav-links">
+                <a href="home.php#home">Home</a>
+                <a href="home.php#about">About</a>
+                <a href="home.php#news">News & Announcement</a>
+                <a href="home.php#contacts">Contacts</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="booth-container">
+        <div class="timer-controls">
+            <button class="timer-btn active" data-seconds="0">No Timer</button>
+            <button class="timer-btn" data-seconds="3">3s</button>
+            <button class="timer-btn" data-seconds="5">5s</button>
+            <button class="timer-btn" data-seconds="8">8s</button>
+        </div>
+        <div class="shots-counter" id="shotsCounter">Shots remaining: 10</div>
+        <div class="camera-section">
+            <video id="webcam" autoplay playsinline></video>
+            <div class="countdown" id="countdown"></div>
+            <div class="control-buttons">
+                <button class="capture-btn" id="capture">Take Picture</button>
+                <button class="control-btn pause-btn" id="pauseBtn">Pause</button>
+                <button class="control-btn stop-btn" id="stopBtn">Stop</button>
+            </div>
+            <canvas id="canvas"></canvas>
+        </div>
+        <div class="gallery-section" id="gallery">
+            <!-- Captured images will appear here -->
+        </div>
+    </div>
+
+    <script src="picture.js"></script>
+</body>
+</html>
