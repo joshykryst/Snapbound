@@ -15,7 +15,7 @@ const countdown = document.getElementById('countdown');
 const shotsCounter = document.getElementById('shotsCounter');
 const timerButtons = document.querySelectorAll('.timer-btn');
 const gallery = document.getElementById('gallery');
-
+    
 // Initialize webcam
 async function initializeWebcam() {
     try {
