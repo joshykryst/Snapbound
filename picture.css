@@ -127,7 +127,7 @@ body {
 .captured-image {
     width: 100%;
     height: auto;
-    aspect-ratio: 16/9;
+    margin-bottom: 0.5rem;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     transition: transform 0.3s;
@@ -169,6 +169,11 @@ body {
     justify-content: center;
 }
 
+.control-buttons button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .control-btn {
     display: inline-block;
     padding: 1rem 2.5rem;
@@ -180,6 +185,19 @@ body {
     border: 2px solid;
     position: relative;
     z-index: 2;
+}
+
+/* Countdown styles */
+.countdown {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 6rem;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    display: none;
+    z-index: 10;
 }
 
 /* Media queries */

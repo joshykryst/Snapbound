@@ -1,145 +1,144 @@
 const video = document.getElementById('webcam');
 const canvas = document.getElementById('canvas');
 const captureButton = document.getElementById('capture');
-const gallery = document.getElementById('gallery');
-const context = canvas.getContext('2d');
-const countdownEl = document.getElementById('countdown');
-const timerButtons = document.querySelectorAll('.timer-btn');
-const maxShots = 10;
 const pauseBtn = document.getElementById('pauseBtn');
 const stopBtn = document.getElementById('stopBtn');
+const countdown = document.getElementById('countdown');
 const shotsCounter = document.getElementById('shotsCounter');
+const gallery = document.getElementById('gallery');
 
-let isPaused = false;
 let stream = null;
 let selectedTimer = 0;
 let isCountingDown = false;
 let currentShots = 0;
-let isProcessing = false;
-const DISPLAY_TIME = 3000;
-let isAutoShooting = false;
-let countInterval = null;
-let remainingTime = 0;
+const maxShots = 10;
+let isPaused = false;
 
 // Initialize webcam
 async function initWebcam() {
     try {
-        // Check if getUserMedia is supported
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            throw new Error('Camera API is not supported in your browser');
-        }
-
-        // Request camera permissions explicitly
-        const permission = await navigator.permissions.query({ name: 'camera' });
-        if (permission.state === 'denied') {
-            throw new Error('Camera permission denied');
-        }
-
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        
-        const constraints = {
+        stream = await navigator.mediaDevices.getUserMedia({
             video: {
-                facingMode: isMobile ? "environment" : "user",
-                width: { ideal: isMobile ? 1080 : 1280 },
-                height: { ideal: isMobile ? 1920 : 720 },
-                aspectRatio: isMobile ? 9/16 : 16/9
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
             }
-        };
-
-        if (isMobile && /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-            constraints.video.facingMode = { exact: "environment" };
-        }
-
-        stream = await navigator.mediaDevices.getUserMedia(constraints);
+        });
         video.srcObject = stream;
-        
-        video.setAttribute('playsinline', true);
-        video.setAttribute('autoplay', true);
         await video.play();
-
-        video.onloadedmetadata = () => {
-            captureButton.disabled = false;
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-        };
-
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const videoDevices = devices.filter(device => device.kind === 'videoinput');
         
-        if (videoDevices.length > 1 && isMobile) {
-            createCameraSwitchButton();
-        }
-
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
         updateShotsCounter();
-        captureButton.style.display = 'block';
-        pauseBtn.style.display = 'none';
-        stopBtn.style.display = 'none';
+        enableControls();
     } catch (err) {
         console.error("Error accessing camera:", err);
-        alert("Error accessing camera. Please make sure you've granted camera permissions.");
+        alert("Error accessing camera. Please ensure camera permissions are granted.");
     }
 }
 
-// Event Listeners
-document.addEventListener('DOMContentLoaded', () => {
-    captureButton.disabled = false;
-    initWebcam();
-});
-
-captureButton.addEventListener('click', async () => {
-    if (!isProcessing && stream) {
-        if (currentShots >= maxShots) {
-            alert('Maximum number of shots reached!');
-            return;
-        }
-
-        isProcessing = true;
-        if (selectedTimer > 0) {
-            await startCountdown(selectedTimer);
-        }
-        
-        // Take the picture
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const imageData = canvas.toDataURL('image/jpeg');
-        
-        // Save to localStorage
-        const photos = JSON.parse(localStorage.getItem('capturedPhotos') || '[]');
-        photos.push(imageData);
-        localStorage.setItem('capturedPhotos', JSON.stringify(photos));
-        
-        // Add to gallery
-        addToGallery(imageData);
-        
-        currentShots++;
-        updateShotsCounter();
-        isProcessing = false;
-    }
-});
-
-// Timer button functionality
-timerButtons.forEach(btn => {
+// Timer functionality
+document.querySelectorAll('.timer-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-        if (!isProcessing && !isPaused) {
-            timerButtons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            selectedTimer = parseInt(btn.dataset.seconds);
-        }
+        document.querySelectorAll('.timer-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedTimer = parseInt(btn.dataset.seconds);
     });
 });
 
-// Initialize
-initWebcam();
-
-// Add this function to update shots counter
-function updateShotsCounter() {
-    const remaining = maxShots - currentShots;
-    shotsCounter.textContent = `Shots remaining: ${remaining}`;
+// Start countdown
+async function startCountdown(seconds) {
+    if (isCountingDown) return;
+    isCountingDown = true;
+    countdown.style.display = 'block';
+    
+    for (let i = seconds; i > 0; i--) {
+        countdown.textContent = i;
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    
+    countdown.style.display = 'none';
+    isCountingDown = false;
+    return takePicture();
 }
 
-// Add this function to add photos to gallery
+// Take picture functionality
+async function takePicture() {
+    if (currentShots >= maxShots) {
+        alert('Maximum number of shots reached!');
+        return;
+    }
+
+    const context = canvas.getContext('2d');
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    const imageData = canvas.toDataURL('image/jpeg');
+    addToGallery(imageData);
+    
+    currentShots++;
+    updateShotsCounter();
+    
+    // Save to localStorage
+    const photos = JSON.parse(localStorage.getItem('capturedPhotos') || '[]');
+    photos.push(imageData);
+    localStorage.setItem('capturedPhotos', JSON.stringify(photos));
+}
+
+// Capture button click handler
+captureButton.addEventListener('click', async () => {
+    if (selectedTimer > 0) {
+        await startCountdown(selectedTimer);
+    } else {
+        await takePicture();
+    }
+});
+
+// Pause functionality
+pauseBtn.addEventListener('click', () => {
+    if (stream) {
+        if (!isPaused) {
+            video.pause();
+            pauseBtn.textContent = 'Resume';
+        } else {
+            video.play();
+            pauseBtn.textContent = 'Pause';
+        }
+        isPaused = !isPaused;
+    }
+});
+
+// Stop functionality
+stopBtn.addEventListener('click', () => {
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
+        disableControls();
+    }
+});
+
+// Helper functions
+function updateShotsCounter() {
+    shotsCounter.textContent = `Shots remaining: ${maxShots - currentShots}`;
+}
+
 function addToGallery(imageData) {
     const img = document.createElement('img');
     img.src = imageData;
     img.className = 'captured-image';
     gallery.insertBefore(img, gallery.firstChild);
 }
+
+function enableControls() {
+    captureButton.disabled = false;
+    pauseBtn.disabled = false;
+    stopBtn.disabled = false;
+}
+
+function disableControls() {
+    captureButton.disabled = true;
+    pauseBtn.disabled = true;
+    stopBtn.disabled = true;
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', initWebcam);
