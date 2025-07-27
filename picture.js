@@ -110,6 +110,9 @@ stopBtn.addEventListener('click', () => {
     video.srcObject = null;
     captureBtn.disabled = true;
     pauseBtn.disabled = true;
+    
+    // Add redirection
+    window.location.href = 'selectphotos.html'; // or whatever your photo selection page URL is
 });
 
 // Event listeners
