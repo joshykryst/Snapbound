@@ -44,8 +44,10 @@ timerButtons.forEach(btn => {
 
 // Show control buttons after first picture
 function showControlButtons() {
-    const controlButtons = document.querySelector('.control-buttons');
-    controlButtons.style.display = 'flex';
+    const pauseBtn = document.getElementById('pauseBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    pauseBtn.style.display = 'block';
+    stopBtn.style.display = 'block';
 }
 
 // Capture functionality
@@ -133,3 +135,7 @@ stopBtn.addEventListener('click', () => {
 // Event listeners
 captureBtn.addEventListener('click', captureImage);
 document.addEventListener('DOMContentLoaded', initializeWebcam);
+document.getElementById('captureBtn').addEventListener('click', () => {
+    captureImage();
+    showControlButtons();
+});

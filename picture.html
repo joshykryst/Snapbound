@@ -37,12 +37,12 @@
         <div class="camera-section">
             <video id="webcam" autoplay playsinline></video>
             <div class="countdown" id="countdown"></div>
-            <div class="control-buttons">
-                <button class="capture-btn" id="capture">Take Picture</button>
-                <button class="control-btn pause-btn" id="pauseBtn">Pause</button>
-                <button class="control-btn stop-btn" id="stopBtn">Stop</button>
-            </div>
-            <canvas id="canvas"></canvas>
+            <canvas id="canvas" style="display:none;"></canvas>
+        </div>
+        <div class="control-buttons">
+            <button id="captureBtn" class="capture-btn">Take Picture</button>
+            <button id="pauseBtn" class="control-btn" style="display:none;">Pause</button>
+            <button id="stopBtn" class="control-btn" style="display:none;">Stop</button>
         </div>
         <div class="gallery-section" id="gallery">
             <!-- Captured images will appear here -->
