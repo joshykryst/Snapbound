@@ -108,29 +108,19 @@ body {
 
 /* Gallery section styles */
 .gallery-section {
-    position: fixed;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-    width: 120px;
-    height: 80vh;
-    background: rgba(255, 255, 255, 0.95);
-    padding: 1rem;
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    overflow-y: auto;
-    z-index: 10;
-    box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
 }
 
-.captured-image {
-    width: 100%;
-    height: auto;
-    margin-bottom: 0.5rem;
+.gallery-section img {
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
     border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: transform 0.3s;
 }
 
 /* Timer controls */
@@ -155,18 +145,14 @@ body {
 
 /* Control buttons */
 .control-buttons {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 1rem;
-    z-index: 10;
-    margin-top: 2rem;
-    align-items: center;
-    position: relative;
-    z-index: 2;
+    display: none;  /* Hide buttons by default */
+    gap: 10px;
     justify-content: center;
+    margin-top: 15px;
+}
+
+.control-buttons.visible {
+    display: flex;  /* Will show when this class is added */
 }
 
 .control-buttons button:disabled {

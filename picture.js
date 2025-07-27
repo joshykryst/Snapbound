@@ -4,6 +4,7 @@ let timerValue = 0;
 let remainingShots = 10;
 let isRecording = false;
 let isPaused = false;
+let hasStartedCapturing = false;
 
 // DOM Elements
 const video = document.getElementById('webcam');
@@ -77,6 +78,13 @@ async function captureImage() {
 function takePhoto() {
     if (!isRecording || isPaused) return;
 
+    if (!hasStartedCapturing) {
+        // Show control buttons after first photo
+        const controlButtons = document.querySelector('.control-buttons');
+        controlButtons.classList.add('visible');
+        hasStartedCapturing = true;
+    }
+
     // Set canvas dimensions to match video
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
@@ -116,13 +124,12 @@ stopBtn.addEventListener('click', () => {
         stream.getTracks().forEach(track => track.stop());
     }
     video.srcObject = null;
-    captureBtn.disabled = true;
-    pauseBtn.disabled = true;
     
-    // Save captured images to localStorage or your backend here
-    
-    // Redirect to select photos page
-    window.location.href = 'selectphotos.html';
+    // Store captured images if needed
+    // ...
+
+    // Redirect to select photos page - using absolute path
+    window.location.href = window.location.origin + '/PhotoBooth/selectphotos.html';
 });
 
 // Event listeners
