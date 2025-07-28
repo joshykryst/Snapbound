@@ -1,18 +1,14 @@
 // Global variables
 let stream;
-let timerValue = 0;
-let remainingShots = 10;
 let isRecording = false;
+let remainingShots = 10;
 let selectedTimer = 0;
-const MAX_SHOTS = 10;
-let shotsTaken = 0;
+let isPaused = false;
 
 // DOM Elements
 const video = document.getElementById('webcam');
 const canvas = document.getElementById('canvas');
 const captureBtn = document.getElementById('captureBtn');
-const pauseBtn = document.getElementById('pauseBtn');
-const stopBtn = document.getElementById('stopBtn');
 const countdown = document.getElementById('countdown');
 const gallery = document.getElementById('gallery');
 const shotsCounter = document.getElementById('shotsCounter');
@@ -28,38 +24,21 @@ async function initializeWebcam() {
             audio: false
         });
         video.srcObject = stream;
-        video.play();
+        await video.play();
+        
+        // Show control buttons after successful initialization
+        document.getElementById('pauseBtn').style.display = 'block';
+        document.getElementById('stopBtn').style.display = 'block';
+        
         isRecording = true;
-        captureBtn.disabled = false;
     } catch (err) {
         console.error('Error accessing webcam:', err);
         alert('Could not access webcam. Please check permissions.');
     }
 }
 
-// Capture photo function
-function capturePhoto() {
-    if (selectedTimer > 0) {
-        let timeLeft = selectedTimer;
-        const countdown = document.getElementById('countdown');
-        countdown.style.display = 'block';
-        
-        const timer = setInterval(() => {
-            countdown.textContent = timeLeft;
-            timeLeft--;
-            
-            if (timeLeft < 0) {
-                clearInterval(timer);
-                countdown.style.display = 'none';
-                takeActualPhoto();
-            }
-        }, 1000);
-    } else {
-        takeActualPhoto();
-    }
-}
-
-function takeActualPhoto() {
+// Take photo function
+function takePhoto() {
     if (!isRecording || remainingShots <= 0) return;
 
     // Set canvas size to match video
@@ -70,15 +49,33 @@ function takeActualPhoto() {
     const context = canvas.getContext('2d');
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
     
-    // Get image data and store it
-    const imageData = canvas.toDataURL('image/jpeg');
+    // Create image container and image
+    const imgContainer = document.createElement('div');
+    imgContainer.className = 'captured-image-container';
     
+    const img = document.createElement('img');
+    img.src = canvas.toDataURL('image/jpeg');
+    
+    imgContainer.appendChild(img);
+    
+    // Add to gallery (at the beginning)
+    if (gallery.firstChild) {
+        gallery.insertBefore(imgContainer, gallery.firstChild);
+    } else {
+        gallery.appendChild(imgContainer);
+    }
+
+    // If more than 3 photos, scroll to top to show latest
+    if (gallery.children.length > 3) {
+        gallery.scrollTop = 0;
+    }
+
     // Store in localStorage
     const storedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
-    storedImages.push(imageData);
+    storedImages.push(img.src);
     localStorage.setItem('capturedImages', JSON.stringify(storedImages));
-    
-    // Update shots counter
+
+    // Update counter
     remainingShots--;
     shotsCounter.textContent = `Shots remaining: ${remainingShots}`;
 
@@ -86,34 +83,90 @@ function takeActualPhoto() {
     if (remainingShots === 0) {
         setTimeout(() => {
             window.location.href = 'selectphotos.html';
-        }, 500);
+        }, 1000);
     }
 }
 
-// Event listeners
-captureBtn.addEventListener('click', capturePhoto);
+// Handle timer and capture
+function startCapture() {
+    if (selectedTimer > 0) {
+        let timeLeft = selectedTimer;
+        countdown.style.display = 'block';
+        
+        const timer = setInterval(() => {
+            countdown.textContent = timeLeft;
+            timeLeft--;
+            
+            if (timeLeft < 0) {
+                clearInterval(timer);
+                countdown.style.display = 'none';
+                takePhoto();
+            }
+        }, 1000);
+    } else {
+        takePhoto();
+    }
+}
+
+// Pause and Resume function
+function togglePause() {
+    if (!isRecording) return;
+    
+    const pauseBtn = document.getElementById('pauseBtn');
+    
+    if (isPaused) {
+        // Resume video
+        video.play();
+        isPaused = false;
+        pauseBtn.textContent = 'Pause';
+        captureBtn.disabled = false;
+    } else {
+        // Pause video
+        video.pause();
+        isPaused = true;
+        pauseBtn.textContent = 'Resume';
+        captureBtn.disabled = true;
+    }
+}
+
+// Stop capture function
+function stopCapture() {
+    if (!isRecording) return;
+    
+    // Stop all tracks from the stream
+    stream.getTracks().forEach(track => track.stop());
+    
+    // Reset video
+    video.srcObject = null;
+    isRecording = false;
+    
+    // Hide video controls
+    pauseBtn.style.display = 'none';
+    stopBtn.style.display = 'none';
+    
+    // Disable capture button
+    captureBtn.disabled = true;
+    
+    // Redirect to select photos page if photos were taken
+    const storedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+    if (storedImages.length > 0) {
+        window.location.href = 'selectphotos.html';
+    }
+}
+
+// Event Listeners
 document.addEventListener('DOMContentLoaded', initializeWebcam);
 
-// Stop functionality
-stopBtn.addEventListener('click', () => {
-    if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-    }
-    window.location.href = 'selectphotos.html';
-});
+captureBtn.addEventListener('click', startCapture);
 
-// Add timer button functionality
 document.querySelectorAll('.timer-btn').forEach(button => {
     button.addEventListener('click', () => {
-        // Remove active class from all buttons
-        document.querySelectorAll('.timer-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        
-        // Add active class to clicked button
+        document.querySelectorAll('.timer-btn').forEach(btn => 
+            btn.classList.remove('active'));
         button.classList.add('active');
-        
-        // Set timer value
         selectedTimer = parseInt(button.dataset.seconds);
     });
 });
+
+document.getElementById('pauseBtn').addEventListener('click', togglePause);
+document.getElementById('stopBtn').addEventListener('click', stopCapture);
