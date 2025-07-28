@@ -483,11 +483,12 @@ async function createPhotoStrip(images) {
             }
         }
 
-        // Add watermark with less space
+        // Add watermark with better positioning
         ctx.fillStyle = 'white';
-        ctx.font = 'bold 20px Arial'; // Reduced font size from 24px to 20px
+        ctx.font = 'bold 28px Arial'; // Increased from 20px to 28px
         ctx.textAlign = 'center';
-        ctx.fillText('SnapBound', canvas.width / 2, canvas.height - 20); // Moved closer to bottom
+        ctx.textBaseline = 'middle'; // Add this line for better vertical centering
+        ctx.fillText('SnapBound', canvas.width / 2, canvas.height - 45); // Adjusted position from -20 to -45
 
         // Download the photostrip
         downloadCanvas(canvas, `photostrip-${selectedStrip.toLowerCase()}.jpg`);
