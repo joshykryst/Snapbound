@@ -590,31 +590,45 @@ function displayCapturedImages() {
     });
 }
 
-// Add cleanup function
+// Update the cleanupOldPhotos function
 function cleanupOldPhotos() {
     const TWO_MINUTES = 2 * 60 * 1000; // 2 minutes in milliseconds
     const now = new Date().getTime();
+    let shouldClearImages = false;
     
-    // Check all stored photos
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith('photo_timestamp_')) {
-            const timestamp = parseInt(localStorage.getItem(key));
-            if (now - timestamp > TWO_MINUTES) {
-                // Remove the photo and its timestamp
-                const photoIndex = key.split('_')[2];
-                localStorage.removeItem(`capturedImages`);
-                localStorage.removeItem(key);
-            }
+    // Check if any image is older than 2 minutes
+    const capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+    
+    // Check timestamps
+    capturedImages.forEach((_, index) => {
+        const timestamp = parseInt(localStorage.getItem(`photo_timestamp_${index}`)) || 0;
+        if (now - timestamp > TWO_MINUTES) {
+            shouldClearImages = true;
         }
+        // Clean up individual timestamps
+        localStorage.removeItem(`photo_timestamp_${index}`);
+    });
+
+    // If any image is old, clear all images
+    if (shouldClearImages) {
+        localStorage.removeItem('capturedImages');
+        selectedPhotos = []; // Clear selected photos
+        // Refresh the display
+        const photosGrid = document.getElementById('photosGrid');
+        if (photosGrid) {
+            photosGrid.innerHTML = '';
+        }
+        // Clear strip previews
+        updateStripPreviews();
+        console.log('Photos cleared after 2 minutes');
     }
 }
 
-// Add these event listeners
+// Update the interval to check more frequently
 window.addEventListener('load', () => {
     cleanupOldPhotos();
-    // Set cleanup interval
-    setInterval(cleanupOldPhotos, 60000); // Check every minute
+    // Check every 30 seconds instead of every minute
+    setInterval(cleanupOldPhotos, 30000);
 });
 
 // Add beforeunload event to clean up when leaving
