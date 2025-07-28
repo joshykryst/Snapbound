@@ -291,7 +291,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const photosGrid = document.getElementById('photosGrid');
         photosGrid.innerHTML = '';
         
+        const capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+        const now = new Date().getTime();
+        
         capturedImages.forEach((imageData, index) => {
+            // Store image with timestamp if not already stored
+            if (!localStorage.getItem(`photo_timestamp_${index}`)) {
+                localStorage.setItem(`photo_timestamp_${index}`, now);
+            }
+            
             const imgContainer = document.createElement('div');
             imgContainer.className = 'photo-container';
             
@@ -322,6 +330,9 @@ document.addEventListener('DOMContentLoaded', () => {
             imgContainer.appendChild(img);
             photosGrid.appendChild(imgContainer);
         });
+
+        // Call updateStripPreviews after loading images
+        updateStripPreviews();
     }
 
     // Function to update strip previews
@@ -388,8 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize the page
     displayCapturedImages();
-    updateStripPreviews();
-
+    
     // Set initial active strip
     const defaultStrip = document.querySelector('.strip-preview[data-color="Red"]');
     if (defaultStrip) {
@@ -579,60 +589,60 @@ function displayCapturedImages() {
     const photosGrid = document.getElementById('photosGrid');
     photosGrid.innerHTML = '';
     
+    const capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
     const now = new Date().getTime();
+    
     capturedImages.forEach((imageData, index) => {
         // Store image with timestamp if not already stored
         if (!localStorage.getItem(`photo_timestamp_${index}`)) {
             localStorage.setItem(`photo_timestamp_${index}`, now);
         }
         
-        // ... rest of the existing code ...
+        const imgContainer = document.createElement('div');
+        imgContainer.className = 'photo-container';
+        
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'photo-checkbox';
+        checkbox.id = `photo-${index}`;
+        
+        checkbox.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                if (selectedPhotos.length >= MAX_PHOTOS) {
+                    e.target.checked = false;
+                    alert('You can only select 4 photos!');
+                    return;
+                }
+                selectedPhotos.push({index, src: imageData});
+            } else {
+                selectedPhotos = selectedPhotos.filter(photo => photo.index !== index);
+            }
+            updateStripPreviews();
+        });
+        
+        const img = document.createElement('img');
+        img.src = imageData;
+        img.alt = `Photo ${index + 1}`;
+        
+        imgContainer.appendChild(checkbox);
+        imgContainer.appendChild(img);
+        photosGrid.appendChild(imgContainer);
     });
+
+    // Call updateStripPreviews after loading images
+    updateStripPreviews();
 }
 
-// Update the cleanupOldPhotos function
-function cleanupOldPhotos() {
-    const TWO_MINUTES = 2 * 60 * 1000; // 2 minutes in milliseconds
+// Add this to your capture page where you save the photos
+function savePhoto(photoData) {
+    let capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+    capturedImages.push(photoData);
+    localStorage.setItem('capturedImages', JSON.stringify(capturedImages));
+    
+    // Add timestamp
     const now = new Date().getTime();
-    let shouldClearImages = false;
-    
-    // Check if any image is older than 2 minutes
-    const capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
-    
-    // Check timestamps
-    capturedImages.forEach((_, index) => {
-        const timestamp = parseInt(localStorage.getItem(`photo_timestamp_${index}`)) || 0;
-        if (now - timestamp > TWO_MINUTES) {
-            shouldClearImages = true;
-        }
-        // Clean up individual timestamps
-        localStorage.removeItem(`photo_timestamp_${index}`);
-    });
-
-    // If any image is old, clear all images
-    if (shouldClearImages) {
-        localStorage.removeItem('capturedImages');
-        selectedPhotos = []; // Clear selected photos
-        // Refresh the display
-        const photosGrid = document.getElementById('photosGrid');
-        if (photosGrid) {
-            photosGrid.innerHTML = '';
-        }
-        // Clear strip previews
-        updateStripPreviews();
-        console.log('Photos cleared after 2 minutes');
-    }
+    localStorage.setItem(`photo_timestamp_${capturedImages.length - 1}`, now);
 }
-
-// Update the interval to check more frequently
-window.addEventListener('load', () => {
-    cleanupOldPhotos();
-    // Check every 30 seconds instead of every minute
-    setInterval(cleanupOldPhotos, 30000);
-});
-
-// Add beforeunload event to clean up when leaving
-window.addEventListener('beforeunload', cleanupOldPhotos);
     </script>
 </body>
 </html>
