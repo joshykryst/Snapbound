@@ -184,12 +184,14 @@
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
         }
 
         .photo-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: filter 0.3s ease;
         }
 
         .photo-checkbox {
@@ -235,11 +237,20 @@
             border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s ease;
+            position: relative;
         }
 
         .effect-btn.active {
             background: #ff4757;
             color: white;
+        }
+
+        .effect-btn.active::after {
+            content: '✓';
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
         }
 
         .photo-placeholder {
@@ -511,6 +522,102 @@ function downloadCanvas(canvas, filename) {
         alert('Error downloading photo strip. Please try again.');
     }
 }
+
+// Add this function after the existing variables
+function applyPreviewEffect(imgElement, effect) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = imgElement.naturalWidth;
+    canvas.height = imgElement.naturalHeight;
+    
+    ctx.drawImage(imgElement, 0, 0);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    applyEffectToImageData(imageData, effect);
+    ctx.putImageData(imageData, 0, 0);
+    
+    return canvas.toDataURL('image/jpeg', 0.8);
+}
+
+// Update the effect button click handler
+document.querySelectorAll('.effect-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.effect-btn').forEach(b => 
+            b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedEffect = btn.textContent.toLowerCase().trim();
+        
+        // Update all preview images with the new effect
+        updatePreviewsWithEffect();
+    });
+});
+
+// Add this function to update previews with effects
+function updatePreviewsWithEffect() {
+    const previewImages = document.querySelectorAll('.photo-container img, .photo-placeholder img');
+    previewImages.forEach(img => {
+        const originalSrc = img.getAttribute('data-original-src') || img.src;
+        if (!img.getAttribute('data-original-src')) {
+            img.setAttribute('data-original-src', originalSrc);
+        }
+        
+        if (selectedEffect === 'normal') {
+            img.src = originalSrc;
+        } else {
+            img.onload = null;
+            const tempImg = new Image();
+            tempImg.onload = function() {
+                img.src = applyPreviewEffect(this, selectedEffect);
+            };
+            tempImg.src = originalSrc;
+        }
+    });
+}
+
+// Modify the displayCapturedImages function to store timestamps
+function displayCapturedImages() {
+    const photosGrid = document.getElementById('photosGrid');
+    photosGrid.innerHTML = '';
+    
+    const now = new Date().getTime();
+    capturedImages.forEach((imageData, index) => {
+        // Store image with timestamp if not already stored
+        if (!localStorage.getItem(`photo_timestamp_${index}`)) {
+            localStorage.setItem(`photo_timestamp_${index}`, now);
+        }
+        
+        // ... rest of the existing code ...
+    });
+}
+
+// Add cleanup function
+function cleanupOldPhotos() {
+    const TWO_MINUTES = 2 * 60 * 1000; // 2 minutes in milliseconds
+    const now = new Date().getTime();
+    
+    // Check all stored photos
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('photo_timestamp_')) {
+            const timestamp = parseInt(localStorage.getItem(key));
+            if (now - timestamp > TWO_MINUTES) {
+                // Remove the photo and its timestamp
+                const photoIndex = key.split('_')[2];
+                localStorage.removeItem(`capturedImages`);
+                localStorage.removeItem(key);
+            }
+        }
+    }
+}
+
+// Add these event listeners
+window.addEventListener('load', () => {
+    cleanupOldPhotos();
+    // Set cleanup interval
+    setInterval(cleanupOldPhotos, 60000); // Check every minute
+});
+
+// Add beforeunload event to clean up when leaving
+window.addEventListener('beforeunload', cleanupOldPhotos);
     </script>
 </body>
 </html>
