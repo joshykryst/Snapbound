@@ -16,8 +16,11 @@
             <div class="strip-preview" data-color="Blue">
                 <img src="Photo/Blue.png" alt="Blue Strip">
             </div>
-            <div class="strip-preview" data-color="Green">
-                <img src="Photo/Green.png" alt="Green Strip">
+            <div class="strip-preview" data-color="Green" style="background-color: #2ecc71;">
+                <div class="photo-placeholder"></div>
+                <div class="photo-placeholder"></div>
+                <div class="photo-placeholder"></div>
+                <div class="photo-placeholder"></div>
             </div>
             <div class="strip-preview" data-color="Yellow">
                 <img src="Photo/Yellow.png" alt="Yellow Strip">
@@ -62,14 +65,52 @@
             justify-content: center;
         }
 
+        .strip-preview {
+            flex: 0 0 auto;
+            width: 120px;
+            height: 400px;
+            border: 3px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .photo-placeholder {
+            width: 100%;
+            height: 80px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .photo-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .strip-preview[data-color="Red"] { background-color: #ff4757; }
+        .strip-preview[data-color="Blue"] { background-color: #2e86de; }
+        .strip-preview[data-color="Green"] { background-color: #2ecc71; }
+        .strip-preview[data-color="Yellow"] { background-color: #ffd32a; }
+        .strip-preview[data-color="Purple"] { background-color: #8e44ad; }
+        .strip-preview[data-color="Copper"] { background-color: #cd7f32; }
+        .strip-preview[data-color="White"] { background-color: #f1f2f6; }
+
         .photos-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
             margin: 20px 0;
-            padding: 20px;
+            padding: 15px;
             background: #f8f9fa;
-            border-radius: 15px;
+            border-radius: 10px;
         }
 
         .photo-container {
@@ -77,13 +118,15 @@
             aspect-ratio: 3/4;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        .photo-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .photo-checkbox {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            transform: scale(1.5);
+            z-index: 2;
+            cursor: pointer;
         }
 
         .selection-controls {
@@ -101,30 +144,6 @@
             border-radius: 25px;
             cursor: pointer;
             transition: all 0.3s ease;
-        }
-
-        .strip-preview {
-            flex: 0 0 auto;
-            width: 120px;
-            height: 300px;
-            border: 3px solid transparent;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            overflow: hidden;
-            background-color: #f8f9fa;
-        }
-
-        .strip-preview.active {
-            border-color: #ff4757;
-            box-shadow: 0 0 15px rgba(255, 71, 87, 0.3);
-            transform: scale(1.05);
-        }
-
-        .strip-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
         }
 
         .effect-options {
@@ -148,254 +167,150 @@
             background: #ff4757;
             color: white;
         }
-
-        .photo-container {
-            position: relative;
-            display: inline-block;
-            margin: 10px;
-        }
-
-        .photo-checkbox {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            transform: scale(1.5);
-            cursor: pointer;
-        }
     </style>
 
     <script>
-        // Add this function at the start of your script
-        function checkImageExists(url) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => resolve(true);
-                img.onerror = () => {
-                    console.error(`Failed to load image: ${url}`);
-                    resolve(false);
-                };
-                img.src = url;
-            });
-        }
+document.addEventListener('DOMContentLoaded', () => {
+    const photosGrid = document.getElementById('photosGrid');
+    const capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+    let selectedPhotos = [];
+    const MAX_PHOTOS = 4;
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const photosGrid = document.getElementById('photosGrid');
-            const capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
-
-            if (capturedImages.length === 0) {
-                photosGrid.innerHTML = '<p style="text-align: center; color: #666;">No photos captured yet. Please take photos first.</p>';
-                return;
-            }
-
-            let selectedPhotos = 0;
-            const MAX_PHOTOS = 4;
-
-            // Display captured images
-            capturedImages.forEach((imageData, index) => {
-                const imgContainer = document.createElement('div');
-                imgContainer.className = 'photo-container';
-                
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.className = 'photo-checkbox';
-                checkbox.id = `photo-${index}`;
-                
-                // Add checkbox change event listener
-                checkbox.addEventListener('change', (e) => {
-                    if (e.target.checked) {
-                        if (selectedPhotos >= MAX_PHOTOS) {
-                            e.target.checked = false;
-                            alert('You can only select 4 photos for the photo strip!');
-                            return;
-                        }
-                        selectedPhotos++;
-                    } else {
-                        selectedPhotos--;
-                    }
-                });
-                
-                const img = document.createElement('img');
-                img.src = imageData;
-                img.setAttribute('crossorigin', 'anonymous');
-                
-                imgContainer.appendChild(checkbox);
-                imgContainer.appendChild(img);
-                photosGrid.appendChild(imgContainer);
-            });
-
-            // Set default selected strip
-            let selectedStrip = 'Red';
-            let selectedEffect = 'normal';
-            document.querySelector('.strip-preview[data-color="red"]').classList.add('active');
-
-            // Strip selection
-            document.querySelectorAll('.strip-preview').forEach(strip => {
-                strip.addEventListener('click', () => {
-                    document.querySelectorAll('.strip-preview').forEach(s => 
-                        s.classList.remove('active'));
-                    strip.classList.add('active');
-                    selectedStrip = strip.getAttribute('data-color');
-                });
-            });
-
-            // Effect selection
-            document.querySelectorAll('.effect-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.effect-btn').forEach(b => 
-                        b.classList.remove('active'));
-                    btn.classList.add('active');
-                    selectedEffect = btn.textContent.toLowerCase();
-                    applyEffect();
-                });
-            });
-
-            function applyEffect() {
-                const images = document.querySelectorAll('.photo-container img');
-                images.forEach(img => {
-                    switch(selectedEffect) {
-                        case 'black & white':
-                            img.style.filter = 'grayscale(100%)';
-                            break;
-                        case 'sepia':
-                            img.style.filter = 'sepia(100%)';
-                            break;
-                        case 'vintage':
-                            img.style.filter = 'sepia(50%) contrast(95%) brightness(95%)';
-                            break;
-                        case 'high contrast':
-                            img.style.filter = 'contrast(150%) brightness(110%)';
-                            break;
-                        default:
-                            img.style.filter = 'none';
-                    }
-                });
-            }
-
-            // Add Select All functionality
-            const selectAllBtn = document.getElementById('selectAllBtn');
-            selectAllBtn.addEventListener('click', () => {
-                const checkboxes = document.querySelectorAll('.photo-checkbox');
-                const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-                checkboxes.forEach(cb => cb.checked = !allChecked);
-            });
-
-            // Add download buttons functionality
-            const downloadPhotos = document.getElementById('downloadPhotos');
-            const downloadStrip = document.getElementById('downloadStrip');
-
-            downloadPhotos.addEventListener('click', () => {
-                const selectedImages = Array.from(document.querySelectorAll('.photo-checkbox:checked'))
-                    .map(checkbox => checkbox.parentElement.querySelector('img').src);
-                
-                selectedImages.forEach((imgData, index) => {
-                    const link = document.createElement('a');
-                    link.download = `photo-${index + 1}.jpg`;
-                    link.href = imgData;
-                    link.click();
-                });
-            });
-
-            downloadStrip.addEventListener('click', () => {
-                const selectedImages = Array.from(document.querySelectorAll('.photo-checkbox:checked'))
-                    .map(checkbox => checkbox.parentElement.querySelector('img').src);
-
-                if (selectedImages.length !== 4) {
-                    alert('Please select exactly 4 photos for the photo strip!');
+    // Display captured images with checkboxes
+    capturedImages.forEach((imageData, index) => {
+        const imgContainer = document.createElement('div');
+        imgContainer.className = 'photo-container';
+        
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'photo-checkbox';
+        checkbox.id = `photo-${index}`;
+        
+        checkbox.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                if (selectedPhotos.length >= MAX_PHOTOS) {
+                    e.target.checked = false;
+                    alert('You can only select 4 photos!');
                     return;
                 }
-
-                // Create photo strip logic here
-                createPhotoStrip(selectedImages);
-            });
-
-            // Update createPhotoStrip function
-            async function createPhotoStrip(images) {
-                // Check if template exists
-                const templateExists = await checkImageExists(`Photo/${selectedStrip}.png`);
-                if (!templateExists) {
-                    alert(`Error: Could not load template ${selectedStrip}. Please check file path.`);
-                    return;
-                }
-
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                
-                // Set photostrip dimensions
-                canvas.width = 600;
-                canvas.height = 1800;
-                
-                try {
-                    // Load strip template
-                    const stripImg = new Image();
-                    stripImg.crossOrigin = 'anonymous';
-                    await new Promise((resolve, reject) => {
-                        stripImg.onload = resolve;
-                        stripImg.onerror = reject;
-                        stripImg.src = `Photo/${selectedStrip}.png`; // Changed from strips/ to Photo/
-                    });
-                    
-                    // Draw strip template
-                    ctx.drawImage(stripImg, 0, 0, canvas.width, canvas.height);
-                    
-                    // Draw selected images
-                    for (let i = 0; i < images.length; i++) {
-                        const img = new Image();
-                        img.crossOrigin = 'anonymous';
-                        await new Promise((resolve, reject) => {
-                            img.onload = resolve;
-                            img.onerror = reject;
-                            img.src = images[i];
-                        });
-                        
-                        // Calculate position for each photo
-                        const y = 150 + (i * 425); // Adjust spacing as needed
-                        ctx.drawImage(img, 50, y, 500, 375);
-                    }
-                    
-                    // Download the final strip
-                    const link = document.createElement('a');
-                    link.download = `photostrip-${selectedStrip.toLowerCase()}.jpg`;
-                    link.href = canvas.toDataURL('image/jpeg', 0.8);
-                    link.click();
-                    
-                } catch (error) {
-                    console.error('Error creating photo strip:', error);
-                    alert('Error creating photo strip. Please try again.');
-                }
-            }
-
-            // Add helper function for applying effects
-            function applyEffectToImageData(imageData, effect) {
-                const data = imageData.data;
-                for (let i = 0; i < data.length; i += 4) {
-                    const r = data[i];
-                    const g = data[i + 1];
-                    const b = data[i + 2];
-                    
-                    switch(effect) {
-                        case 'black & white':
-                            const avg = (r + g + b) / 3;
-                            data[i] = data[i + 1] = data[i + 2] = avg;
-                            break;
-                        case 'sepia':
-                            data[i] = (r * 0.393) + (g * 0.769) + (b * 0.189);
-                            data[i + 1] = (r * 0.349) + (g * 0.686) + (b * 0.168);
-                            data[i + 2] = (r * 0.272) + (g * 0.534) + (b * 0.131);
-                            break;
-                        case 'vintage':
-                            data[i] = r * 1.1;
-                            data[i + 1] = g * 0.9;
-                            data[i + 2] = b * 0.9;
-                            break;
-                        case 'high contrast':
-                            data[i] = r * 1.5;
-                            data[i + 1] = g * 1.5;
-                            data[i + 2] = b * 1.5;
-                            break;
-                    }
-                }
+                selectedPhotos.push({index, src: imageData});
+                updateStripPreviews();
+            } else {
+                selectedPhotos = selectedPhotos.filter(photo => photo.index !== index);
+                updateStripPreviews();
             }
         });
+        
+        const img = document.createElement('img');
+        img.src = imageData;
+        
+        imgContainer.appendChild(checkbox);
+        imgContainer.appendChild(img);
+        photosGrid.appendChild(imgContainer);
+    });
+
+    // Function to update strip previews with selected photos
+    function updateStripPreviews() {
+        document.querySelectorAll('.strip-preview').forEach(strip => {
+            const placeholders = strip.querySelectorAll('.photo-placeholder');
+            placeholders.forEach((placeholder, index) => {
+                placeholder.innerHTML = ''; // Clear existing content
+                if (selectedPhotos[index]) {
+                    const img = document.createElement('img');
+                    img.src = selectedPhotos[index].src;
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.objectFit = 'cover';
+                    placeholder.appendChild(img);
+                }
+            });
+        });
+    }
+
+    // Update strip styles
+    document.querySelectorAll('.strip-preview').forEach(strip => {
+        strip.innerHTML = '';
+        // Create 4 placeholder slots
+        for (let i = 0; i < 4; i++) {
+            const placeholder = document.createElement('div');
+            placeholder.className = 'photo-placeholder';
+            strip.appendChild(placeholder);
+        }
+    });
+});
+
+// Update the createPhotoStrip function
+async function createPhotoStrip(images) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Set photostrip dimensions to match the template
+    canvas.width = 400;  // Adjusted width
+    canvas.height = 1200; // Adjusted height for 4 photos
+    
+    try {
+        // Draw background color based on selected strip
+        ctx.fillStyle = selectedStrip.toLowerCase();
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw border (white frame)
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 20;
+        ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+        
+        // Calculate dimensions for photos
+        const photoWidth = 360;  // Slightly smaller than canvas for margins
+        const photoHeight = 270; // Maintaining aspect ratio
+        const xOffset = (canvas.width - photoWidth) / 2;
+        const yGap = 20; // Gap between photos
+        
+        // Draw each photo
+        for (let i = 0; i < images.length; i++) {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = reject;
+                img.src = images[i];
+            });
+            
+            // Calculate Y position for each photo
+            const yOffset = 30 + (i * (photoHeight + yGap));
+            
+            // Draw white border around each photo
+            ctx.fillStyle = 'white';
+            ctx.fillRect(xOffset - 5, yOffset - 5, photoWidth + 10, photoHeight + 10);
+            
+            // Draw the photo
+            ctx.drawImage(img, xOffset, yOffset, photoWidth, photoHeight);
+            
+            // Apply selected effect
+            if (selectedEffect !== 'normal') {
+                const imageData = ctx.getImageData(xOffset, yOffset, photoWidth, photoHeight);
+                applyEffectToImageData(imageData, selectedEffect);
+                ctx.putImageData(imageData, xOffset, yOffset);
+            }
+        }
+        
+        // Add watermark or branding
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 24px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('SnapBound', canvas.width / 2, canvas.height - 30);
+        
+        // Download the final strip
+        const link = document.createElement('a');
+        link.download = `photostrip-${selectedStrip.toLowerCase()}.jpg`;
+        link.href = canvas.toDataURL('image/jpeg', 0.8);
+        link.click();
+        
+    } catch (error) {
+        console.error('Error creating photo strip:', error);
+        alert('Error creating photo strip. Please try again.');
+    }
+}
+
+// Update the strip preview styles
     </script>
 </body>
 </html>
