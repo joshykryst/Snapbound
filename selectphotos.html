@@ -11,28 +11,46 @@
         <h2>Choose Your Strip Style</h2>
         <div class="strip-options">
             <div class="strip-preview" data-color="Red">
-                <img src="Photo/Red.png" alt="Red Strip">
+                <div class="photo-placeholder"></div>
+                <div class="photo-placeholder"></div>
+                <div class="photo-placeholder"></div>
+                <div class="photo-placeholder"></div>
             </div>
             <div class="strip-preview" data-color="Blue">
-                <img src="Photo/Blue.png" alt="Blue Strip">
+                <div class="photo-placeholder"></div>
+                <div class="photo-placeholder"></div>
+                <div class="photo-placeholder"></div>
+                <div class="photo-placeholder"></div>
             </div>
-            <div class="strip-preview" data-color="Green" style="background-color: #2ecc71;">
+            <div class="strip-preview" data-color="Green">
                 <div class="photo-placeholder"></div>
                 <div class="photo-placeholder"></div>
                 <div class="photo-placeholder"></div>
                 <div class="photo-placeholder"></div>
             </div>
             <div class="strip-preview" data-color="Yellow">
-                <img src="Photo/Yellow.png" alt="Yellow Strip">
+                <div class="photo-placeholder"></div>
+                <div class="photo-placeholder"></div>
+                <div class="photo-placeholder"></div>
+                <div class="photo-placeholder"></div>
             </div>
             <div class="strip-preview" data-color="Purple">
-                <img src="Photo/Purple.png" alt="Purple Strip">
+                <div class="photo-placeholder"></div>
+                <div class="photo-placeholder"></div>
+                <div class="photo-placeholder"></div>
+                <div class="photo-placeholder"></div>
             </div>
             <div class="strip-preview" data-color="Copper">
-                <img src="Photo/Copper.png" alt="Copper Strip">
+                <div class="photo-placeholder"></div>
+                <div class="photo-placeholder"></div>
+                <div class="photo-placeholder"></div>
+                <div class="photo-placeholder"></div>
             </div>
             <div class="strip-preview" data-color="White">
-                <img src="Photo/White.png" alt="White Strip">
+                <div class="photo-placeholder"></div>
+                <div class="photo-placeholder"></div>
+                <div class="photo-placeholder"></div>
+                <div class="photo-placeholder"></div>
             </div>
         </div>
 
@@ -78,39 +96,86 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
+            position: relative; 
+            transform: scale(1);  /* Add this line */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);  /* Add this line */
         }
 
-        .photo-placeholder {
-            width: 100%;
-            height: 80px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 5px;
-            overflow: hidden;
+        /* Update color styles to fill entire preview */
+        .strip-preview[data-color="Red"] { 
+            background-color: #ff4757;
+            border-color: rgba(255,255,255,0.2);
+        }
+        .strip-preview[data-color="Blue"] { 
+            background-color: #2e86de;
+            border-color: rgba(255,255,255,0.2);
+        }
+        .strip-preview[data-color="Green"] { 
+            background-color: #2ecc71;
+            border-color: rgba(255,255,255,0.2);
+        }
+        .strip-preview[data-color="Yellow"] { 
+            background-color: #ffd32a;
+            border-color: rgba(255,255,255,0.2);
+        }
+        .strip-preview[data-color="Purple"] { 
+            background-color: #8e44ad;
+            border-color: rgba(255,255,255,0.2);
+        }
+        .strip-preview[data-color="Copper"] { 
+            background-color: #cd7f32;
+            border-color: rgba(255,255,255,0.2);
+        }
+        .strip-preview[data-color="White"] { 
+            background-color: #f1f2f6;
+            border-color: rgba(0,0,0,0.1);
         }
 
-        .photo-placeholder img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
+        .strip-preview.active {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            border-width: 4px;
+            border-style: solid;
         }
 
-        .strip-preview[data-color="Red"] { background-color: #ff4757; }
-        .strip-preview[data-color="Blue"] { background-color: #2e86de; }
-        .strip-preview[data-color="Green"] { background-color: #2ecc71; }
-        .strip-preview[data-color="Yellow"] { background-color: #ffd32a; }
-        .strip-preview[data-color="Purple"] { background-color: #8e44ad; }
-        .strip-preview[data-color="Copper"] { background-color: #cd7f32; }
-        .strip-preview[data-color="White"] { background-color: #f1f2f6; }
+        /* Update active states for each color */
+        .strip-preview[data-color="Red"].active { 
+            border-color: #ff8a8a;
+            box-shadow: 0 0 20px rgba(255, 71, 87, 0.4);
+        }
+        .strip-preview[data-color="Blue"].active { 
+            border-color: #70aeff;
+            box-shadow: 0 0 20px rgba(46, 134, 222, 0.4);
+        }
+        .strip-preview[data-color="Green"].active { 
+            border-color: #7fff9c;
+            box-shadow: 0 0 20px rgba(46, 204, 113, 0.4);
+        }
+        .strip-preview[data-color="Yellow"].active { 
+            border-color: #ffe17f;
+            box-shadow: 0 0 20px rgba(255, 211, 42, 0.4);
+        }
+        .strip-preview[data-color="Purple"].active { 
+            border-color: #c27fde;
+            box-shadow: 0 0 20px rgba(142, 68, 173, 0.4);
+        }
+        .strip-preview[data-color="Copper"].active { 
+            border-color: #ffb27f;
+            box-shadow: 0 0 20px rgba(205, 127, 50, 0.4);
+        }
+        .strip-preview[data-color="White"].active { 
+            border-color: #ffffff;
+            box-shadow: 0 0 20px rgba(241, 242, 246, 0.4);
+        }
 
         .photos-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-            padding: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
             background: #f8f9fa;
-            border-radius: 10px;
+            border-radius: 15px;
+            margin: 20px 0;
         }
 
         .photo-container {
@@ -118,6 +183,13 @@
             aspect-ratio: 3/4;
             border-radius: 8px;
             overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .photo-checkbox {
@@ -127,6 +199,8 @@
             transform: scale(1.5);
             z-index: 2;
             cursor: pointer;
+            background: white;
+            border-radius: 3px;
         }
 
         .selection-controls {
@@ -167,150 +241,276 @@
             background: #ff4757;
             color: white;
         }
+
+        .photo-placeholder {
+            width: 100%;
+            height: 80px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+
+        .photo-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Add hover effect to strip previews */
+        .strip-preview:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
     </style>
 
     <script>
+// Move these variables outside the DOMContentLoaded event listener
+let selectedStrip = 'Red';
+let selectedEffect = 'normal';
+let selectedPhotos = [];
+const MAX_PHOTOS = 4;
+
 document.addEventListener('DOMContentLoaded', () => {
-    const photosGrid = document.getElementById('photosGrid');
+    // Get captured images from localStorage
     const capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
-    let selectedPhotos = [];
-    const MAX_PHOTOS = 4;
 
-    // Display captured images with checkboxes
-    capturedImages.forEach((imageData, index) => {
-        const imgContainer = document.createElement('div');
-        imgContainer.className = 'photo-container';
+    // Display captured images grid
+    function displayCapturedImages() {
+        const photosGrid = document.getElementById('photosGrid');
+        photosGrid.innerHTML = '';
         
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.className = 'photo-checkbox';
-        checkbox.id = `photo-${index}`;
-        
-        checkbox.addEventListener('change', (e) => {
-            if (e.target.checked) {
-                if (selectedPhotos.length >= MAX_PHOTOS) {
-                    e.target.checked = false;
-                    alert('You can only select 4 photos!');
-                    return;
+        capturedImages.forEach((imageData, index) => {
+            const imgContainer = document.createElement('div');
+            imgContainer.className = 'photo-container';
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.className = 'photo-checkbox';
+            checkbox.id = `photo-${index}`;
+            
+            checkbox.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    if (selectedPhotos.length >= MAX_PHOTOS) {
+                        e.target.checked = false;
+                        alert('You can only select 4 photos!');
+                        return;
+                    }
+                    selectedPhotos.push({index, src: imageData});
+                } else {
+                    selectedPhotos = selectedPhotos.filter(photo => photo.index !== index);
                 }
-                selectedPhotos.push({index, src: imageData});
                 updateStripPreviews();
-            } else {
-                selectedPhotos = selectedPhotos.filter(photo => photo.index !== index);
-                updateStripPreviews();
-            }
+            });
+            
+            const img = document.createElement('img');
+            img.src = imageData;
+            img.alt = `Photo ${index + 1}`;
+            
+            imgContainer.appendChild(checkbox);
+            imgContainer.appendChild(img);
+            photosGrid.appendChild(imgContainer);
         });
-        
-        const img = document.createElement('img');
-        img.src = imageData;
-        
-        imgContainer.appendChild(checkbox);
-        imgContainer.appendChild(img);
-        photosGrid.appendChild(imgContainer);
-    });
+    }
 
-    // Function to update strip previews with selected photos
+    // Function to update strip previews
     function updateStripPreviews() {
         document.querySelectorAll('.strip-preview').forEach(strip => {
-            const placeholders = strip.querySelectorAll('.photo-placeholder');
-            placeholders.forEach((placeholder, index) => {
-                placeholder.innerHTML = ''; // Clear existing content
-                if (selectedPhotos[index]) {
+            strip.innerHTML = ''; // Clear existing content
+            
+            // Create 4 placeholders
+            for (let i = 0; i < 4; i++) {
+                const placeholder = document.createElement('div');
+                placeholder.className = 'photo-placeholder';
+                
+                // Add selected photo if available
+                if (selectedPhotos[i]) {
                     const img = document.createElement('img');
-                    img.src = selectedPhotos[index].src;
+                    img.src = selectedPhotos[i].src;
                     img.style.width = '100%';
                     img.style.height = '100%';
                     img.style.objectFit = 'cover';
                     placeholder.appendChild(img);
                 }
-            });
+                
+                strip.appendChild(placeholder);
+            }
         });
     }
 
-    // Update strip styles
+    // Strip selection
     document.querySelectorAll('.strip-preview').forEach(strip => {
-        strip.innerHTML = '';
-        // Create 4 placeholder slots
-        for (let i = 0; i < 4; i++) {
-            const placeholder = document.createElement('div');
-            placeholder.className = 'photo-placeholder';
-            strip.appendChild(placeholder);
-        }
+        strip.addEventListener('click', () => {
+            // Remove active class from all strips
+            document.querySelectorAll('.strip-preview').forEach(s => s.classList.remove('active'));
+            
+            // Add active class to selected strip
+            strip.classList.add('active');
+            
+            // Update selected strip color
+            selectedStrip = strip.getAttribute('data-color');
+            
+            // Update preview appearance
+            updateStripPreviews();
+        });
     });
+
+    // Effect selection
+    document.querySelectorAll('.effect-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.effect-btn').forEach(b => 
+                b.classList.remove('active'));
+            btn.classList.add('active');
+                selectedEffect = btn.textContent.toLowerCase().trim();
+        });
+    });
+
+    // Download strip button
+    document.getElementById('downloadStrip').addEventListener('click', () => {
+        if (selectedPhotos.length !== 4) {
+            alert('Please select exactly 4 photos');
+            return;
+        }
+        const selectedImages = selectedPhotos.map(photo => photo.src);
+        createPhotoStrip(selectedImages);
+    });
+
+    // Initialize the page
+    displayCapturedImages();
+    updateStripPreviews();
+
+    // Set initial active strip
+    const defaultStrip = document.querySelector('.strip-preview[data-color="Red"]');
+    if (defaultStrip) {
+        defaultStrip.classList.add('active');
+        selectedStrip = 'Red';
+    }
 });
 
-// Update the createPhotoStrip function
+const stripColors = {
+    'Red': '#ff4757',
+    'Blue': '#2e86de',
+    'Green': '#2ecc71',
+    'Yellow': '#ffd32a',
+    'Purple': '#8e44ad',
+    'Copper': '#cd7f32',
+    'White': '#f1f2f6'
+};
+
+function applyEffectToImageData(imageData, effect) {
+    const data = imageData.data;
+    for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        
+        switch(effect) {
+            case 'black & white':
+                const avg = (r + g + b) / 3;
+                data[i] = data[i + 1] = data[i + 2] = avg;
+                break;
+            case 'sepia':
+                data[i] = Math.min(255, (r * 0.393) + (g * 0.769) + (b * 0.189));
+                data[i + 1] = Math.min(255, (r * 0.349) + (g * 0.686) + (b * 0.168));
+                data[i + 2] = Math.min(255, (r * 0.272) + (g * 0.534) + (b * 0.131));
+                break;
+            case 'vintage':
+                data[i] = Math.min(255, r * 1.1);
+                data[i + 1] = Math.min(255, g * 0.9);
+                data[i + 2] = Math.min(255, b * 0.9);
+                break;
+            case 'high contrast':
+                data[i] = Math.min(255, r * 1.5);
+                data[i + 1] = Math.min(255, g * 1.5);
+                data[i + 2] = Math.min(255, b * 1.5);
+                break;
+        }
+    }
+}
+
 async function createPhotoStrip(images) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     
-    // Set photostrip dimensions to match the template
-    canvas.width = 400;  // Adjusted width
-    canvas.height = 1200; // Adjusted height for 4 photos
+    // Adjust canvas dimensions
+    canvas.width = 400;
+    canvas.height = 1250; // Reduced from 1300 to decrease bottom space
     
     try {
-        // Draw background color based on selected strip
-        ctx.fillStyle = selectedStrip.toLowerCase();
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Draw border (white frame)
-        ctx.strokeStyle = 'white';
-        ctx.lineWidth = 20;
-        ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
-        
-        // Calculate dimensions for photos
-        const photoWidth = 360;  // Slightly smaller than canvas for margins
-        const photoHeight = 270; // Maintaining aspect ratio
+        const photoWidth = 360;
+        const photoHeight = 270;
         const xOffset = (canvas.width - photoWidth) / 2;
-        const yGap = 20; // Gap between photos
-        
-        // Draw each photo
+        const yGap = 15; // Reduced gap between photos from 20 to 15
+
+        // Fill entire background with selected color
+        ctx.fillStyle = stripColors[selectedStrip];
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Remove outer white border
+        // ctx.strokeStyle = 'white';
+        // ctx.lineWidth = 20;
+        // ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 120);
+
+        // Load and draw each image
         for (let i = 0; i < images.length; i++) {
-            const img = new Image();
-            img.crossOrigin = 'anonymous';
-            await new Promise((resolve, reject) => {
-                img.onload = resolve;
-                img.onerror = reject;
-                img.src = images[i];
-            });
-            
-            // Calculate Y position for each photo
-            const yOffset = 30 + (i * (photoHeight + yGap));
-            
-            // Draw white border around each photo
-            ctx.fillStyle = 'white';
-            ctx.fillRect(xOffset - 5, yOffset - 5, photoWidth + 10, photoHeight + 10);
-            
-            // Draw the photo
-            ctx.drawImage(img, xOffset, yOffset, photoWidth, photoHeight);
-            
-            // Apply selected effect
-            if (selectedEffect !== 'normal') {
-                const imageData = ctx.getImageData(xOffset, yOffset, photoWidth, photoHeight);
-                applyEffectToImageData(imageData, selectedEffect);
-                ctx.putImageData(imageData, xOffset, yOffset);
+            try {
+                const img = await loadImage(images[i]);
+                const yOffset = 25 + (i * (photoHeight + yGap));
+                
+                // Draw photo directly without white frame
+                ctx.drawImage(img, xOffset, yOffset, photoWidth, photoHeight);
+                
+                // Apply effect if selected
+                if (selectedEffect !== 'normal') {
+                    const imageData = ctx.getImageData(xOffset, yOffset, photoWidth, photoHeight);
+                    applyEffectToImageData(imageData, selectedEffect);
+                    ctx.putImageData(imageData, xOffset, yOffset);
+                }
+            } catch (err) {
+                console.error('Error loading image:', err);
+                throw new Error('Failed to load image');
             }
         }
-        
-        // Add watermark or branding
+
+        // Add watermark with less space
         ctx.fillStyle = 'white';
-        ctx.font = 'bold 24px Arial';
+        ctx.font = 'bold 20px Arial'; // Reduced font size from 24px to 20px
         ctx.textAlign = 'center';
-        ctx.fillText('SnapBound', canvas.width / 2, canvas.height - 30);
-        
-        // Download the final strip
-        const link = document.createElement('a');
-        link.download = `photostrip-${selectedStrip.toLowerCase()}.jpg`;
-        link.href = canvas.toDataURL('image/jpeg', 0.8);
-        link.click();
-        
+        ctx.fillText('SnapBound', canvas.width / 2, canvas.height - 20); // Moved closer to bottom
+
+        // Download the photostrip
+        downloadCanvas(canvas, `photostrip-${selectedStrip.toLowerCase()}.jpg`);
+
     } catch (error) {
         console.error('Error creating photo strip:', error);
         alert('Error creating photo strip. Please try again.');
     }
 }
 
-// Update the strip preview styles
+function loadImage(src) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error('Failed to load image'));
+        img.src = src;
+    });
+}
+
+function downloadCanvas(canvas, filename) {
+    try {
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+        const link = document.createElement('a');
+        link.href = dataUrl;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } catch (err) {
+        console.error('Download error:', err);
+        alert('Error downloading photo strip. Please try again.');
+    }
+}
     </script>
 </body>
 </html>
