@@ -3,6 +3,9 @@ let stream;
 let timerValue = 0;
 let remainingShots = 10;
 let isRecording = false;
+let selectedTimer = 0;
+const MAX_SHOTS = 10;
+let shotsTaken = 0;
 
 // DOM Elements
 const video = document.getElementById('webcam');
@@ -36,6 +39,27 @@ async function initializeWebcam() {
 
 // Capture photo function
 function capturePhoto() {
+    if (selectedTimer > 0) {
+        let timeLeft = selectedTimer;
+        const countdown = document.getElementById('countdown');
+        countdown.style.display = 'block';
+        
+        const timer = setInterval(() => {
+            countdown.textContent = timeLeft;
+            timeLeft--;
+            
+            if (timeLeft < 0) {
+                clearInterval(timer);
+                countdown.style.display = 'none';
+                takeActualPhoto();
+            }
+        }, 1000);
+    } else {
+        takeActualPhoto();
+    }
+}
+
+function takeActualPhoto() {
     if (!isRecording || remainingShots <= 0) return;
 
     // Set canvas size to match video
@@ -46,21 +70,24 @@ function capturePhoto() {
     const context = canvas.getContext('2d');
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
     
-    // Create image from canvas and add to gallery
-    const img = document.createElement('img');
-    img.src = canvas.toDataURL('image/jpeg');
-    img.className = 'captured-image';
+    // Get image data and store it
+    const imageData = canvas.toDataURL('image/jpeg');
     
-    // Add image to the beginning of gallery
-    gallery.insertBefore(img, gallery.firstChild);
+    // Store in localStorage
+    const storedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+    storedImages.push(imageData);
+    localStorage.setItem('capturedImages', JSON.stringify(storedImages));
     
     // Update shots counter
     remainingShots--;
     shotsCounter.textContent = `Shots remaining: ${remainingShots}`;
-    
-    // Show control buttons
-    pauseBtn.style.display = 'block';
-    stopBtn.style.display = 'block';
+
+    // Redirect when all photos are taken
+    if (remainingShots === 0) {
+        setTimeout(() => {
+            window.location.href = 'selectphotos.html';
+        }, 500);
+    }
 }
 
 // Event listeners
@@ -73,4 +100,20 @@ stopBtn.addEventListener('click', () => {
         stream.getTracks().forEach(track => track.stop());
     }
     window.location.href = 'selectphotos.html';
+});
+
+// Add timer button functionality
+document.querySelectorAll('.timer-btn').forEach(button => {
+    button.addEventListener('click', () => {
+        // Remove active class from all buttons
+        document.querySelectorAll('.timer-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Add active class to clicked button
+        button.classList.add('active');
+        
+        // Set timer value
+        selectedTimer = parseInt(button.dataset.seconds);
+    });
 });

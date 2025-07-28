@@ -108,8 +108,86 @@ function applyEffect(ctx, effect) {
 
 // Add event listeners when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize your event listeners and other functionality here
-    // ... (rest of your existing JavaScript code)
+    const downloadPhotos = document.getElementById('downloadPhotos');
+    const downloadStrip = document.getElementById('downloadStrip');
+
+    // Download individual photos
+    downloadPhotos.addEventListener('click', () => {
+        const selectedImages = Array.from(document.querySelectorAll('.photo-checkbox:checked'))
+            .map(checkbox => checkbox.parentElement.querySelector('img').src);
+        
+        if (selectedImages.length === 0) {
+            alert('Please select at least one photo to download');
+            return;
+        }
+
+        selectedImages.forEach((imgSrc, index) => {
+            const link = document.createElement('a');
+            link.download = `photo-${index + 1}.jpg`;
+            link.href = imgSrc;
+            link.click();
+        });
+    });
+
+    // Download photo strip
+    downloadStrip.addEventListener('click', async () => {
+        const selectedImages = Array.from(document.querySelectorAll('.photo-checkbox:checked'))
+            .map(checkbox => checkbox.parentElement.querySelector('img').src);
+
+        if (selectedImages.length !== 4) {
+            alert('Please select exactly 4 photos for the photo strip');
+            return;
+        }
+
+        const selectedTemplate = document.querySelector('.color-option.selected').dataset.color || 'Red';
+        
+        // Create canvas for photo strip
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set dimensions for photo strip
+        canvas.width = 600;
+        canvas.height = 1800;
+
+        try {
+            // Load strip template
+            const templateImg = new Image();
+            templateImg.crossOrigin = 'anonymous';
+            await new Promise((resolve, reject) => {
+                templateImg.onload = resolve;
+                templateImg.onerror = reject;
+                templateImg.src = `Photo/${selectedTemplate}.png`;
+            });
+
+            // Draw template
+            ctx.drawImage(templateImg, 0, 0, canvas.width, canvas.height);
+
+            // Draw photos
+            for (let i = 0; i < selectedImages.length; i++) {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                await new Promise((resolve, reject) => {
+                    img.onload = resolve;
+                    img.onerror = reject;
+                    img.src = selectedImages[i];
+                });
+
+                // Calculate position for each photo
+                const y = 150 + (i * 425); // Adjust spacing as needed
+                ctx.drawImage(img, 50, y, 500, 375);
+            }
+
+            // Download the photo strip
+            const link = document.createElement('a');
+            link.download = 'photostrip.jpg';
+            link.href = canvas.toDataURL('image/jpeg', 0.8);
+            link.click();
+
+        } catch (error) {
+            console.error('Error creating photo strip:', error);
+            alert('There was an error creating your photo strip. Please try again.');
+        }
+    });
 });
 
 // Add download button event listener

@@ -34,18 +34,22 @@
             <button class="timer-btn" data-seconds="8">8s</button>
         </div>
         <div class="shots-counter" id="shotsCounter">Shots remaining: 10</div>
-        <div class="camera-section">
-            <video id="webcam" autoplay playsinline></video>
-            <div class="countdown" id="countdown"></div>
-            <canvas id="canvas" style="display:none;"></canvas>
-        </div>
-        <div class="control-buttons">
-            <button id="captureBtn" class="capture-btn">Take Picture</button>
-            <button id="pauseBtn" class="control-btn" style="display:none;">Pause</button>
-            <button id="stopBtn" class="control-btn" style="display:none;">Stop</button>
-        </div>
-        <div class="gallery-section" id="gallery">
-            <!-- Captured images will appear here -->
+        <div class="booth-layout">
+            <div class="booth-left">
+                <div class="camera-section">
+                    <video id="webcam" autoplay playsinline></video>
+                    <div class="countdown" id="countdown"></div>
+                    <canvas id="canvas" style="display:none;"></canvas>
+                </div>
+                <div class="control-buttons">
+                    <button id="captureBtn" class="capture-btn">Take Picture</button>
+                    <button id="pauseBtn" class="control-btn" style="display:none;">Pause</button>
+                    <button id="stopBtn" class="control-btn" style="display:none;">Stop</button>
+                </div>
+            </div>
+            <div class="gallery-section" id="gallery">
+                <!-- Captured images will appear here -->
+            </div>
         </div>
     </div>
 
