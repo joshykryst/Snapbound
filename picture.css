@@ -77,12 +77,12 @@ body {
 }
 
 .camera-section {
-    position: relative;
     width: 100%;
     aspect-ratio: 4/3;
-    background: #000;
-    border-radius: 15px;
+    position: relative;
     overflow: hidden;
+    background: #000;
+    border-radius: 10px;
 }
 
 #webcam {
@@ -252,6 +252,20 @@ body {
 
 .captured-image-container img:hover {
     transform: scale(1.05);
+}
+
+.gallery-item {
+    width: 150px;
+    height: 112.5px; /* Maintains 4:3 aspect ratio */
+    margin: 5px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 /* Select photos page styles */

@@ -20,18 +20,21 @@ let shotsRemaining = MAX_PHOTOS;
 // Initialize webcam
 async function initializeWebcam() {
     try {
-        stream = await navigator.mediaDevices.getUserMedia({ 
-            video: { 
-                width: 1280,
-                height: 720,
+        const constraints = {
+            video: {
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+                aspectRatio: 4/3,
                 facingMode: 'user'
-            }, 
-            audio: false 
-        });
+            },
+            audio: false
+        };
+
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
         
         if (video) {
             video.srcObject = stream;
-            video.style.transform = 'scaleX(-1)'; // Mirror effect
+            video.style.transform = 'none';
             await video.play();
             
             // Show control buttons after successful initialization
@@ -42,7 +45,8 @@ async function initializeWebcam() {
         }
     } catch (err) {
         console.error('Error accessing webcam:', err);
-        alert('Please allow camera access to use this application');
+        // Just log the error silently without showing any message
+        isRecording = false;
     }
 }
 
@@ -55,9 +59,8 @@ function takePhoto() {
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     
-    // Flip the image horizontally to match the preview
-    context.scale(-1, 1);
-    context.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
+    // Draw without flipping
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
     
     // Convert to base64 and save to localStorage
     const imageData = canvas.toDataURL('image/jpeg', 0.8);
@@ -87,6 +90,9 @@ function displayPhotoInGallery(imageData) {
     const img = document.createElement('img');
     img.src = imageData;
     img.alt = 'Captured photo';
+    img.style.objectFit = 'cover';
+    img.style.width = '100%';
+    img.style.height = '100%';
     
     const container = document.createElement('div');
     container.className = 'gallery-item';
@@ -112,10 +118,12 @@ function capturePhoto() {
     const context = canvas.getContext('2d');
     const video = document.getElementById('webcam');
     
+    // Set canvas size to match video aspect ratio
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    context.scale(-1, 1); // Mirror effect
-    context.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
+
+    // Draw without flipping
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
     
     // Convert to base64 and save to localStorage
     const imageData = canvas.toDataURL('image/jpeg', 0.8);
@@ -228,11 +236,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
+        const video = document.getElementById('webcam');
         
+        // Set canvas size to match video aspect ratio
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
-        context.scale(-1, 1);
-        context.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
+
+        // Draw without flipping
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
         
         // Save photo to localStorage
         const imageData = canvas.toDataURL('image/jpeg', 0.8);
@@ -245,37 +256,32 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Update counter
         shotsRemaining--;
-        shotsCounter.textContent = `Shots remaining: ${shotsRemaining}`;
-
-        // Check for redirection
-        if (shotsRemaining === 0) {
-            setTimeout(() => {
-                alert('Maximum photos reached! Redirecting to photo strip creation...');
-                window.location.replace('selectphotos.html');
-            }, 500);
+        const shotsCounter = document.getElementById('shotsCounter');
+        if (shotsCounter) {
+            shotsCounter.textContent = `Shots remaining: ${shotsRemaining}`;
         }
 
         isCapturing = false;
     }
 
-    // Add click event listener to capture button
-    captureBtn.addEventListener('click', capturePhoto);
-
-    // Initialize webcam
+    // Update webcam initialization
     async function initializeWebcam() {
         try {
-            stream = await navigator.mediaDevices.getUserMedia({ 
-                video: { 
-                    width: 1280,
-                    height: 720,
+            const constraints = {
+                video: {
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                    aspectRatio: 4/3,
                     facingMode: 'user'
-                }, 
-                audio: false 
-            });
+                },
+                audio: false
+            };
+
+            stream = await navigator.mediaDevices.getUserMedia(constraints);
             
             if (video) {
                 video.srcObject = stream;
-                video.style.transform = 'scaleX(-1)'; // Mirror effect
+                video.style.transform = 'none';
                 await video.play();
                 
                 // Show control buttons after successful initialization
@@ -286,7 +292,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (err) {
             console.error('Error accessing webcam:', err);
-            alert('Please allow camera access to use this application');
+            // Just log the error silently without showing any message
+            isRecording = false;
         }
     }
 
@@ -330,55 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
         isCapturing = false;
     }
 
-    // Capture photo function
-    function capturePhoto() {
-        if (shotsRemaining <= 0) {
-            alert('Maximum photos reached! Redirecting to photo strip creation...');
-            window.location.href = 'selectphotos.html';
-            return;
-        }
-
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        const video = document.getElementById('webcam');
-        
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        context.scale(-1, 1); // Mirror effect
-        context.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
-        
-        // Convert to base64 and save to localStorage
-        const imageData = canvas.toDataURL('image/jpeg', 0.8);
-        
-        // Get existing images array or create new one
-        let capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
-        capturedImages.push(imageData);
-        
-        // Save updated array back to localStorage
-        localStorage.setItem('capturedImages', JSON.stringify(capturedImages));
-        console.log('Photo saved to localStorage, total photos:', capturedImages.length);
-
-        // Display in gallery
-        displayPhotoInGallery(imageData);
-        
-        // Update shots counter
-        shotsRemaining--;
-        if (shotsCounter) {
-            shotsCounter.textContent = `Shots remaining: ${shotsRemaining}`;
-        }
-    }
-
-    // Add this new function to handle navigation
-    window.proceedToPhotostrip = function() {
-        const capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
-        if (capturedImages.length === 0) {
-            alert('Please take at least one photo before creating a photostrip');
-            return;
-        }
-        window.location.href = 'selectphotos.html';
-    }
-
-    // Add this function to display photos in gallery
+    // Update gallery display function
     function displayPhotoInGallery(imageData) {
         const gallery = document.getElementById('gallery');
         if (!gallery) return;
@@ -389,14 +348,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const img = document.createElement('img');
         img.src = imageData;
         img.alt = 'Captured photo';
+        img.style.objectFit = 'cover';
+        img.style.width = '100%';
+        img.style.height = '100%';
         
         container.appendChild(img);
         gallery.insertBefore(container, gallery.firstChild);
+    }
 
-        // If more than 3 photos, scroll to top to show latest
-        if (gallery.children.length > 3) {
-            gallery.scrollTop = 0;
+    // Add this new function to handle navigation
+    window.proceedToPhotostrip = function() {
+        const capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+        if (capturedImages.length === 0) {
+            alert('Please take at least one photo before creating a photostrip');
+            return;
         }
+        window.location.href = 'selectphotos.html';
     }
 
     // Add event listener for create strip button
