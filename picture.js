@@ -130,6 +130,17 @@ function displayPhotoInGallery(imageData) {
     if (gallery.children.length > 3) {
         gallery.scrollTop = 0;
     }
+
+    // Show gallery hint after first photo
+    const galleryHint = document.querySelector('.gallery-hint');
+    if (galleryHint) {
+        galleryHint.style.opacity = '1';
+        // Hide hint after 3 seconds
+        setTimeout(() => {
+            galleryHint.style.opacity = '0';
+            galleryHint.style.transition = 'opacity 0.5s ease';
+        }, 3000);
+    }
 }
 
 // Update the capture photo function
@@ -400,6 +411,17 @@ document.addEventListener('DOMContentLoaded', () => {
         
         container.appendChild(img);
         gallery.insertBefore(container, gallery.firstChild);
+
+        // Show gallery hint after first photo
+        const galleryHint = document.querySelector('.gallery-hint');
+        if (galleryHint) {
+            galleryHint.style.opacity = '1';
+            // Hide hint after 3 seconds
+            setTimeout(() => {
+                galleryHint.style.opacity = '0';
+                galleryHint.style.transition = 'opacity 0.5s ease';
+            }, 3000);
+        }
     }
 
     // Add this new function to handle navigation

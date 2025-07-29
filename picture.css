@@ -9,6 +9,13 @@ body {
     background-color: white;
 }
 
+/* Add/update these styles */
+html, body {
+    overflow-x: hidden;
+    position: relative;
+    width: 100%;
+}
+
 /* Navigation styles */
 .nav-bar {
     background-color: white;
@@ -537,5 +544,70 @@ body {
 
     .gallery-item {
         scroll-snap-align: start;
+    }
+}
+
+.shots-counter {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    z-index: 100;
+}
+
+.gallery-hint {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.gallery-hint .arrow-down {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid white;
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(5px); }
+}
+
+@media screen and (max-width: 768px) {
+    .booth-container {
+        overflow-x: hidden;
+        width: 100%;
+    }
+
+    .camera-section {
+        position: relative;
+    }
+
+    .shots-counter {
+        top: -40px;  /* Position above the camera view */
+    }
+
+    .gallery-section {
+        position: relative;
+        padding-bottom: 20px;
+    }
+
+    .gallery-hint {
+        font-size: 14px;
+        bottom: 120px;
     }
 }
