@@ -20,11 +20,14 @@ let shotsRemaining = MAX_PHOTOS;
 // Initialize webcam
 async function initializeWebcam() {
     try {
+        // First try to get the viewport dimensions
+        const isPortrait = window.innerHeight > window.innerWidth;
+        
         const constraints = {
             video: {
-                width: { ideal: 1280 },
-                height: { ideal: 720 },
-                aspectRatio: 4/3,
+                width: isPortrait ? { ideal: 720 } : { ideal: 1280 },
+                height: isPortrait ? { ideal: 1280 } : { ideal: 720 },
+                // Remove fixed aspect ratio to allow proper orientation
                 facingMode: 'user'
             },
             audio: false
@@ -35,17 +38,39 @@ async function initializeWebcam() {
         if (video) {
             video.srcObject = stream;
             video.style.transform = 'none';
+            
+            // Add event listener for video metadata loaded
+            video.addEventListener('loadedmetadata', () => {
+                // Set video element dimensions based on actual stream
+                const streamWidth = video.videoWidth;
+                const streamHeight = video.videoHeight;
+                
+                // Calculate aspect ratio
+                const aspectRatio = streamWidth / streamHeight;
+                
+                if (isPortrait) {
+                    // For portrait mode
+                    video.style.width = '100%';
+                    video.style.height = 'auto';
+                    video.style.maxHeight = '80vh';
+                } else {
+                    // For landscape mode
+                    video.style.width = '100%';
+                    video.style.height = 'auto';
+                }
+                
+                // Update camera section container
+                const cameraSection = document.querySelector('.camera-section');
+                if (cameraSection) {
+                    cameraSection.style.aspectRatio = `${streamWidth}/${streamHeight}`;
+                }
+            });
+            
             await video.play();
-            
-            // Show control buttons after successful initialization
-            document.getElementById('pauseBtn').style.display = 'block';
-            document.getElementById('stopBtn').style.display = 'block';
-            
             isRecording = true;
         }
     } catch (err) {
         console.error('Error accessing webcam:', err);
-        // Just log the error silently without showing any message
         isRecording = false;
     }
 }
@@ -267,11 +292,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update webcam initialization
     async function initializeWebcam() {
         try {
+            // First try to get the viewport dimensions
+            const isPortrait = window.innerHeight > window.innerWidth;
+            
             const constraints = {
                 video: {
-                    width: { ideal: 1280 },
-                    height: { ideal: 720 },
-                    aspectRatio: 4/3,
+                    width: isPortrait ? { ideal: 720 } : { ideal: 1280 },
+                    height: isPortrait ? { ideal: 1280 } : { ideal: 720 },
+                    // Remove fixed aspect ratio to allow proper orientation
                     facingMode: 'user'
                 },
                 audio: false
@@ -282,12 +310,35 @@ document.addEventListener('DOMContentLoaded', () => {
             if (video) {
                 video.srcObject = stream;
                 video.style.transform = 'none';
+                
+                // Add event listener for video metadata loaded
+                video.addEventListener('loadedmetadata', () => {
+                    // Set video element dimensions based on actual stream
+                    const streamWidth = video.videoWidth;
+                    const streamHeight = video.videoHeight;
+                    
+                    // Calculate aspect ratio
+                    const aspectRatio = streamWidth / streamHeight;
+                    
+                    if (isPortrait) {
+                        // For portrait mode
+                        video.style.width = '100%';
+                        video.style.height = 'auto';
+                        video.style.maxHeight = '80vh';
+                    } else {
+                        // For landscape mode
+                        video.style.width = '100%';
+                        video.style.height = 'auto';
+                    }
+                    
+                    // Update camera section container
+                    const cameraSection = document.querySelector('.camera-section');
+                    if (cameraSection) {
+                        cameraSection.style.aspectRatio = `${streamWidth}/${streamHeight}`;
+                    }
+                });
+                
                 await video.play();
-                
-                // Show control buttons after successful initialization
-                document.getElementById('pauseBtn').style.display = 'block';
-                document.getElementById('stopBtn').style.display = 'block';
-                
                 isRecording = true;
             }
         } catch (err) {
