@@ -4,7 +4,7 @@ let isRecording = false;
 let remainingShots = 10;
 let selectedTimer = 0;
 let isPaused = false;
-let isCapturing = false; // Add isCapturing flag
+let isCapturing = false; // Add at top with other variables
 
 // DOM Elements
 const video = document.getElementById('webcam');
@@ -145,34 +145,40 @@ function displayPhotoInGallery(imageData) {
 
 // Update the capture photo function
 function capturePhoto() {
-    if (isCapturing || shotsRemaining <= 0) return;
-    isCapturing = true;
-
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-    const video = document.getElementById('webcam');
+    if (isCapturing || shotsRemaining <= 0) {
+        return;
+    }
     
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    isCapturing = true; // Set flag before capture
     
-    // Save photo to localStorage
-    const imageData = canvas.toDataURL('image/jpeg', 0.8);
-    let capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
-    capturedImages.push(imageData);
-    localStorage.setItem('capturedImages', JSON.stringify(capturedImages));
-
-    // Display in gallery
-    displayPhotoInGallery(imageData);
-    
-    // Update counter
-    shotsRemaining--;
-    updateShotsCounter();
-
-    // Reset capturing flag after a delay
-    setTimeout(() => {
-        isCapturing = false;
-    }, 1000);
+    try {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        const video = document.getElementById('webcam');
+        
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        // Save and display photo
+        const imageData = canvas.toDataURL('image/jpeg', 0.8);
+        let capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+        capturedImages.push(imageData);
+        localStorage.setItem('capturedImages', JSON.stringify(capturedImages));
+        
+        displayPhotoInGallery(imageData);
+        
+        // Update counter
+        shotsRemaining--;
+        updateShotsCounter();
+    } catch (error) {
+        console.error('Error capturing photo:', error);
+    } finally {
+        // Reset capture flag after 1 second
+        setTimeout(() => {
+            isCapturing = false;
+        }, 1000);
+    }
 }
 
 // Update shots counter display
@@ -264,37 +270,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update the capture photo function
     function capturePhoto() {
-        if (isCapturing || shotsRemaining <= 0) return;
-        isCapturing = true;
-
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        const video = document.getElementById('webcam');
-        
-        // Set canvas size to match video aspect ratio
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-
-        // Draw without flipping
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        
-        // Save photo to localStorage
-        const imageData = canvas.toDataURL('image/jpeg', 0.8);
-        let capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
-        capturedImages.push(imageData);
-        localStorage.setItem('capturedImages', JSON.stringify(capturedImages));
-
-        // Display in gallery
-        displayPhotoInGallery(imageData);
-        
-        // Update counter
-        shotsRemaining--;
-        const shotsCounter = document.getElementById('shotsCounter');
-        if (shotsCounter) {
-            shotsCounter.textContent = `Shots remaining: ${shotsRemaining}`;
+        if (isCapturing || shotsRemaining <= 0) {
+            return;
         }
+        
+        isCapturing = true; // Set flag before capture
+        
+        try {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            const video = document.getElementById('webcam');
+            
+            // Set canvas size to match video aspect ratio
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
 
-        isCapturing = false;
+            // Draw without flipping
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Save photo to localStorage
+            const imageData = canvas.toDataURL('image/jpeg', 0.8);
+            let capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+            capturedImages.push(imageData);
+            localStorage.setItem('capturedImages', JSON.stringify(capturedImages));
+
+            // Display in gallery
+            displayPhotoInGallery(imageData);
+            
+            // Update counter
+            shotsRemaining--;
+            const shotsCounter = document.getElementById('shotsCounter');
+            if (shotsCounter) {
+                shotsCounter.textContent = `Shots remaining: ${shotsRemaining}`;
+            }
+
+            isCapturing = false;
+        } catch (error) {
+            console.error('Error capturing photo:', error);
+        }
     }
 
     // Update webcam initialization
