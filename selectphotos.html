@@ -5,52 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Photos - SnapBound</title>
     <link rel="stylesheet" href="picture.css">
+    <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
 </head>
 <body>
     <div class="select-photos-container">
         <h2>Choose Your Strip Style</h2>
-        <div class="strip-options">
-            <div class="strip-preview" data-color="Red">
-                <div class="photo-placeholder"></div>
-                <div class="photo-placeholder"></div>
-                <div class="photo-placeholder"></div>
-                <div class="photo-placeholder"></div>
+        
+        <!-- New strip layout with color picker -->
+        <div class="strip-layout">
+            <div class="preview-section">
+                <div class="strip-preview" id="mainStrip">
+                    <div class="photo-placeholder"></div>
+                    <div class="photo-placeholder"></div>
+                    <div class="photo-placeholder"></div>
+                    <div class="photo-placeholder"></div>
+                </div>
             </div>
-            <div class="strip-preview" data-color="Blue">
-                <div class="photo-placeholder"></div>
-                <div class="photo-placeholder"></div>
-                <div class="photo-placeholder"></div>
-                <div class="photo-placeholder"></div>
-            </div>
-            <div class="strip-preview" data-color="Green">
-                <div class="photo-placeholder"></div>
-                <div class="photo-placeholder"></div>
-                <div class="photo-placeholder"></div>
-                <div class="photo-placeholder"></div>
-            </div>
-            <div class="strip-preview" data-color="Yellow">
-                <div class="photo-placeholder"></div>
-                <div class="photo-placeholder"></div>
-                <div class="photo-placeholder"></div>
-                <div class="photo-placeholder"></div>
-            </div>
-            <div class="strip-preview" data-color="Purple">
-                <div class="photo-placeholder"></div>
-                <div class="photo-placeholder"></div>
-                <div class="photo-placeholder"></div>
-                <div class="photo-placeholder"></div>
-            </div>
-            <div class="strip-preview" data-color="Copper">
-                <div class="photo-placeholder"></div>
-                <div class="photo-placeholder"></div>
-                <div class="photo-placeholder"></div>
-                <div class="photo-placeholder"></div>
-            </div>
-            <div class="strip-preview" data-color="White">
-                <div class="photo-placeholder"></div>
-                <div class="photo-placeholder"></div>
-                <div class="photo-placeholder"></div>
-                <div class="photo-placeholder"></div>
+            <div class="color-picker-section">
+                <h3>Customize Strip Color</h3>
+                <div id="colorPicker"></div>
+                <div class="color-value">
+                    <span>Selected Color: </span>
+                    <span id="colorValue">#ff4757</span>
+                </div>
             </div>
         </div>
 
@@ -74,31 +51,50 @@
     </div>
 
     <style>
-        .strip-options {
+        .select-photos-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .strip-layout {
             display: flex;
-            gap: 15px;
-            overflow-x: auto;
-            padding: 20px 0;
-            margin-bottom: 30px;
+            gap: 40px;
+            padding: 20px;
             justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .preview-section {
+            flex: 0 0 auto;
         }
 
         .strip-preview {
-            flex: 0 0 auto;
-            width: 120px;
-            height: 400px;
+            width: 180px;
+            height: 600px;
             border: 3px solid transparent;
             border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            overflow: hidden;
-            padding: 10px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            position: relative; 
-            transform: scale(1);  /* Add this line */
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);  /* Add this line */
+            gap: 15px;
+            background-color: #ff4757;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: background-color 0.3s ease;
         }
 
         /* Update color styles to fill entire preview */
@@ -254,12 +250,10 @@
         }
 
         .photo-placeholder {
-            width: 100%;
-            height: 80px;
+            height: 120px;
             background: rgba(255,255,255,0.2);
             border-radius: 5px;
             overflow: hidden;
-            margin: 5px 0;
         }
 
         .photo-placeholder img {
@@ -273,6 +267,55 @@
             transform: scale(1.02);
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
+
+        /* Update color picker styles */
+        .color-picker-section {
+            flex: 0 0 300px;
+            padding: 30px;
+            background: transparent;  /* Remove white background */
+            box-shadow: none;  /* Remove box shadow */
+            text-align: center;
+        }
+
+        #colorPicker {
+            margin: 20px auto;
+            border: none;  /* Remove border */
+        }
+
+        /* Remove any border from the color wheel */
+        .IroWheel {
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        .color-value {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .layout-container {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            flex-wrap: wrap;
+        }
+
+        .preview-strip {
+            flex: 0 0 auto;
+        }
+
+        .color-wheel-section {
+            flex: 0 0 300px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #colorWheel {
+            margin: 20px auto;
+        }
     </style>
 
     <script>
@@ -283,6 +326,30 @@ let selectedPhotos = [];
 const MAX_PHOTOS = 4;
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize color picker with simplified layout
+    const colorPicker = new iro.ColorPicker("#colorPicker", {
+        width: 280,
+        color: "#ff4757",
+        layout: [
+            { 
+                component: iro.ui.Wheel,
+                options: {
+                    borderWidth: 0,  // Remove border
+                    wheelLightness: true,
+                    wheelAngle: 0,
+                    wheelDirection: 'anticlockwise'
+                }
+            }
+        ]
+    });
+
+    // Update strip color when picker changes
+    colorPicker.on('color:change', function(color) {
+        const mainStrip = document.getElementById('mainStrip');
+        mainStrip.style.backgroundColor = color.hexString;
+        selectedStrip = color.hexString;
+    });
+
     // Get captured images from localStorage
     const capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
 
@@ -453,32 +520,42 @@ async function createPhotoStrip(images) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     
-    // Adjust canvas dimensions
     canvas.width = 400;
-    canvas.height = 1250; // Reduced from 1300 to decrease bottom space
+    canvas.height = 1250;
+    const cornerRadius = 15; // Adjust this value to change curve amount
     
     try {
         const photoWidth = 360;
         const photoHeight = 270;
         const xOffset = (canvas.width - photoWidth) / 2;
-        const yGap = 15; // Reduced gap between photos from 20 to 15
+        const yGap = 15;
 
-        // Fill entire background with selected color
-        ctx.fillStyle = stripColors[selectedStrip];
+        // Fill background with selected color
+        ctx.fillStyle = selectedStrip;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Remove outer white border
-        // ctx.strokeStyle = 'white';
-        // ctx.lineWidth = 20;
-        // ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 120);
-
-        // Load and draw each image
+        // Load and draw each image with curved corners
         for (let i = 0; i < images.length; i++) {
             try {
                 const img = await loadImage(images[i]);
                 const yOffset = 25 + (i * (photoHeight + yGap));
                 
-                // Draw photo directly without white frame
+                // Create curved corners
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(xOffset + cornerRadius, yOffset);
+                ctx.lineTo(xOffset + photoWidth - cornerRadius, yOffset);
+                ctx.quadraticCurveTo(xOffset + photoWidth, yOffset, xOffset + photoWidth, yOffset + cornerRadius);
+                ctx.lineTo(xOffset + photoWidth, yOffset + photoHeight - cornerRadius);
+                ctx.quadraticCurveTo(xOffset + photoWidth, yOffset + photoHeight, xOffset + photoWidth - cornerRadius, yOffset + photoHeight);
+                ctx.lineTo(xOffset + cornerRadius, yOffset + photoHeight);
+                ctx.quadraticCurveTo(xOffset, yOffset + photoHeight, xOffset, yOffset + photoHeight - cornerRadius);
+                ctx.lineTo(xOffset, yOffset + cornerRadius);
+                ctx.quadraticCurveTo(xOffset, yOffset, xOffset + cornerRadius, yOffset);
+                ctx.closePath();
+                ctx.clip();
+
+                // Draw the image
                 ctx.drawImage(img, xOffset, yOffset, photoWidth, photoHeight);
                 
                 // Apply effect if selected
@@ -487,21 +564,29 @@ async function createPhotoStrip(images) {
                     applyEffectToImageData(imageData, selectedEffect);
                     ctx.putImageData(imageData, xOffset, yOffset);
                 }
+                
+                // Add a subtle border
+                ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                ctx.restore();
             } catch (err) {
                 console.error('Error loading image:', err);
                 throw new Error('Failed to load image');
             }
         }
 
-        // Add watermark with better positioning
+        // Add watermark
         ctx.fillStyle = 'white';
-        ctx.font = 'bold 28px Arial'; // Increased from 20px to 28px
+        ctx.font = 'bold 28px Arial';
         ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle'; // Add this line for better vertical centering
-        ctx.fillText('SnapBound', canvas.width / 2, canvas.height - 45); // Adjusted position from -20 to -45
+        ctx.textBaseline = 'middle';
+        ctx.fillText('SnapBound', canvas.width / 2, canvas.height - 45);
 
-        // Download the photostrip
-        downloadCanvas(canvas, `photostrip-${selectedStrip.toLowerCase()}.jpg`);
+        // Download using timestamp
+        const timestamp = new Date().getTime();
+        downloadCanvas(canvas, `photostrip-${timestamp}.jpg`);
 
     } catch (error) {
         console.error('Error creating photo strip:', error);
