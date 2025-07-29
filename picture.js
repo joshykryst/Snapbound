@@ -152,14 +152,11 @@ function capturePhoto() {
     const context = canvas.getContext('2d');
     const video = document.getElementById('webcam');
     
-    // Set canvas size to match video aspect ratio
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-
-    // Draw without flipping
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
     
-    // Convert to base64 and save to localStorage
+    // Save photo to localStorage
     const imageData = canvas.toDataURL('image/jpeg', 0.8);
     let capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
     capturedImages.push(imageData);
@@ -168,17 +165,22 @@ function capturePhoto() {
     // Display in gallery
     displayPhotoInGallery(imageData);
     
-    // Update shots counter
+    // Update counter
     shotsRemaining--;
-    const shotsCounter = document.getElementById('shotsCounter');
-    if (shotsCounter) {
-        shotsCounter.textContent = `Shots remaining: ${shotsRemaining}`;
-    }
+    updateShotsCounter();
 
-    // Reset capturing flag after a short delay
+    // Reset capturing flag after a delay
     setTimeout(() => {
         isCapturing = false;
     }, 1000);
+}
+
+// Update shots counter display
+function updateShotsCounter() {
+    const shotsCounter = document.getElementById('shotsCounter');
+    if (shotsCounter) {
+        shotsCounter.textContent = `${shotsRemaining} shots left`;
+    }
 }
 
 // Handle timer and capture
