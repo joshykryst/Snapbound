@@ -4,6 +4,7 @@ let isRecording = false;
 let remainingShots = 10;
 let selectedTimer = 0;
 let isPaused = false;
+let isCapturing = false; // Add isCapturing flag
 
 // DOM Elements
 const video = document.getElementById('webcam');
@@ -131,13 +132,10 @@ function displayPhotoInGallery(imageData) {
     }
 }
 
-// Update your capture function
+// Update the capture photo function
 function capturePhoto() {
-    if (shotsRemaining <= 0) {
-        alert('Maximum photos reached! Redirecting to photo strip creation...');
-        window.location.href = 'selectphotos.html';
-        return;
-    }
+    if (isCapturing || shotsRemaining <= 0) return;
+    isCapturing = true;
 
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
@@ -166,13 +164,10 @@ function capturePhoto() {
         shotsCounter.textContent = `Shots remaining: ${shotsRemaining}`;
     }
 
-    // Check if we've reached the limit
-    if (shotsRemaining === 0) {
-        setTimeout(() => {
-            alert('Maximum photos reached! Redirecting to photo strip creation...');
-            window.location.href = 'selectphotos.html';
-        }, 500); // Small delay to show the last photo
-    }
+    // Reset capturing flag after a short delay
+    setTimeout(() => {
+        isCapturing = false;
+    }, 1000);
 }
 
 // Handle timer and capture
