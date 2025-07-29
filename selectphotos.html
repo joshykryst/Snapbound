@@ -25,8 +25,8 @@
                 <h3>Customize Strip Color</h3>
                 <div id="colorPicker"></div>
                 <div class="color-value">
-                    <span>Selected Color: </span>
-                    <span id="colorValue">#ff4757</span>
+                    <span> </span>
+                    <span id="colorValue"></span>
                 </div>
             </div>
         </div>
@@ -319,6 +319,113 @@
     </style>
 
     <script>
+// Add these variables at the top of your script section
+let pageLoadCount = parseInt(localStorage.getItem('pageLoadCount')) || 0;
+const MAX_PAGE_LOADS = 2;
+
+// Add this function to check and reset photos
+function checkAndResetPhotos() {
+    pageLoadCount++;
+    localStorage.setItem('pageLoadCount', pageLoadCount);
+    
+    if (pageLoadCount >= MAX_PAGE_LOADS) {
+        // Reset everything
+        localStorage.removeItem('capturedImages');
+        localStorage.removeItem('pageLoadCount');
+        
+        // Clear all photo timestamps
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('photo_timestamp_')) {
+                localStorage.removeItem(key);
+            }
+        }
+        
+        // Reset selected photos
+        selectedPhotos = [];
+        updateStripPreviews();
+        
+        console.log('Photos cleared after 2 page loads');
+    }
+}
+
+// First, define all functions before using them
+function updateStripPreviews() {
+    const mainStrip = document.getElementById('mainStrip');
+    mainStrip.innerHTML = ''; // Clear existing content
+    
+    // Create 4 placeholders
+    for (let i = 0; i < 4; i++) {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'photo-placeholder';
+        
+        // Add selected photo if available
+        if (selectedPhotos[i]) {
+            const img = document.createElement('img');
+            img.src = selectedPhotos[i].src;
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'cover';
+            placeholder.appendChild(img);
+        }
+        
+        mainStrip.appendChild(placeholder);
+    }
+}
+
+function displayCapturedImages() {
+    const photosGrid = document.getElementById('photosGrid');
+    if (!photosGrid) return;
+    
+    photosGrid.innerHTML = '';
+    
+    // Get images from localStorage
+    const capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+    console.log('Found images:', capturedImages.length); // Debug log
+    
+    if (capturedImages.length === 0) {
+        photosGrid.innerHTML = '<p>No photos available. Please capture some photos first.</p>';
+        return;
+    }
+
+    capturedImages.forEach((imageData, index) => {
+        const imgContainer = document.createElement('div');
+        imgContainer.className = 'photo-container';
+        
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.className = 'photo-checkbox';
+        checkbox.id = `photo-${index}`;
+        
+        checkbox.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                if (selectedPhotos.length >= MAX_PHOTOS) {
+                    e.target.checked = false;
+                    alert('You can only select 4 photos!');
+                    return;
+                }
+                selectedPhotos.push({index, src: imageData});
+            } else {
+                selectedPhotos = selectedPhotos.filter(photo => photo.index !== index);
+            }
+            updateStripPreviews();
+        });
+        
+        const img = document.createElement('img');
+        img.src = imageData;
+        img.alt = `Photo ${index + 1}`;
+        
+        imgContainer.appendChild(checkbox);
+        imgContainer.appendChild(img);
+        photosGrid.appendChild(imgContainer);
+    });
+}
+
+function clearPreviousPhotos() {
+    selectedPhotos = [];
+    updateStripPreviews(); // Now this function exists when called
+}
+
 // Move these variables outside the DOMContentLoaded event listener
 let selectedStrip = 'Red';
 let selectedEffect = 'normal';
@@ -326,7 +433,13 @@ let selectedPhotos = [];
 const MAX_PHOTOS = 4;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize color picker with simplified layout
+    // Add this at the start
+    checkAndResetPhotos();
+    
+    // Remove this line as we don't want to clear photos when loading the page
+    // clearPreviousPhotos();
+    
+    // Initialize color picker with wheel only
     const colorPicker = new iro.ColorPicker("#colorPicker", {
         width: 280,
         color: "#ff4757",
@@ -334,10 +447,17 @@ document.addEventListener('DOMContentLoaded', () => {
             { 
                 component: iro.ui.Wheel,
                 options: {
-                    borderWidth: 0,  // Remove border
-                    wheelLightness: true,
+                    borderWidth: 0,
+                    wheelLightness: false, // Disable lightness variation
                     wheelAngle: 0,
                     wheelDirection: 'anticlockwise'
+                }
+            },
+            {
+                component: iro.ui.Slider, // Add brightness slider
+                options: {
+                    sliderType: 'value',
+                    borderWidth: 0
                 }
             }
         ]
@@ -348,84 +468,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const mainStrip = document.getElementById('mainStrip');
         mainStrip.style.backgroundColor = color.hexString;
         selectedStrip = color.hexString;
+        
+        // Update color value display
+        document.getElementById('colorValue').textContent = color.hexString;
     });
 
-    // Get captured images from localStorage
-    const capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
-
-    // Display captured images grid
-    function displayCapturedImages() {
-        const photosGrid = document.getElementById('photosGrid');
-        photosGrid.innerHTML = '';
-        
-        const capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
-        const now = new Date().getTime();
-        
-        capturedImages.forEach((imageData, index) => {
-            // Store image with timestamp if not already stored
-            if (!localStorage.getItem(`photo_timestamp_${index}`)) {
-                localStorage.setItem(`photo_timestamp_${index}`, now);
-            }
-            
-            const imgContainer = document.createElement('div');
-            imgContainer.className = 'photo-container';
-            
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.className = 'photo-checkbox';
-            checkbox.id = `photo-${index}`;
-            
-            checkbox.addEventListener('change', (e) => {
-                if (e.target.checked) {
-                    if (selectedPhotos.length >= MAX_PHOTOS) {
-                        e.target.checked = false;
-                        alert('You can only select 4 photos!');
-                        return;
-                    }
-                    selectedPhotos.push({index, src: imageData});
-                } else {
-                    selectedPhotos = selectedPhotos.filter(photo => photo.index !== index);
-                }
-                updateStripPreviews();
-            });
-            
-            const img = document.createElement('img');
-            img.src = imageData;
-            img.alt = `Photo ${index + 1}`;
-            
-            imgContainer.appendChild(checkbox);
-            imgContainer.appendChild(img);
-            photosGrid.appendChild(imgContainer);
-        });
-
-        // Call updateStripPreviews after loading images
-        updateStripPreviews();
-    }
-
-    // Function to update strip previews
-    function updateStripPreviews() {
-        document.querySelectorAll('.strip-preview').forEach(strip => {
-            strip.innerHTML = ''; // Clear existing content
-            
-            // Create 4 placeholders
-            for (let i = 0; i < 4; i++) {
-                const placeholder = document.createElement('div');
-                placeholder.className = 'photo-placeholder';
-                
-                // Add selected photo if available
-                if (selectedPhotos[i]) {
-                    const img = document.createElement('img');
-                    img.src = selectedPhotos[i].src;
-                    img.style.width = '100%';
-                    img.style.height = '100%';
-                    img.style.objectFit = 'cover';
-                    placeholder.appendChild(img);
-                }
-                
-                strip.appendChild(placeholder);
-            }
-        });
-    }
+    // Display captured images immediately
+    displayCapturedImages();
 
     // Strip selection
     document.querySelectorAll('.strip-preview').forEach(strip => {
