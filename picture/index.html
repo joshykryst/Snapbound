@@ -514,19 +514,6 @@
             color: white;
         }
         
-        /* Footer */
-        .booth-footer {
-            text-align: center;
-            padding: 20px;
-            margin-top: 30px;
-            border-top: 1px solid #eee;
-        }
-        
-        .copyright {
-            font-size: 0.9rem;
-            color: #777;
-        }
-        
         /* Mobile Styles */
         @media (max-width: 767px) {
             .nav-links {
@@ -540,6 +527,9 @@
             .booth-container {
                 padding: 10px;
                 margin-top: 70px;
+                display: flex;
+                flex-direction: column;
+                padding-bottom: 60px;
             }
             
             .booth-title {
@@ -549,61 +539,57 @@
             
             /* Camera section - maintain aspect ratio */
             .camera-section {
-                height: 50vh;
-                min-height: 250px;
+                order: 1;
+                height: 40vh; /* Slightly reduce height to ensure buttons are visible */
+                min-height: 200px;
                 width: 100%;
                 margin: 0 auto;
                 border-radius: 10px;
                 overflow: hidden;
-            }
-            
-            /* Control buttons - directly below camera */
-            .control-buttons {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .capture-btn {
-                width: 100%;
                 margin-bottom: 10px;
-                padding: 14px;
             }
             
-            /* Gallery - at the bottom */
-            .gallery-section {
-                max-height: 200px;
-                overflow-y: auto;
-                margin-top: 15px;
+            /* Controls directly below camera */
+            .control-section {
+                order: 2;
+                margin-bottom: 10px;
             }
             
-            .photo-item {
-                width: 70px;
-                height: 70px;
+            /* Make timer panel more compact */
+            .timer-panel {
+                padding: 8px;
+                margin-bottom: 8px;
             }
             
-            /* Modal adjustments for mobile */
-            .modal-content {
-                width: 90%;
-                padding: 15px;
+            /* Keep buttons visible and accessible */
+            .control-buttons {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+                margin-bottom: 15px;
             }
             
-            .modal-actions {
-                flex-direction: column;
-                width: 100%;
-            }
-            
-            .modal-btn {
-                width: 100%;
-            }
-            
-            /* Timer controls */
-            .timer-controls {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .timer-btn {
+            /* Make capture button full width in the grid */
+            .capture-btn {
+                grid-column: 1 / -1; /* Span all columns */
                 margin-bottom: 5px;
+            }
+            
+            /* Gallery last */
+            .gallery-section {
+                order: 3;
+                max-height: 150px;
+            }
+            
+            /* Improve mobile scrolling */
+            body.booth-page {
+                height: 100%;
+                overflow-y: auto;
+            }
+            
+            /* Ensure the main container has padding at the bottom */
+            .booth-container {
+                padding-bottom: 60px;
             }
         }
     </style>
@@ -633,7 +619,7 @@
     <div class="booth-container">
         <h1 class="booth-title">Capture Your <span class="highlight">Moments</span></h1>
         
-        <!-- Camera Section - TOP -->
+        <!-- Camera Section -->
         <div class="camera-section">
             <video id="webcam" autoplay playsinline></video>
             <div class="countdown" id="countdown"></div>
@@ -646,8 +632,14 @@
             </div>
         </div>
         
-        <!-- Controls Section - MIDDLE -->
+        <!-- Controls Section -->
         <div class="control-section">
+            <div class="camera-controls">
+                <button id="switchCamera" class="control-btn">
+                    <i class="fas fa-sync"></i> Switch Camera
+                </button>
+            </div>
+            
             <div class="timer-panel">
                 <div class="panel-label"><i class="fas fa-stopwatch"></i> Choose Timer</div>
                 <div class="timer-controls">
@@ -662,12 +654,7 @@
                 <i class="fas fa-camera"></i> <span>10 shots left</span>
             </div>
             
-            <div class="camera-controls">
-                <button id="switchCamera" class="control-btn">
-                    <i class="fas fa-sync"></i> Switch Camera
-                </button>
-            </div>
-            
+            <!-- Main camera controls -->
             <div class="control-buttons">
                 <button id="captureBtn" class="capture-btn"><i class="fas fa-camera"></i> Take Picture</button>
                 <button id="createStrip" class="btn">
@@ -678,7 +665,7 @@
             </div>
         </div>
         
-        <!-- Gallery Section - BOTTOM -->
+        <!-- Gallery Section -->
         <div class="gallery-section" id="gallery">
             <div class="gallery-header">
                 <h3><i class="fas fa-images"></i> Your Photos</h3>
@@ -1016,6 +1003,29 @@
             
             function updateShotsCounter() {
                 shotsCounter.querySelector('span').textContent = `${remainingShots} shots left`;
+            }
+            
+            // Ensure camera is in view on mobile devices
+            if (window.innerWidth <= 767) {
+                // Scroll to camera on page load with a slight delay to ensure everything is loaded
+                setTimeout(() => {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                }, 500);
+                
+                // Adjust layout to ensure camera and buttons are visible without scrolling
+                const cameraSection = document.querySelector('.camera-section');
+                const viewportHeight = window.innerHeight;
+                const navHeight = document.querySelector('.nav-bar').offsetHeight;
+                const titleHeight = document.querySelector('.booth-title').offsetHeight;
+                const availableHeight = viewportHeight - navHeight - titleHeight - 40; // 40px for margins
+                
+                // Set camera height to a percentage of available space
+                const cameraHeight = Math.min(availableHeight * 0.5, 300);
+                cameraSection.style.height = `${cameraHeight}px`;
+                cameraSection.style.minHeight = `${cameraHeight}px`;
             }
             
             // Handle clicks outside the modal to close it
