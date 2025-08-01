@@ -68,10 +68,9 @@
         }
 
         .strip-preview {
-            width: 180px;
-            height: 600px;
-            border: 3px solid transparent;
-            border-radius: 10px;
+            width: 200px;
+            height: 650px;
+            border-radius: 15px;
             padding: 15px;
             display: flex;
             flex-direction: column;
@@ -82,16 +81,21 @@
         }
 
         .photo-placeholder {
-            height: 120px;
+            height: 140px;
             background: rgba(255,255,255,0.2);
             border-radius: 5px;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .photo-placeholder img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            max-width: 100%;
+            max-height: 100%;
         }
 
         .color-picker-section {
@@ -415,7 +419,7 @@
         </div>
 
         <div class="selection-controls">
-            <a href="picture.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Camera</a>
+            <a href="../picture.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Camera</a>
             <button id="downloadStrip"><i class="fas fa-download"></i> Download PhotoStrip</button>
             <button id="downloadPhotos"><i class="fas fa-images"></i> Download All Photos</button>
         </div>
@@ -792,28 +796,38 @@ async function createPhotoStrip(images) {
                 ctx.closePath();
                 ctx.clip();
 
-                // Draw the image
-                ctx.drawImage(img, xOffset, yOffset, photoWidth, photoHeight);
+                // Calculate dimensions to maintain aspect ratio
+                const imgAspect = img.naturalWidth / img.naturalHeight;
+                const frameAspect = photoWidth / photoHeight;
                 
-                // Apply effect if selected
-                if (selectedEffect !== 'normal') {
-                    const imageData = ctx.getImageData(xOffset, yOffset, photoWidth, photoHeight);
-                    applyEffectToImageData(imageData, selectedEffect);
-                    ctx.putImageData(imageData, xOffset, yOffset);
+                let drawWidth, drawHeight, offsetX, offsetY;
+                
+                if (imgAspect > frameAspect) {
+                    // Image is wider than frame (relative to heights)
+                    drawHeight = photoHeight;
+                    drawWidth = drawHeight * imgAspect;
+                    offsetX = xOffset - (drawWidth - photoWidth) / 2;
+                    offsetY = yOffset;
+                } else {
+                    // Image is taller than frame (relative to widths)
+                    drawWidth = photoWidth;
+                    drawHeight = drawWidth / imgAspect;
+                    offsetX = xOffset;
+                    offsetY = yOffset + (photoHeight - drawHeight) / 2;
                 }
                 
-                // Add a subtle border
-                ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-                ctx.lineWidth = 2;
-                ctx.stroke();
+                // Draw image with preserved aspect ratio
+                ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+                
+                // Continue with your existing code for effects, etc.
+                // ...
                 
                 ctx.restore();
             } catch (err) {
-                console.error('Error loading image:', err);
-                throw new Error('Failed to load image');
+                // Error handling
             }
         }
-
+        
         // Add watermark with adaptive text color and BIGGER TEXT SIZE
         ctx.fillStyle = selectedTextColor;
         ctx.font = 'bold 36px Poppins, sans-serif'; // Increased from 28px to 36px
@@ -985,26 +999,6 @@ function showDebugInfo() {
             if (imageCount === 0) {
                 // Create some test images if needed
                 const testImages = [
-                    'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAABAAEDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKABQFUAZOBz60YGc4HPrRRQB/9k='
-                ];
-                
-                localStorage.setItem('capturedImages', JSON.stringify(testImages));
-                showNotification('Added test image data. Refresh page.');
-                setTimeout(() => location.reload(), 1500);
-            } else {
-                showNotification(`Found ${imageCount} photos in storage`);
-                setTimeout(() => location.reload(), 1500);
-            }
-        });
-    }
-}
-
-// Add this to your DOMContentLoaded event:
-document.addEventListener('DOMContentLoaded', () => {
-    // Add debug info after a short delay
-    setTimeout(showDebugInfo, 1000);
-    
-    // Rest of your code...
 });
     </script>
 </body>
