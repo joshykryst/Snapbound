@@ -2,29 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>SnapBound | Photo Booth</title>
-    <link rel="stylesheet" href="picture.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapBound | Modern PhotoBooth Experience</title>
+    <link rel="stylesheet" href="index.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <meta name="permissions-policy" content="camera=*">
 </head>
-<body class="booth-page">
+<body>
     <!-- Navigation -->
     <nav class="nav-bar">
         <div class="nav-container">
-            <a href="index.html" class="logo">
+            <a href="#" class="logo">
                 <img src="S.png" alt="Logo" class="logo-img">
                 <span class="logo-text">Snap<span class="logo-highlight">Bound</span></span>
             </a>
             <div class="nav-links">
-                <a href="index.html#home" class="nav-link"><i class="fas fa-home"></i> Home</a>
-                <a href="index.html#features" class="nav-link"><i class="fas fa-camera-retro"></i> Features</a>
-                <a href="index.html#how-it-works" class="nav-link"><i class="fas fa-question-circle"></i> How It Works</a>
-                <a href="index.html#about" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
+                <a href="#home" class="nav-link active"><i class="fas fa-home"></i> Home</a>
+                <a href="#features" class="nav-link"><i class="fas fa-camera-retro"></i> Features</a>
+                <a href="#how-it-works" class="nav-link"><i class="fas fa-question-circle"></i> How It Works</a>
+                <a href="#about" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
+            </div>
+            <div class="auth-buttons">
+                <a href="picture/index.html" class="start-btn pulse-animation">Start Creating <i class="fas fa-arrow-right"></i></a>
             </div>
             <div class="mobile-menu-toggle">
                 <span></span>
@@ -34,117 +33,188 @@
         </div>
     </nav>
 
-    <div class="booth-container">
-        <h1 class="booth-title">Capture Your <span class="highlight">Moments</span></h1>
-        
-        <div class="timer-panel">
-            <div class="panel-label"><i class="fas fa-stopwatch"></i> Choose Timer</div>
-            <div class="timer-controls">
-                <button class="timer-btn active" data-seconds="0">No Timer</button>
-                <button class="timer-btn" data-seconds="3">3s</button>
-                <button class="timer-btn" data-seconds="5">5s</button>
-                <button class="timer-btn" data-seconds="8">8s</button>
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1 class="hero-title">Capture Your <span class="highlight">Perfect</span> Moment</h1>
+            <p class="hero-subtitle">Create memories that last a lifetime with our state-of-the-art photo experience</p>
+            <div class="hero-buttons">
+                <a href="picture/index.html" class="primary-btn">Start Now <i class="fas fa-camera"></i></a>
+                <a href="#how-it-works" class="secondary-btn">How it Works <i class="fas fa-play-circle"></i></a>
             </div>
         </div>
-        
-        <div class="shots-counter" id="shotsCounter">
-            <i class="fas fa-camera"></i> <span>10 shots left</span>
+        <div class="hero-image">
+            <div class="polaroid-stack">
+                <div class="polaroid p1"><img src="https://images.pexels.com/photos/3184398/pexels-photo-3184398.jpeg" alt="Friends Photo"></div>
+                <div class="polaroid p2"><img src="https://images.pexels.com/photos/3171837/pexels-photo-3171837.jpeg" alt="Party Photo"></div>
+                <div class="polaroid p3"><img src="https://images.pexels.com/photos/1486064/pexels-photo-1486064.jpeg" alt="Smile Photo"></div>
+            </div>
         </div>
-        
-        <div class="booth-layout">
-            <div class="booth-left">
-                <div class="camera-section">
-                    <video id="webcam" autoplay playsinline></video>
-                    <div class="countdown" id="countdown"></div>
-                    <canvas id="canvas" style="display:none;"></canvas>
-                    <div class="camera-overlay">
-                        <div class="overlay-corner top-left"></div>
-                        <div class="overlay-corner top-right"></div>
-                        <div class="overlay-corner bottom-left"></div>
-                        <div class="overlay-corner bottom-right"></div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <h2 class="section-title">Why Choose <span class="highlight">SnapBound</span></h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                <h3>Instant Photos</h3>
+                <p>Take photos and get digital copies instantly to share with friends</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-magic"></i></div>
+                <h3>Fun Filters</h3>
+                <p>Choose from dozens of creative filters and effects</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-share-alt"></i></div>
+                <h3>Easy Sharing</h3>
+                <p>Share directly to social media or download high-quality images</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-users"></i></div>
+                <h3>Group Fun</h3>
+                <p>Perfect for parties, weddings, and special events</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <h2 class="section-title">How <span class="highlight">SnapBound</span> Works</h2>
+        <div class="steps-container">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Strike a Pose</h3>
+                    <p>Get ready and pose for your perfect shot</p>
+                </div>
+            </div>
+            <div class="step-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Capture Moment</h3>
+                    <p>Click to capture your photo with optional timer</p>
+                </div>
+            </div>
+            <div class="step-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Customize</h3>
+                    <p>Add filters and effects to your photos</p>
+                </div>
+            </div>
+            <div class="step-arrow"><i class="fas fa-long-arrow-alt-right"></i></div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>Share & Enjoy</h3>
+                    <p>Download or share your creations instantly</p>
+                </div>
+            </div>
+        </div>
+        <div class="cta-container">
+            <a href="picture/index.html" class="primary-btn large">Create Your Photos Now</a>
+        </div>
+    </section>
+
+    <!-- Image Showcase Section (Replaces Gallery and Testimonials) -->
+    <section class="image-showcase">
+        <h2 class="section-title">Capture Moments with <span class="highlight">SnapBound</span></h2>
+        <div class="showcase-grid">
+            <div class="showcase-item">
+                <img src="https://images.pexels.com/photos/1267697/pexels-photo-1267697.jpeg" alt="Photo Booth Fun">
+                <div class="showcase-overlay">
+                    <div class="showcase-title">Graduation Celebrations</div>
+                </div>
+            </div>
+            <div class="showcase-item">
+                <img src="https://images.pexels.com/photos/3810756/pexels-photo-3810756.jpeg" alt="Wedding Photos">
+                <div class="showcase-overlay">
+                    <div class="showcase-title">Wedding Memories</div>
+                </div>
+            </div>
+            <div class="showcase-item">
+                <img src="https://images.pexels.com/photos/5876695/pexels-photo-5876695.jpeg" alt="Birthday Party">
+                <div class="showcase-overlay">
+                    <div class="showcase-title">Birthday Parties</div>
+                </div>
+            </div>
+            <div class="showcase-item">
+                <img src="https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg" alt="Corporate Event">
+                <div class="showcase-overlay">
+                    <div class="showcase-title">Corporate Events</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="about-content">
+            <h2 class="section-title">About <span class="highlight">SnapBound</span></h2>
+            <p>SnapBound provides a modern, fun photo booth experience for all types of events. Our mission is to help people capture and share special moments in creative ways.</p>
+            <p>Founded in 2025, we've helped hundreds of people create lasting memories at weddings, parties, corporate events, and more.</p>
+            <a href="#" class="text-link">Learn more about our story <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter">
+        <div class="newsletter-container">
+            <h3>Stay Updated</h3>
+            <p>Subscribe to our newsletter for updates, tips, and special offers</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Your email address" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="S.png" alt="Logo" class="logo-img">
+                <span class="logo-text">SnapBound</span>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Navigate</h4>
+                    <a href="#home">Home</a>
+                    <a href="#features">Features</a>
+                    <a href="#how-it-works">How It Works</a>
+                    <a href="#about">About</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Support</h4>
+                    <a href="#">Help Center</a>
+                    <a href="#">FAQ</a>
+                    <a href="#">Contact Us</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Legal</h4>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Privacy Policy</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Follow Us</h4>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
                     </div>
                 </div>
             </div>
-            
-            <div class="gallery-section" id="gallery">
-                <!-- Captured images will appear here -->
-                <div class="gallery-header">
-                    <h3><i class="fas fa-images"></i> Your Photos</h3>
-                </div>
-                <div class="gallery-empty-state">
-                    <i class="fas fa-camera-retro"></i>
-                    <p>Captured photos will appear here</p>
-                </div>
-            </div>
         </div>
-        
-        <!-- Moved control buttons outside booth-layout for better positioning -->
-        <div class="control-buttons">
-            <button id="captureBtn" class="capture-btn"><i class="fas fa-camera"></i> Take Picture</button>
-            <div style="position: relative;">
-                <button id="createStrip" class="btn">
-                    <i class="fas fa-images"></i> Create PhotoStrip
-                    <span class="photo-requirement">4</span>
-                </button>
-            </div>
-            <button id="resetBtn" class="btn reset-btn"><i class="fas fa-trash"></i> Reset Photos</button>
-        </div>
-        
-        <div class="gallery-hint">
-            <i class="fas fa-arrow-down"></i> Scroll to view captured photos
-        </div>
-
-        <!-- Add this button near your timer controls -->
-        <div class="camera-controls">
-            <button id="switchCamera" class="control-btn">
-                <i class="fas fa-sync"></i> Switch Camera
-            </button>
-        </div>
-    </div>
-
-    <!-- Modal for photo preview -->
-    <div class="photo-modal" id="photoModal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <img id="modalImage" src="" alt="Preview">
-            <div class="modal-actions">
-                <button class="modal-btn" id="downloadBtn"><i class="fas fa-download"></i> Download</button>
-                <button class="modal-btn" id="shareBtn"><i class="fas fa-share-alt"></i> Share</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="booth-footer">
         <div class="copyright">
             <p>&copy; 2025 SnapBound PhotoBooth. All rights reserved.</p>
         </div>
     </footer>
 
-    <script src="picture.js"></script>
     <script src="index.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get reference to the createStrip button
-            const createStripBtn = document.getElementById('createStrip');
-            
-            if (createStripBtn) {
-                // Set the click handler (no need to prevent default since we removed the inline handler)
-                createStripBtn.addEventListener('click', function() {
-                    // Check if we have enough photos
-                    const capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
-                    
-                    if (capturedImages.length < 4) {
-                        // Show error message
-                        alert('Please capture at least 4 photos before creating a photo strip!');
-                        return;
-                    }
-                    
-                    // Explicitly set the correct path
-                    window.location.href = '../selectphotos/index.html';
-                });
-            }
-        });
-    </script>
 </body>
 </html>
