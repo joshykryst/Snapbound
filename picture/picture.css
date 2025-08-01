@@ -788,3 +788,72 @@ html, body {
     font-size: 14px;
   }
 }
+
+/* Add these styles to your picture.css file */
+@media (max-width: 767px) {
+    /* Mobile-specific adjustments */
+    .booth-container {
+        padding: 10px;
+        margin-top: 60px; /* Reduced top margin */
+    }
+    
+    .booth-title {
+        font-size: 1.8rem;
+        margin-bottom: 10px; /* Smaller margin */
+    }
+    
+    .timer-panel {
+        margin-bottom: 10px; /* Reduced spacing */
+    }
+    
+    .booth-layout {
+        flex-direction: column;
+        gap: 10px; /* Smaller gap between elements */
+    }
+    
+    .camera-section {
+        height: 45vh; /* Reduced height to fit more on screen */
+        min-height: 250px;
+    }
+    
+    /* Make gallery section smaller on mobile */
+    .gallery-section {
+        max-height: 20vh;
+        min-height: 100px;
+    }
+    
+    /* Position buttons closer to camera */
+    .control-buttons {
+        position: relative;
+        margin-top: -10px; /* Negative margin to move up */
+        padding: 10px;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    /* Make buttons more compact */
+    .btn, .capture-btn {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+    
+    /* Hide or minimize less important elements */
+    .gallery-hint {
+        display: none;
+    }
+    
+    /* Make sure the camera always stays in view */
+    .booth-page {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+    
+    /* Ensure the camera is visible without scrolling */
+    .camera-section, .control-buttons {
+        position: sticky;
+        top: 70px; /* Adjust based on your header height */
+        z-index: 10;
+    }
+}

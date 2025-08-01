@@ -7,24 +7,620 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>SnapBound | Photo Booth</title>
-    <link rel="stylesheet" href="picture.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <meta name="permissions-policy" content="camera=*">
+    <style>
+        /* Base styles */
+        :root {
+            --primary-color: #FF5757;
+            --secondary-color: #3A86FF;
+            --accent-color: #FFBE0B;
+            --dark-color: #2B2D42;
+            --light-color: #F8F9FA;
+            --text-color: #333;
+            --bg-color: #FFFFFF;
+            --gradient-primary: linear-gradient(135deg, #FF5757 0%, #FF8A5B 100%);
+            --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Navigation */
+        .nav-bar {
+            background-color: var(--bg-color);
+            padding: 0.8rem 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+        }
+        
+        .logo-img {
+            height: 40px;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+        
+        .logo-highlight {
+            color: var(--primary-color);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 0.8rem;
+            border-radius: 5px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        
+        .nav-link i {
+            font-size: 0.9rem;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-color);
+            background-color: rgba(255, 87, 87, 0.08);
+        }
+        
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+        
+        .mobile-menu-toggle span {
+            width: 30px;
+            height: 3px;
+            background-color: var(--text-color);
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+        
+        /* Main Content Styles */
+        .booth-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            margin-top: 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .booth-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .highlight {
+            color: var(--primary-color);
+        }
+        
+        /* New Layout - Camera first, then buttons, then gallery */
+        .booth-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        /* Camera Section */
+        .camera-section {
+            width: 100%;
+            height: 60vh;
+            min-height: 400px;
+            background-color: #000;
+            border-radius: var(--border-radius);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #webcam {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .camera-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+        
+        .overlay-corner {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 3px solid white;
+        }
+        
+        .top-left {
+            top: 20px;
+            left: 20px;
+            border-right: none;
+            border-bottom: none;
+        }
+        
+        .top-right {
+            top: 20px;
+            right: 20px;
+            border-left: none;
+            border-bottom: none;
+        }
+        
+        .bottom-left {
+            bottom: 20px;
+            left: 20px;
+            border-right: none;
+            border-top: none;
+        }
+        
+        .bottom-right {
+            bottom: 20px;
+            right: 20px;
+            border-left: none;
+            border-top: none;
+        }
+        
+        .countdown {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 100px;
+            font-weight: 700;
+            color: white;
+            z-index: 10;
+            display: none;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Control Buttons Section */
+        .control-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+        }
+        
+        .timer-panel {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+        }
+        
+        .panel-label {
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .timer-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .timer-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 30px;
+            background-color: white;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            transition: var(--transition);
+            border: 2px solid #e0e0e0;
+        }
+        
+        .timer-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .camera-controls {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        .control-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            background-color: var(--light-color);
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        
+        .control-btn:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .control-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+        
+        .capture-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 30px;
+            background: var(--gradient-primary);
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(255, 87, 87, 0.3);
+        }
+        
+        .capture-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 87, 87, 0.4);
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 30px;
+            background-color: var(--light-color);
+            color: var(--text-color);
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        
+        .btn:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .reset-btn {
+            color: #f44336;
+        }
+        
+        .reset-btn:hover {
+            background-color: rgba(244, 67, 54, 0.1);
+        }
+        
+        .photo-requirement {
+            background-color: var(--primary-color);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+        
+        /* Gallery Section */
+        .gallery-section {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            background-color: var(--light-color);
+        }
+        
+        .gallery-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .gallery-header h3 {
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .gallery-empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            color: #999;
+            text-align: center;
+        }
+        
+        .gallery-empty-state i {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .gallery-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-start;
+        }
+        
+        .photo-item {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .photo-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .shots-counter {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            background-color: var(--light-color);
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        /* Modal */
+        .photo-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            max-width: 90%;
+            width: 500px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            position: relative;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        #modalImage {
+            max-width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            background-color: var(--light-color);
+            color: var(--text-color);
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        
+        .modal-btn:first-child {
+            background: var(--gradient-primary);
+            color: white;
+        }
+        
+        /* Footer */
+        .booth-footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .copyright {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        /* Mobile Styles */
+        @media (max-width: 767px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-toggle {
+                display: flex;
+            }
+            
+            .booth-container {
+                padding: 10px;
+                margin-top: 70px;
+            }
+            
+            .booth-title {
+                font-size: 1.8rem;
+                margin-bottom: 15px;
+            }
+            
+            /* Camera section - maintain aspect ratio */
+            .camera-section {
+                height: 50vh;
+                min-height: 250px;
+                width: 100%;
+                margin: 0 auto;
+                border-radius: 10px;
+                overflow: hidden;
+            }
+            
+            /* Control buttons - directly below camera */
+            .control-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .capture-btn {
+                width: 100%;
+                margin-bottom: 10px;
+                padding: 14px;
+            }
+            
+            /* Gallery - at the bottom */
+            .gallery-section {
+                max-height: 200px;
+                overflow-y: auto;
+                margin-top: 15px;
+            }
+            
+            .photo-item {
+                width: 70px;
+                height: 70px;
+            }
+            
+            /* Modal adjustments for mobile */
+            .modal-content {
+                width: 90%;
+                padding: 15px;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .modal-btn {
+                width: 100%;
+            }
+            
+            /* Timer controls */
+            .timer-controls {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .timer-btn {
+                margin-bottom: 5px;
+            }
+        }
+    </style>
 </head>
 <body class="booth-page">
     <!-- Navigation -->
     <nav class="nav-bar">
         <div class="nav-container">
-            <a href="index.html" class="logo">
-                <img src="S.png" alt="Logo" class="logo-img">
+            <a href="../index.html" class="logo">
+                <img src="../S.png" alt="Logo" class="logo-img">
                 <span class="logo-text">Snap<span class="logo-highlight">Bound</span></span>
             </a>
             <div class="nav-links">
-                <a href="index.html#home" class="nav-link"><i class="fas fa-home"></i> Home</a>
-                <a href="index.html#features" class="nav-link"><i class="fas fa-camera-retro"></i> Features</a>
-                <a href="index.html#how-it-works" class="nav-link"><i class="fas fa-question-circle"></i> How It Works</a>
-                <a href="index.html#about" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
+                <a href="../index.html#home" class="nav-link"><i class="fas fa-home"></i> Home</a>
+                <a href="../index.html#features" class="nav-link"><i class="fas fa-camera-retro"></i> Features</a>
+                <a href="../index.html#how-it-works" class="nav-link"><i class="fas fa-question-circle"></i> How It Works</a>
+                <a href="../index.html#about" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
             </div>
             <div class="mobile-menu-toggle">
                 <span></span>
@@ -37,68 +633,61 @@
     <div class="booth-container">
         <h1 class="booth-title">Capture Your <span class="highlight">Moments</span></h1>
         
-        <div class="timer-panel">
-            <div class="panel-label"><i class="fas fa-stopwatch"></i> Choose Timer</div>
-            <div class="timer-controls">
-                <button class="timer-btn active" data-seconds="0">No Timer</button>
-                <button class="timer-btn" data-seconds="3">3s</button>
-                <button class="timer-btn" data-seconds="5">5s</button>
-                <button class="timer-btn" data-seconds="8">8s</button>
+        <!-- Camera Section - TOP -->
+        <div class="camera-section">
+            <video id="webcam" autoplay playsinline></video>
+            <div class="countdown" id="countdown"></div>
+            <canvas id="canvas" style="display:none;"></canvas>
+            <div class="camera-overlay">
+                <div class="overlay-corner top-left"></div>
+                <div class="overlay-corner top-right"></div>
+                <div class="overlay-corner bottom-left"></div>
+                <div class="overlay-corner bottom-right"></div>
             </div>
         </div>
         
-        <div class="shots-counter" id="shotsCounter">
-            <i class="fas fa-camera"></i> <span>10 shots left</span>
-        </div>
-        
-        <div class="booth-layout">
-            <div class="booth-left">
-                <div class="camera-section">
-                    <video id="webcam" autoplay playsinline></video>
-                    <div class="countdown" id="countdown"></div>
-                    <canvas id="canvas" style="display:none;"></canvas>
-                    <div class="camera-overlay">
-                        <div class="overlay-corner top-left"></div>
-                        <div class="overlay-corner top-right"></div>
-                        <div class="overlay-corner bottom-left"></div>
-                        <div class="overlay-corner bottom-right"></div>
-                    </div>
+        <!-- Controls Section - MIDDLE -->
+        <div class="control-section">
+            <div class="timer-panel">
+                <div class="panel-label"><i class="fas fa-stopwatch"></i> Choose Timer</div>
+                <div class="timer-controls">
+                    <button class="timer-btn active" data-seconds="0">No Timer</button>
+                    <button class="timer-btn" data-seconds="3">3s</button>
+                    <button class="timer-btn" data-seconds="5">5s</button>
+                    <button class="timer-btn" data-seconds="8">8s</button>
                 </div>
             </div>
             
-            <div class="gallery-section" id="gallery">
-                <!-- Captured images will appear here -->
-                <div class="gallery-header">
-                    <h3><i class="fas fa-images"></i> Your Photos</h3>
-                </div>
-                <div class="gallery-empty-state">
-                    <i class="fas fa-camera-retro"></i>
-                    <p>Captured photos will appear here</p>
-                </div>
+            <div class="shots-counter" id="shotsCounter">
+                <i class="fas fa-camera"></i> <span>10 shots left</span>
             </div>
-        </div>
-        
-        <!-- Moved control buttons outside booth-layout for better positioning -->
-        <div class="control-buttons">
-            <button id="captureBtn" class="capture-btn"><i class="fas fa-camera"></i> Take Picture</button>
-            <div style="position: relative;">
+            
+            <div class="camera-controls">
+                <button id="switchCamera" class="control-btn">
+                    <i class="fas fa-sync"></i> Switch Camera
+                </button>
+            </div>
+            
+            <div class="control-buttons">
+                <button id="captureBtn" class="capture-btn"><i class="fas fa-camera"></i> Take Picture</button>
                 <button id="createStrip" class="btn">
                     <i class="fas fa-images"></i> Create PhotoStrip
                     <span class="photo-requirement">4</span>
                 </button>
+                <button id="resetBtn" class="btn reset-btn"><i class="fas fa-trash"></i> Reset Photos</button>
             </div>
-            <button id="resetBtn" class="btn reset-btn"><i class="fas fa-trash"></i> Reset Photos</button>
         </div>
         
-        <div class="gallery-hint">
-            <i class="fas fa-arrow-down"></i> Scroll to view captured photos
-        </div>
-
-        <!-- Add this button near your timer controls -->
-        <div class="camera-controls">
-            <button id="switchCamera" class="control-btn">
-                <i class="fas fa-sync"></i> Switch Camera
-            </button>
+        <!-- Gallery Section - BOTTOM -->
+        <div class="gallery-section" id="gallery">
+            <div class="gallery-header">
+                <h3><i class="fas fa-images"></i> Your Photos</h3>
+            </div>
+            <div class="gallery-empty-state">
+                <i class="fas fa-camera-retro"></i>
+                <p>Captured photos will appear here</p>
+            </div>
+            <div class="gallery-content"></div>
         </div>
     </div>
 
@@ -121,29 +710,320 @@
         </div>
     </footer>
 
-    <script src="picture.js"></script>
-    <script src="index.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Get reference to the createStrip button
+            // Variables
+            let stream = null;
+            let selectedTimer = 0;
+            let captureInterval = null;
+            let capturedImages = [];
+            let remainingShots = 10;
+            
+            // DOM Elements
+            const video = document.getElementById('webcam');
+            const canvas = document.getElementById('canvas');
+            const captureBtn = document.getElementById('captureBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const switchCameraBtn = document.getElementById('switchCamera');
+            const countdown = document.getElementById('countdown');
+            const shotsCounter = document.getElementById('shotsCounter');
+            const gallery = document.getElementById('gallery');
+            const photoModal = document.getElementById('photoModal');
+            const modalImage = document.getElementById('modalImage');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const shareBtn = document.getElementById('shareBtn');
+            const closeModal = document.querySelector('.close-modal');
+            const timerBtns = document.querySelectorAll('.timer-btn');
             const createStripBtn = document.getElementById('createStrip');
             
-            if (createStripBtn) {
-                // Set the click handler (no need to prevent default since we removed the inline handler)
-                createStripBtn.addEventListener('click', function() {
-                    // Check if we have enough photos
-                    const capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+            // Initialize camera
+            initCamera();
+            
+            // Load saved photos
+            loadSavedPhotos();
+            
+            // Update shots counter
+            updateShotsCounter();
+            
+            // Event listeners
+            captureBtn.addEventListener('click', startCapture);
+            resetBtn.addEventListener('click', resetPhotos);
+            switchCameraBtn.addEventListener('click', switchCamera);
+            closeModal.addEventListener('click', closePhotoModal);
+            downloadBtn.addEventListener('click', downloadPhoto);
+            shareBtn.addEventListener('click', sharePhoto);
+            
+            // Timer selection
+            timerBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    timerBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    selectedTimer = parseInt(this.getAttribute('data-seconds'));
+                });
+            });
+            
+            // Create strip button
+            createStripBtn.addEventListener('click', function() {
+                const capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+                
+                if (capturedImages.length < 4) {
+                    alert('Please capture at least 4 photos before creating a photo strip!');
+                    return;
+                }
+                
+                window.location.href = '../selectphotos/index.html';
+            });
+            
+            // Functions
+            function initCamera(facingMode = 'user') {
+                // Stop any existing stream
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                }
+                
+                const constraints = {
+                    audio: false,
+                    video: {
+                        facingMode: facingMode,
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }
+                };
+                
+                navigator.mediaDevices.getUserMedia(constraints)
+                    .then(function(mediaStream) {
+                        stream = mediaStream;
+                        video.srcObject = mediaStream;
+                        video.onloadedmetadata = function(e) {
+                            video.play();
+                        };
+                    })
+                    .catch(function(err) {
+                        console.error('Error accessing camera: ', err);
+                        alert('Error accessing camera. Please ensure you have given camera permissions.');
+                    });
+            }
+            
+            function startCapture() {
+                if (remainingShots <= 0) {
+                    alert('You have reached the maximum number of shots!');
+                    return;
+                }
+                
+                if (selectedTimer > 0) {
+                    // Start countdown
+                    let timeLeft = selectedTimer;
+                    countdown.style.display = 'block';
+                    countdown.textContent = timeLeft;
                     
-                    if (capturedImages.length < 4) {
-                        // Show error message
-                        alert('Please capture at least 4 photos before creating a photo strip!');
-                        return;
+                    captureInterval = setInterval(() => {
+                        timeLeft--;
+                        countdown.textContent = timeLeft;
+                        
+                        if (timeLeft <= 0) {
+                            clearInterval(captureInterval);
+                            countdown.style.display = 'none';
+                            capturePhoto();
+                        }
+                    }, 1000);
+                } else {
+                    // No timer, capture immediately
+                    capturePhoto();
+                }
+            }
+            
+            function capturePhoto() {
+                const context = canvas.getContext('2d');
+                
+                // Set canvas to match video dimensions for consistent aspect ratio
+                const videoWidth = video.videoWidth;
+                const videoHeight = video.videoHeight;
+                
+                // Create a square crop from the center of the video
+                const size = Math.min(videoWidth, videoHeight);
+                const startX = (videoWidth - size) / 2;
+                const startY = (videoHeight - size) / 2;
+                
+                // Set canvas size to the square crop dimensions
+                canvas.width = size;
+                canvas.height = size;
+                
+                // Draw the cropped region to maintain aspect ratio
+                context.drawImage(
+                    video,
+                    startX, startY, size, size,
+                    0, 0, size, size
+                );
+                
+                // Get image data
+                const imageData = canvas.toDataURL('image/jpeg', 0.85);
+                
+                // Add to gallery and save
+                addPhotoToGallery(imageData);
+                
+                // Update shots counter
+                remainingShots--;
+                updateShotsCounter();
+            }
+            
+            function addPhotoToGallery(imageData) {
+                // Create new item for gallery
+                const photoItem = document.createElement('div');
+                photoItem.className = 'photo-item';
+                
+                // Create image element
+                const img = document.createElement('img');
+                img.src = imageData;
+                img.alt = 'Captured photo';
+                
+                // Append image to container
+                photoItem.appendChild(img);
+                
+                // Get gallery elements
+                const emptyState = gallery.querySelector('.gallery-empty-state');
+                
+                // Hide empty state if this is the first photo
+                if (emptyState) {
+                    emptyState.style.display = 'none';
+                }
+                
+                // Add click handler to show modal
+                photoItem.addEventListener('click', function() {
+                    showPhotoModal(imageData);
+                });
+                
+                // Add photo to beginning of gallery (newest first)
+                const galleryContent = gallery.querySelector('.gallery-content');
+                galleryContent.insertBefore(photoItem, galleryContent.firstChild);
+                
+                // Save to localStorage
+                capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+                capturedImages.unshift(imageData);
+                localStorage.setItem('capturedImages', JSON.stringify(capturedImages));
+            }
+            
+            function loadSavedPhotos() {
+                capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+                const emptyState = gallery.querySelector('.gallery-empty-state');
+                const galleryContent = gallery.querySelector('.gallery-content');
+                
+                if (capturedImages.length > 0) {
+                    // Hide empty state
+                    if (emptyState) {
+                        emptyState.style.display = 'none';
                     }
                     
-                    // Explicitly set the correct path
-                    window.location.href = '../selectphotos/index.html';
-                });
+                    // Add each photo to the gallery
+                    capturedImages.forEach(imageData => {
+                        const photoItem = document.createElement('div');
+                        photoItem.className = 'photo-item';
+                        
+                        const img = document.createElement('img');
+                        img.src = imageData;
+                        img.alt = 'Saved photo';
+                        
+                        photoItem.appendChild(img);
+                        
+                        // Add click handler
+                        photoItem.addEventListener('click', function() {
+                            showPhotoModal(imageData);
+                        });
+                        
+                        galleryContent.appendChild(photoItem);
+                    });
+                    
+                    // Update remaining shots
+                    remainingShots = Math.max(0, 10 - capturedImages.length);
+                    updateShotsCounter();
+                }
             }
+            
+            function showPhotoModal(imageData) {
+                modalImage.src = imageData;
+                photoModal.style.display = 'flex';
+                
+                // Preload image before animation
+                modalImage.onload = function() {
+                    setTimeout(() => {
+                        photoModal.style.opacity = '1';
+                    }, 10);
+                };
+            }
+            
+            function closePhotoModal() {
+                photoModal.style.opacity = '0';
+                setTimeout(() => {
+                    photoModal.style.display = 'none';
+                }, 300);
+            }
+            
+            function downloadPhoto() {
+                const link = document.createElement('a');
+                link.href = modalImage.src;
+                link.download = 'snapbound-photo-' + new Date().getTime() + '.jpg';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+            
+            function sharePhoto() {
+                if (navigator.share) {
+                    fetch(modalImage.src)
+                        .then(res => res.blob())
+                        .then(blob => {
+                            const file = new File([blob], 'snapbound-photo.jpg', { type: 'image/jpeg' });
+                            navigator.share({
+                                title: 'My SnapBound Photo',
+                                text: 'Check out my photo from SnapBound!',
+                                files: [file]
+                            }).catch(error => {
+                                console.log('Error sharing:', error);
+                                alert('Could not share the photo. Try downloading it instead.');
+                            });
+                        });
+                } else {
+                    alert('Web Share API is not supported in your browser. Please use the download button instead.');
+                }
+            }
+            
+            function resetPhotos() {
+                if (confirm('Are you sure you want to delete all captured photos?')) {
+                    // Clear localStorage
+                    localStorage.removeItem('capturedImages');
+                    capturedImages = [];
+                    
+                    // Clear gallery
+                    const galleryContent = gallery.querySelector('.gallery-content');
+                    galleryContent.innerHTML = '';
+                    
+                    // Show empty state
+                    const emptyState = gallery.querySelector('.gallery-empty-state');
+                    if (emptyState) {
+                        emptyState.style.display = 'flex';
+                    }
+                    
+                    // Reset shots counter
+                    remainingShots = 10;
+                    updateShotsCounter();
+                }
+            }
+            
+            function switchCamera() {
+                const currentFacingMode = stream.getVideoTracks()[0].getSettings().facingMode;
+                const newFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+                initCamera(newFacingMode);
+            }
+            
+            function updateShotsCounter() {
+                shotsCounter.querySelector('span').textContent = `${remainingShots} shots left`;
+            }
+            
+            // Handle clicks outside the modal to close it
+            window.onclick = function(event) {
+                if (event.target === photoModal) {
+                    closePhotoModal();
+                }
+            };
         });
     </script>
 </body>
