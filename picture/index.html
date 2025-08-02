@@ -678,21 +678,110 @@
                 padding-bottom: 100%; /* Square photos */
             }
         }
+        
+        /* Footer styles */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 40px 0;
+            font-size: 0.9rem;
+        }
+        
+        .footer-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .footer-logo .logo-img {
+            height: 50px;
+            margin-right: 10px;
+        }
+        
+        .footer-logo .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .footer-column h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .footer-column a {
+            color: white;
+            text-decoration: none;
+            margin: 5px 0;
+            transition: color 0.3s;
+        }
+        
+        .footer-column a:hover {
+            color: var(--primary-color);
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .social-icons a {
+            color: white;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+        
+        .social-icons a:hover {
+            color: var(--primary-color);
+        }
+        
+        .copyright {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #ccc;
+        }
     </style>
 </head>
 <body class="booth-page">
     <!-- Navigation -->
     <nav class="nav-bar">
         <div class="nav-container">
-            <a href="../index.html" class="logo">
+            <a href="https://snapbound.studio" class="logo">
                 <img src="../S.png" alt="Logo" class="logo-img">
                 <span class="logo-text">Snap<span class="logo-highlight">Bound</span></span>
             </a>
             <div class="nav-links">
-                <a href="../#home" class="nav-link"><i class="fas fa-home"></i> Home</a>
-                <a href="../#features" class="nav-link"><i class="fas fa-camera-retro"></i> Features</a>
-                <a href="../#how-it-works" class="nav-link"><i class="fas fa-question-circle"></i> How It Works</a>
-                <a href="../#about" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
+                <a href="https://snapbound.studio/#home" class="nav-link"><i class="fas fa-home"></i> Home</a>
+                <a href="https://snapbound.studio/#features" class="nav-link"><i class="fas fa-camera-retro"></i> Features</a>
+                <a href="https://snapbound.studio/#how-it-works" class="nav-link"><i class="fas fa-question-circle"></i> How It Works</a>
+                <a href="https://snapbound.studio/#about" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
             </div>
             <div class="mobile-menu-toggle">
                 <span></span>
@@ -784,9 +873,44 @@
     </div>
 
     <!-- Footer -->
-    <footer class="booth-footer">
-        <div class="copyright">
-            <p>&copy; 2025 SnapBound PhotoBooth. All rights reserved.</p>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="../S.png" alt="Logo" class="logo-img">
+                <span class="logo-text">SnapBound</span>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Navigate</h4>
+                    <a href="https://snapbound.studio/#home">Home</a>
+                    <a href="https://snapbound.studio/#features">Features</a>
+                    <a href="https://snapbound.studio/#how-it-works">How It Works</a>
+                    <a href="https://snapbound.studio/#about">About</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Support</h4>
+                    <a href="#">Help Center</a>
+                    <a href="#">FAQ</a>
+                    <a href="#">Contact Us</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Legal</h4>
+                    <a href="https://snapbound.studio/terms/">Terms of Service</a>
+                    <a href="https://snapbound.studio/privacy/">Privacy Policy</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Follow Us</h4>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 SnapBound PhotoBooth. All rights reserved.</p>
+            </div>
         </div>
     </footer>
 
@@ -1352,9 +1476,8 @@
                 if (confirm('Are you sure you want to delete all captured photos?')) {
                     // Clear localStorage
                     localStorage.removeItem('capturedImages');
-                    capturedImages = [];
                     
-                    // Clear gallery
+                    // Reset gallery
                     const galleryContent = gallery.querySelector('.gallery-content');
                     galleryContent.innerHTML = '';
                     
@@ -1366,175 +1489,213 @@
                     
                     // Reset shots counter
                     remainingShots = 10;
+                    capturedImages = [];
                     updateShotsCounter();
                 }
             }
             
+            function updateShotsCounter() {
+                // Update the shots counter display
+                const counterSpan = shotsCounter.querySelector('span');
+                if (counterSpan) {
+                    counterSpan.textContent = `${remainingShots} shots left`;
+                }
+                
+                // Disable capture button if no shots left
+                if (remainingShots <= 0) {
+                    captureBtn.disabled = true;
+                    captureBtn.style.opacity = '0.5';
+                    captureBtn.style.cursor = 'not-allowed';
+                } else {
+                    captureBtn.disabled = false;
+                    captureBtn.style.opacity = '1';
+                    captureBtn.style.cursor = 'pointer';
+                }
+                
+                // Update the create photostrip button
+                if (capturedImages.length >= 4) {
+                    createStripBtn.style.background = 'var(--gradient-primary)';
+                    createStripBtn.style.color = 'white';
+                } else {
+                    createStripBtn.style.background = 'var(--light-color)';
+                    createStripBtn.style.color = 'var(--text-color)';
+                }
+            }
+            
             function switchCamera() {
+                // Toggle between front and back camera
                 const currentFacingMode = stream.getVideoTracks()[0].getSettings().facingMode;
                 const newFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
                 initCamera(newFacingMode);
             }
             
-            function updateShotsCounter() {
-                shotsCounter.querySelector('span').textContent = `${remainingShots} shots left`;
+            // Add dividing lines for 4 photos
+            const totalPhotos = 4;
+            for (let i = 1; i < totalPhotos; i++) {
+                const divider = document.createElement('div');
+                divider.style.position = 'absolute';
+                divider.style.left = '0';
+                divider.style.right = '0';
+                divider.style.top = `${(i * 100) / totalPhotos}%`;
+                divider.style.height = '1px';
+                divider.style.backgroundColor = 'rgba(255,255,255,0.6)';
+                divider.style.zIndex = '21';
+                
+                frameGuideContainer.appendChild(divider);
             }
             
-            // Ensure camera is in view on mobile devices
-            if (window.innerWidth <= 767) {
-                // Scroll to camera on page load with a slight delay to ensure everything is loaded
-                setTimeout(() => {
-                    window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
-                    });
-                }, 500);
-            }
+            // Add all elements to the guide container
+            frameGuideContainer.appendChild(photoGuide);
+            frameGuideContainer.appendChild(overlayTop);
+            frameGuideContainer.appendChild(overlayBottom);
+            frameGuideContainer.appendChild(helperText);
             
-            // Add this code right after the DOMContentLoaded event listener in your script
+            // Add the guide container to the camera section
+            cameraSection.appendChild(frameGuideContainer);
             
-            // Force buttons to be visible on mobile
-            if (window.innerWidth <= 767) {
-                document.addEventListener('DOMContentLoaded', function() {
-                    // Force display of control buttons
-                    const controlButtons = document.querySelector('.control-buttons');
-                    const captureBtn = document.getElementById('captureBtn');
-                    const controlSection = document.querySelector('.control-section');
-                    
-                    // Ensure they're displayed with !important styles
-                    if (controlButtons) controlButtons.setAttribute('style', 'display: flex !important; visibility: visible !important; opacity: 1 !important;');
-                    if (captureBtn) captureBtn.setAttribute('style', 'display: flex !important; visibility: visible !important; opacity: 1 !important;');
-                    if (controlSection) controlSection.setAttribute('style', 'display: block !important; visibility: visible !important; opacity: 1 !important;');
-                    
-                    // Ensure the control section is properly positioned
-                    setTimeout(() => {
-                        window.scrollTo(0, 0);
-                    }, 300);
-                });
-            }
+            // Add a face position guide
+            const faceGuide = document.createElement('div');
+            faceGuide.style.position = 'absolute';
+            faceGuide.style.top = '30%';
+            faceGuide.style.left = '50%';
+            faceGuide.style.width = '70px';
+            faceGuide.style.height = '70px';
+            faceGuide.style.borderRadius = '50%';
+            faceGuide.style.border = '2px dashed rgba(255,255,255,0.5)';
+            faceGuide.style.transform = 'translate(-50%, -50%)';
+            faceGuide.style.pointerEvents = 'none';
+            faceGuide.style.zIndex = '21';
             
-            // Add this function to your JavaScript
-            function addPhotoFrameGuides() {
-                const cameraSection = document.querySelector('.camera-section');
-                
-                // Remove any existing guides
-                document.querySelectorAll('.frame-guide').forEach(el => el.remove());
-                
-                // Create a container for the frame guides
-                const frameGuideContainer = document.createElement('div');
-                frameGuideContainer.className = 'frame-guide';
-                frameGuideContainer.style.position = 'absolute';
-                frameGuideContainer.style.top = '0';
-                frameGuideContainer.style.left = '0';
-                frameGuideContainer.style.right = '0';
-                frameGuideContainer.style.bottom = '0';
-                frameGuideContainer.style.pointerEvents = 'none';
-                frameGuideContainer.style.zIndex = '20';
-                
-                // Add the guide that shows exactly how photos will be cropped
-                const photoGuide = document.createElement('div');
-                photoGuide.style.position = 'absolute';
-                photoGuide.style.width = '100%';
-                photoGuide.style.height = '100%';
-                photoGuide.style.boxSizing = 'border-box';
-                photoGuide.style.border = '2px dashed rgba(255,255,255,0.6)';
-                photoGuide.style.pointerEvents = 'none';
-                photoGuide.style.zIndex = '21';
-                
-                // Create semi-transparent overlays to show what parts will be cropped
-                const overlayTop = document.createElement('div');
-                overlayTop.style.position = 'absolute';
-                overlayTop.style.top = '0';
-                overlayTop.style.left = '0';
-                overlayTop.style.width = '100%';
-                overlayTop.style.height = '10%';
-                overlayTop.style.backgroundColor = 'rgba(0,0,0,0.4)';
-                overlayTop.style.pointerEvents = 'none';
-                overlayTop.style.zIndex = '19';
-                
-                const overlayBottom = document.createElement('div');
-                overlayBottom.style.position = 'absolute';
-                overlayBottom.style.bottom = '0';
-                overlayBottom.style.left = '0';
-                overlayBottom.style.width = '100%';
-                overlayBottom.style.height = '10%';
-                overlayBottom.style.backgroundColor = 'rgba(0,0,0,0.4)';
-                overlayBottom.style.pointerEvents = 'none';
-                overlayBottom.style.zIndex = '19';
-                
-                // Add helper text
-                const helperText = document.createElement('div');
-                helperText.style.position = 'absolute';
-                helperText.style.top = '10px';
-                helperText.style.left = '0';
-                helperText.style.width = '100%';
-                helperText.style.textAlign = 'center';
-                helperText.style.color = 'white';
-                helperText.style.fontSize = '12px';
-                helperText.style.textShadow = '0 1px 2px rgba(0,0,0,0.8)';
-                helperText.style.zIndex = '22';
-                helperText.innerHTML = 'Keep face centered for best results';
-                
-                // Add dividing lines for 4 photos
-                const totalPhotos = 4;
-                for (let i = 1; i < totalPhotos; i++) {
-                    const divider = document.createElement('div');
-                    divider.style.position = 'absolute';
-                    divider.style.left = '0';
-                    divider.style.right = '0';
-                    divider.style.top = `${(i * 100) / totalPhotos}%`;
-                    divider.style.height = '1px';
-                    divider.style.backgroundColor = 'rgba(255,255,255,0.6)';
-                    divider.style.zIndex = '21';
-                    
-                    frameGuideContainer.appendChild(divider);
-                }
-                
-                // Add all elements to the guide container
-                frameGuideContainer.appendChild(photoGuide);
-                frameGuideContainer.appendChild(overlayTop);
-                frameGuideContainer.appendChild(overlayBottom);
-                frameGuideContainer.appendChild(helperText);
-                
-                // Add the guide container to the camera section
-                cameraSection.appendChild(frameGuideContainer);
-                
-                // Add a face position guide
-                const faceGuide = document.createElement('div');
-                faceGuide.style.position = 'absolute';
-                faceGuide.style.top = '30%';
-                faceGuide.style.left = '50%';
-                faceGuide.style.width = '70px';
-                faceGuide.style.height = '70px';
-                faceGuide.style.borderRadius = '50%';
-                faceGuide.style.border = '2px dashed rgba(255,255,255,0.5)';
-                faceGuide.style.transform = 'translate(-50%, -50%)';
-                faceGuide.style.pointerEvents = 'none';
-                faceGuide.style.zIndex = '21';
-                
-                frameGuideContainer.appendChild(faceGuide);
-            }
-            
-            // Add this to your existing JavaScript
-            if (window.innerWidth <= 767) {
-                document.addEventListener('DOMContentLoaded', function() {
-                    const controlSection = document.querySelector('.control-section');
-                    if (controlSection) {
-                        // Get all the elements
-                        const controlButtons = controlSection.querySelector('.control-buttons');
-                        const shotsCounter = controlSection.querySelector('.shots-counter');
-                        const cameraControls = controlSection.querySelector('.camera-controls');
-                        const timerPanel = controlSection.querySelector('.timer-panel');
-                        
-                        // Reorder elements - remove and append in desired order
-                        if (controlButtons) controlSection.appendChild(controlButtons);
-                        if (shotsCounter) controlSection.appendChild(shotsCounter);
-                        if (cameraControls) controlSection.appendChild(cameraControls);
-                        if (timerPanel) controlSection.appendChild(timerPanel);
-                    }
-                });
-            }
+            frameGuideContainer.appendChild(faceGuide);
         });
+        
+        // Add this function right before the initCamera function or where other helper functions are defined
+
+        function addPhotoFrameGuides() {
+            // Create a container for all the frame guides
+            const cameraSection = document.querySelector('.camera-section');
+            const frameGuideContainer = document.createElement('div');
+            frameGuideContainer.className = 'frame-guide-container';
+            frameGuideContainer.style.position = 'absolute';
+            frameGuideContainer.style.top = '0';
+            frameGuideContainer.style.left = '0';
+            frameGuideContainer.style.width = '100%';
+            frameGuideContainer.style.height = '100%';
+            frameGuideContainer.style.pointerEvents = 'none';
+            frameGuideContainer.style.zIndex = '20';
+            
+            // Create photo guide overlay
+            const photoGuide = document.createElement('div');
+            photoGuide.className = 'photo-guide';
+            photoGuide.style.position = 'absolute';
+            photoGuide.style.top = '0';
+            photoGuide.style.left = '0';
+            photoGuide.style.width = '100%';
+            photoGuide.style.height = '100%';
+            photoGuide.style.border = '2px solid rgba(255,255,255,0.5)';
+            photoGuide.style.boxSizing = 'border-box';
+            
+            // Create helper text
+            const helperText = document.createElement('div');
+            helperText.className = 'helper-text';
+            helperText.textContent = 'Keep face centered for best results';
+            helperText.style.position = 'absolute';
+            helperText.style.top = '10px';
+            helperText.style.left = '0';
+            helperText.style.width = '100%';
+            helperText.style.textAlign = 'center';
+            helperText.style.color = 'white';
+            helperText.style.fontSize = '12px';
+            helperText.style.textShadow = '0 1px 3px rgba(0,0,0,0.8)';
+            
+            // Add overlay for top and bottom
+            const overlayTop = document.createElement('div');
+            overlayTop.className = 'overlay-top';
+            overlayTop.style.position = 'absolute';
+            overlayTop.style.top = '0';
+            overlayTop.style.left = '0';
+            overlayTop.style.width = '100%';
+            overlayTop.style.height = '5%';
+            overlayTop.style.background = 'linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%)';
+            
+            const overlayBottom = document.createElement('div');
+            overlayBottom.className = 'overlay-bottom';
+            overlayBottom.style.position = 'absolute';
+            overlayBottom.style.bottom = '0';
+            overlayBottom.style.left = '0';
+            overlayBottom.style.width = '100%';
+            overlayBottom.style.height = '5%';
+            overlayBottom.style.background = 'linear-gradient(to top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%)';
+            
+            // Add dividing lines for 4 photos
+            const totalPhotos = 4;
+            for (let i = 1; i < totalPhotos; i++) {
+                const divider = document.createElement('div');
+                divider.style.position = 'absolute';
+                divider.style.left = '0';
+                divider.style.right = '0';
+                divider.style.top = `${(i * 100) / totalPhotos}%`;
+                divider.style.height = '1px';
+                divider.style.backgroundColor = 'rgba(255,255,255,0.6)';
+                divider.style.zIndex = '21';
+                
+                frameGuideContainer.appendChild(divider);
+            }
+            
+            // Add all elements to the guide container
+            frameGuideContainer.appendChild(photoGuide);
+            frameGuideContainer.appendChild(overlayTop);
+            frameGuideContainer.appendChild(overlayBottom);
+            frameGuideContainer.appendChild(helperText);
+            
+            // Add the guide container to the camera section
+            cameraSection.appendChild(frameGuideContainer);
+            
+            // Add a face position guide
+            const faceGuide = document.createElement('div');
+            faceGuide.style.position = 'absolute';
+            faceGuide.style.top = '30%';
+            faceGuide.style.left = '50%';
+            faceGuide.style.width = '70px';
+            faceGuide.style.height = '70px';
+            faceGuide.style.borderRadius = '50%';
+            faceGuide.style.border = '2px dashed rgba(255,255,255,0.5)';
+            faceGuide.style.transform = 'translate(-50%, -50%)';
+            faceGuide.style.pointerEvents = 'none';
+            faceGuide.style.zIndex = '21';
+            
+            frameGuideContainer.appendChild(faceGuide);
+        }
+        
+        // Add this function definition inside your DOMContentLoaded event handler before it's called
+
+        function updateShotsCounter() {
+            // Update the shots counter display
+            const counterSpan = shotsCounter.querySelector('span');
+            if (counterSpan) {
+                counterSpan.textContent = `${remainingShots} shots left`;
+            }
+            
+            // Disable capture button if no shots left
+            if (remainingShots <= 0) {
+                captureBtn.disabled = true;
+                captureBtn.style.opacity = '0.5';
+                captureBtn.style.cursor = 'not-allowed';
+            } else {
+                captureBtn.disabled = false;
+                captureBtn.style.opacity = '1';
+                captureBtn.style.cursor = 'pointer';
+            }
+            
+            // Update the create photostrip button
+            if (capturedImages.length >= 4) {
+                createStripBtn.style.background = 'var(--gradient-primary)';
+                createStripBtn.style.color = 'white';
+            } else {
+                createStripBtn.style.background = 'var(--light-color)';
+                createStripBtn.style.color = 'var(--text-color)';
+            }
+        }
     </script>
 </body>
 </html>
