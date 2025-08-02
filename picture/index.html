@@ -7,6 +7,16 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>SnapBound | Photo Booth</title>
+    
+    <!-- Add favicon using S.png -->
+    <link rel="icon" type="image/png" href="../S.png">
+
+    <!-- Apple touch icons for iOS devices -->
+    <link rel="apple-touch-icon" href="../S.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="../S.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../S.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="../S.png">
+    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <meta name="permissions-policy" content="camera=*">
@@ -1215,16 +1225,6 @@
                 
                 // Add photo to beginning of gallery (newest first)
                 const galleryContent = gallery.querySelector('.gallery-content');
-                galleryContent.insertBefore(photoItem, galleryContent.firstChild);
-                
-                // Save to localStorage with proper error handling
-                try {
-                    capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
-                    capturedImages.unshift(imageData);
-                    localStorage.setItem('capturedImages', JSON.stringify(capturedImages));
-                } catch (e) {
-                    console.error("Error saving to localStorage:", e);
-                    // Try saving with a smaller image
                     try {
                         // Compress the image more to save space
                         const compressedData = reduceImageQuality(imageData, 0.6);
