@@ -156,20 +156,25 @@
         
         /* Camera Section */
         .camera-section {
-            width: 100%;
-            height: 60vh;
-            min-height: 400px;
+            width: 90%;
+            height: 0;
+            padding-bottom: 50.625%; /* 16:9 aspect ratio for landscape */
             background-color: #000;
-            border-radius: var(--border-radius);
-            position: relative;
+            border-radius: 12px;
             overflow: hidden;
+            position: relative;
+            margin: 0 auto 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         
         #webcam {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
-            display: block;
+            transform: none; /* Ensure no mirroring/inversion */
         }
         
         .camera-overlay {
@@ -415,24 +420,26 @@
         
         .photo-item {
             position: relative;
-            width: 80px;
-            height: 80px;
+            width: 100%;
+            height: 0;
+            padding-bottom: 100%; /* Square photos */
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
             cursor: pointer;
             transition: var(--transition);
-        }
-        
-        .photo-item:hover {
-            transform: scale(1.05);
+            background-color: #f0f0f0; /* Light background for empty items */
         }
         
         .photo-item img {
+            position: absolute;
             width: 100%;
             height: 100%;
+            top: 0;
+            left: 0;
             object-fit: cover;
             border-radius: 8px;
+            display: block; /* Ensure image is displayed as block */
         }
         
         .shots-counter {
@@ -525,71 +532,140 @@
             }
             
             .booth-container {
-                padding: 10px;
+                padding: 15px;
                 margin-top: 70px;
-                display: flex;
-                flex-direction: column;
-                padding-bottom: 60px;
-            }
-            
-            .booth-title {
-                font-size: 1.8rem;
-                margin-bottom: 15px;
-            }
-            
-            /* Camera section - maintain aspect ratio */
-            .camera-section {
-                order: 1;
-                height: 40vh; /* Slightly reduce height to ensure buttons are visible */
-                min-height: 200px;
-                width: 100%;
-                margin: 0 auto;
-                border-radius: 10px;
-                overflow: hidden;
-                margin-bottom: 10px;
-            }
-            
-            /* Controls directly below camera */
-            .control-section {
-                order: 2;
-                margin-bottom: 10px;
-            }
-            
-            /* Make timer panel more compact */
-            .timer-panel {
-                padding: 8px;
-                margin-bottom: 8px;
-            }
-            
-            /* Keep buttons visible and accessible */
-            .control-buttons {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
-                margin-bottom: 15px;
-            }
-            
-            /* Make capture button full width in the grid */
-            .capture-btn {
-                grid-column: 1 / -1; /* Span all columns */
-                margin-bottom: 5px;
-            }
-            
-            /* Gallery last */
-            .gallery-section {
-                order: 3;
-                max-height: 150px;
-            }
-            
-            /* Improve mobile scrolling */
-            body.booth-page {
-                height: 100%;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 10px;
+                min-height: calc(100vh - 70px);
+                padding-bottom: 50px;
+                position: relative;
                 overflow-y: auto;
             }
             
-            /* Ensure the main container has padding at the bottom */
-            .booth-container {
-                padding-bottom: 60px;
+            .booth-title {
+                font-size: 1.4rem;
+                margin-bottom: 5px;
+                text-align: center;
+            }
+            
+            /* Camera section - make it smaller to leave room for buttons */
+            .camera-section {
+                order: 1;
+                width: 100%;
+                height: auto;
+                aspect-ratio: 16 / 9;
+                margin: 0 auto 10px;
+                border-radius: 8px;
+                overflow: hidden;
+                max-height: 40vh; /* Increase from 25vh to give camera more space */
+                position: relative;
+                box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            }
+            
+            /* Reorder the control section elements */
+            .control-section {
+                order: 2;
+                position: static !important;
+                display: flex !important;
+                flex-direction: column !important;
+                visibility: visible !important;
+                background-color: white !important;
+                padding: 10px !important;
+                margin-top: 0 !important; /* Remove negative margin */
+                z-index: 100 !important;
+            }
+            
+            /* Change the order of elements within control section */
+            .control-section > * {
+                order: 5; /* Default high order */
+            }
+            
+            /* Main action buttons should appear first (right after camera) */
+            .control-buttons {
+                order: 1 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 10px !important;
+                margin-bottom: 15px !important;
+                width: 100% !important;
+            }
+            
+            /* Shots counter */
+            .shots-counter {
+                order: 2 !important;
+            }
+            
+            /* Camera controls (switch camera) moves after action buttons */
+            .camera-controls {
+                order: 3 !important;
+            }
+            
+            /* Timer panel comes last */
+            .timer-panel {
+                order: 4 !important;
+            }
+        }
+        
+        /* Ensure camera display has the same landscape style on all devices */
+        @media (min-width: 768px) {
+            .camera-section {
+                width: 80%;
+                padding-bottom: 45%; /* Maintain 16:9 aspect ratio */
+                max-width: 800px;
+            }
+            
+            /* Desktop button layout */
+            .control-buttons {
+                display: flex;
+                justify-content: space-between;
+                gap: 15px;
+            }
+            
+            .other-buttons {
+                display: contents;
+            }
+        }
+        
+        /* Add this to your CSS, right before the Mobile Styles media query */
+        
+        /* Desktop layout with gallery on left side of camera */
+        @media (min-width: 768px) {
+            /* Change booth-layout to horizontal on desktop */
+            .booth-layout {
+                flex-direction: row;
+                gap: 20px;
+            }
+            
+            /* Make camera section narrower to leave room for gallery */
+            .camera-section {
+                width: 65%;
+                padding-bottom: 36.5625%; /* Maintain 16:9 aspect ratio */
+                margin: 0;
+            }
+            
+            /* Position gallery on the left */
+            .gallery-section {
+                order: -1; /* Move before the camera */
+                width: 30%;
+                height: auto;
+                max-height: 500px;
+                overflow-y: auto;
+                margin-top: 0;
+            }
+            
+            /* Gallery content layout for vertical display */
+            .gallery-content {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            /* Make photo items larger */
+            .photo-item {
+                width: 100%;
+                height: 0;
+                padding-bottom: 100%; /* Square photos */
             }
         }
     </style>
@@ -619,27 +695,60 @@
     <div class="booth-container">
         <h1 class="booth-title">Capture Your <span class="highlight">Moments</span></h1>
         
-        <!-- Camera Section -->
-        <div class="camera-section">
-            <video id="webcam" autoplay playsinline></video>
-            <div class="countdown" id="countdown"></div>
-            <canvas id="canvas" style="display:none;"></canvas>
-            <div class="camera-overlay">
-                <div class="overlay-corner top-left"></div>
-                <div class="overlay-corner top-right"></div>
-                <div class="overlay-corner bottom-left"></div>
-                <div class="overlay-corner bottom-right"></div>
+        <div class="booth-layout">
+            <!-- Camera Section -->
+            <div class="camera-section">
+                <video id="webcam" autoplay playsinline></video>
+                <div class="countdown" id="countdown"></div>
+                <canvas id="canvas" style="display:none;"></canvas>
+                <div class="camera-overlay">
+                    <div class="overlay-corner top-left"></div>
+                    <div class="overlay-corner top-right"></div>
+                    <div class="overlay-corner bottom-left"></div>
+                    <div class="overlay-corner bottom-right"></div>
+                </div>
+            </div>
+              
+            <!-- Gallery Section (now will appear on left on desktop) -->
+            <div class="gallery-section" id="gallery">
+                <div class="gallery-header">
+                    <h3><i class="fas fa-images"></i> Your Photos</h3>
+                </div>
+                <div class="gallery-empty-state">
+                    <i class="fas fa-camera-retro"></i>
+                    <p>Captured photos will appear here</p>
+                </div>
+                <div class="gallery-content"></div>
             </div>
         </div>
         
-        <!-- Controls Section -->
+        <!-- Controls Section (stays below camera) -->
         <div class="control-section">
+            <!-- Main action buttons first -->
+            <div class="control-buttons">
+                <button id="captureBtn" class="capture-btn"><i class="fas fa-camera"></i> Take Picture</button>
+                <div class="other-buttons">
+                    <button id="createStrip" class="btn">
+                        <i class="fas fa-images"></i> Create PhotoStrip
+                        <span class="photo-requirement">4</span>
+                    </button>
+                    <button id="resetBtn" class="btn reset-btn"><i class="fas fa-trash"></i> Reset Photos</button>
+                </div>
+            </div>
+            
+            <!-- Shots counter -->
+            <div class="shots-counter" id="shotsCounter">
+                <i class="fas fa-camera"></i> <span>10 shots left</span>
+            </div>
+            
+            <!-- Camera controls (switch camera) -->
             <div class="camera-controls">
                 <button id="switchCamera" class="control-btn">
                     <i class="fas fa-sync"></i> Switch Camera
                 </button>
             </div>
             
+            <!-- Timer panel last -->
             <div class="timer-panel">
                 <div class="panel-label"><i class="fas fa-stopwatch"></i> Choose Timer</div>
                 <div class="timer-controls">
@@ -649,32 +758,6 @@
                     <button class="timer-btn" data-seconds="8">8s</button>
                 </div>
             </div>
-            
-            <div class="shots-counter" id="shotsCounter">
-                <i class="fas fa-camera"></i> <span>10 shots left</span>
-            </div>
-            
-            <!-- Main camera controls -->
-            <div class="control-buttons">
-                <button id="captureBtn" class="capture-btn"><i class="fas fa-camera"></i> Take Picture</button>
-                <button id="createStrip" class="btn">
-                    <i class="fas fa-images"></i> Create PhotoStrip
-                    <span class="photo-requirement">4</span>
-                </button>
-                <button id="resetBtn" class="btn reset-btn"><i class="fas fa-trash"></i> Reset Photos</button>
-            </div>
-        </div>
-        
-        <!-- Gallery Section -->
-        <div class="gallery-section" id="gallery">
-            <div class="gallery-header">
-                <h3><i class="fas fa-images"></i> Your Photos</h3>
-            </div>
-            <div class="gallery-empty-state">
-                <i class="fas fa-camera-retro"></i>
-                <p>Captured photos will appear here</p>
-            </div>
-            <div class="gallery-content"></div>
         </div>
     </div>
 
@@ -763,32 +846,301 @@
             
             // Functions
             function initCamera(facingMode = 'user') {
-                // Stop any existing stream
-                if (stream) {
-                    stream.getTracks().forEach(track => track.stop());
+                // First, check if camera access is available at all
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    showCameraError("Your browser doesn't support camera access. Please try a different browser.");
+                    return;
                 }
                 
+                // Add a loading indicator that's more visible
+                const cameraSection = document.querySelector('.camera-section');
+                const loadingIndicator = document.createElement('div');
+                loadingIndicator.id = 'cameraLoading';
+                loadingIndicator.innerHTML = `
+                    <div style="position:absolute; top:0; left:0; right:0; bottom:0; 
+                               background:rgba(0,0,0,0.7); display:flex; flex-direction:column;
+                               align-items:center; justify-content:center; z-index:100;">
+                        <div style="width:40px; height:40px; border:3px solid #fff; 
+                                   border-top-color:var(--primary-color); border-radius:50%;
+                                   animation:spin 1s linear infinite;"></div>
+                        <div style="color:white; font-size:16px; margin-top:10px;">
+                            Loading camera...
+                        </div>
+                    </div>
+                    <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+                `;
+                cameraSection.appendChild(loadingIndicator);
+                
+                // Log camera initialization attempt
+                console.log('Initializing camera with facingMode:', facingMode);
+                
+                // Stop any existing stream
+                if (stream) {
+                    stream.getTracks().forEach(track => {
+                        track.stop();
+                        console.log('Stopped previous track:', track.kind);
+                    });
+                }
+                
+                // Define camera constraints
                 const constraints = {
                     audio: false,
                     video: {
                         facingMode: facingMode,
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 }
+                        width: { ideal: 720 },
+                        height: { ideal: 1280 }
                     }
                 };
                 
-                navigator.mediaDevices.getUserMedia(constraints)
-                    .then(function(mediaStream) {
-                        stream = mediaStream;
-                        video.srcObject = mediaStream;
-                        video.onloadedmetadata = function(e) {
-                            video.play();
-                        };
-                    })
-                    .catch(function(err) {
-                        console.error('Error accessing camera: ', err);
-                        alert('Error accessing camera. Please ensure you have given camera permissions.');
-                    });
+                // Request camera access with a timeout
+                const timeoutPromise = new Promise((_, reject) => {
+                    setTimeout(() => reject(new Error('Camera access timeout after 10 seconds')), 10000);
+                });
+                
+                // Try to get camera access with timeout
+                Promise.race([
+                    navigator.mediaDevices.getUserMedia(constraints),
+                    timeoutPromise
+                ])
+                .then(mediaStream => {
+                    console.log('Camera access granted!');
+                    stream = mediaStream;
+                    video.srcObject = mediaStream;
+                    
+                    // Get actual camera settings
+                    const track = stream.getVideoTracks()[0];
+                    const settings = track.getSettings();
+                    console.log('Camera settings:', settings);
+                    
+                    video.onloadedmetadata = () => {
+                        // Remove loading indicator
+                        document.getElementById('cameraLoading')?.remove();
+                        video.play()
+                            .then(() => {
+                                console.log('Video playback started');
+                                // Add frame guides after camera loads
+                                addPhotoFrameGuides();
+                            })
+                            .catch(err => {
+                                console.error('Error playing video:', err);
+                                showCameraError("Camera available but couldn't start video: " + err.message);
+                            });
+                    };
+                })
+                .catch(err => {
+                    console.error('Camera access error:', err);
+                    document.getElementById('cameraLoading')?.remove();
+                    showCameraError(err.message || 'Failed to access camera. Please check permissions.');
+                });
+            }
+            
+            // Add this helper function to show camera errors
+            function showCameraError(message) {
+                const cameraSection = document.querySelector('.camera-section');
+                const errorDiv = document.createElement('div');
+                errorDiv.style.position = 'absolute';
+                errorDiv.style.top = '0';
+                errorDiv.style.left = '0';
+                errorDiv.style.right = '0';
+                errorDiv.style.bottom = '0';
+                errorDiv.style.display = 'flex';
+                errorDiv.style.flexDirection = 'column';
+                errorDiv.style.alignItems = 'center';
+                errorDiv.style.justifyContent = 'center';
+                errorDiv.style.background = 'rgba(0,0,0,0.9)';
+                errorDiv.style.color = 'white';
+                errorDiv.style.padding = '20px';
+                errorDiv.style.textAlign = 'center';
+                errorDiv.style.zIndex = '200';
+                
+                errorDiv.innerHTML = `
+                    <i class="fas fa-exclamation-circle" style="font-size:40px; color:var(--primary-color); margin-bottom:15px;"></i>
+                    <h3 style="margin-bottom:10px;">Camera Error</h3>
+                    <p style="margin-bottom:15px;">${message}</p>
+                    <button id="retryCameraBtn" style="padding:8px 16px; background:var(--primary-color); 
+                            color:white; border:none; border-radius:20px; cursor:pointer;">
+                        <i class="fas fa-redo"></i> Retry Camera
+                    </button>
+                `;
+                
+                cameraSection.appendChild(errorDiv);
+                
+                // Add retry button handler
+                document.getElementById('retryCameraBtn').addEventListener('click', function() {
+                    errorDiv.remove();
+                    initCamera('user');
+                });
+            }
+            
+            // Function to ensure consistent framing across devices
+            function applyConsistentFraming(videoElement, actualSettings) {
+                // Standard photostrip aspect ratio is 3:4 (portrait)
+                const standardRatio = 3/4;
+                
+                // Get the actual video aspect ratio
+                const actualRatio = actualSettings.width / actualSettings.height;
+                
+                // We need to adjust the video display based on actual ratio vs standard ratio
+                if (Math.abs(actualRatio - standardRatio) > 0.05) { // If ratios differ significantly
+                    if (actualRatio > standardRatio) {
+                        // Video is wider than our target ratio - crop sides
+                        const displayWidth = videoElement.offsetHeight * standardRatio;
+                        const cropPercentage = (displayWidth / videoElement.offsetWidth) * 100;
+                        
+                        videoElement.style.width = 'auto';
+                        videoElement.style.height = '100%';
+                        videoElement.style.maxWidth = 'none';
+                        videoElement.style.objectPosition = 'center';
+                    } else {
+                        // Video is taller than our target ratio - crop top/bottom
+                        const displayHeight = videoElement.offsetWidth / standardRatio;
+                        const cropPercentage = (displayHeight / videoElement.offsetHeight) * 100;
+                        
+                        videoElement.style.width = '100%';
+                        videoElement.style.height = 'auto';
+                        videoElement.style.maxHeight = 'none';
+                        videoElement.style.objectPosition = 'center';
+                    }
+                }
+                
+                // Add consistent frame guides for PhotoStrip
+                addPhotoStripGuides();
+            }
+            
+            // Add visual guides to show where photos will appear in strip
+            function addPhotoStripGuides() {
+                // Remove any existing guides
+                document.querySelectorAll('.photostrip-guide').forEach(el => el.remove());
+                
+                const cameraSection = document.querySelector('.camera-section');
+                const totalPhotos = 4;
+                
+                // Add guide lines that show the 4 photo sections
+                for (let i = 1; i < totalPhotos; i++) {
+                    const guideLine = document.createElement('div');
+                    guideLine.className = 'photostrip-guide';
+                    guideLine.style.position = 'absolute';
+                    guideLine.style.left = '0';
+                    guideLine.style.right = '0';
+                    guideLine.style.top = `${(i * 100) / totalPhotos}%`;
+                    guideLine.style.height = '1px';
+                    guideLine.style.backgroundColor = 'rgba(255,255,255,0.5)';
+                    guideLine.style.zIndex = '12';
+                    guideLine.style.pointerEvents = 'none';
+                    
+                    cameraSection.appendChild(guideLine);
+                }
+                
+                // Add frame counter dots
+                const frameCounter = document.createElement('div');
+                frameCounter.className = 'frame-counter';
+                frameCounter.style.position = 'absolute';
+                frameCounter.style.top = '10px';
+                frameCounter.style.right = '10px';
+                frameCounter.style.zIndex = '12';
+                frameCounter.style.pointerEvents = 'none';
+                
+                for (let i = 0; i < totalPhotos; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'frame-dot';
+                    dot.style.width = '8px';
+                    dot.style.height = '8px';
+                    dot.style.borderRadius = '50%';
+                    dot.style.backgroundColor = 'rgba(255,255,255,0.7)';
+                    dot.style.display = 'inline-block';
+                    dot.style.margin = '0 3px';
+                    
+                    frameCounter.appendChild(dot);
+                }
+                
+                cameraSection.appendChild(frameCounter);
+            }
+            
+            // Modified capturePhoto function for landscape photos
+            function capturePhoto() {
+                const context = canvas.getContext('2d');
+                
+                // For landscape photos to capture multiple people, use 16:9 ratio
+                const canvasWidth = 800;  // Standardized width for landscape
+                const canvasHeight = 450; // Standardized height (16:9 ratio)
+                
+                // Resize canvas to our standard size for consistent output
+                canvas.width = canvasWidth;
+                canvas.height = canvasHeight;
+                
+                // Get the current video dimensions
+                const videoWidth = video.videoWidth;
+                const videoHeight = video.videoHeight;
+                
+                // Calculate how to center and crop the image to maintain 16:9 ratio
+                let sourceX, sourceY, sourceWidth, sourceHeight;
+                
+                if (videoWidth / videoHeight > canvasWidth / canvasHeight) {
+                    // Video is wider than our target ratio
+                    sourceHeight = videoHeight;
+                    sourceWidth = sourceHeight * (canvasWidth / canvasHeight);
+                    sourceX = (videoWidth - sourceWidth) / 2;
+                    sourceY = 0;
+                } else {
+                    // Video is taller than our target ratio
+                    sourceWidth = videoWidth;
+                    sourceHeight = sourceWidth * (canvasHeight / canvasWidth);
+                    sourceX = 0;
+                    sourceY = (videoHeight - sourceHeight) / 2;
+                }
+                
+                // Draw the image to canvas (no mirroring)
+                context.drawImage(
+                    video,
+                    sourceX, sourceY, sourceWidth, sourceHeight,
+                    0, 0, canvasWidth, canvasHeight
+                );
+                
+                // Apply consistent post-processing for all devices
+                applyImageEnhancements(context, canvasWidth, canvasHeight);
+                
+                // Get the final image data
+                const imageData = canvas.toDataURL('image/jpeg', 0.92);
+                
+                // Continue with existing functionality
+                addPhotoToGallery(imageData);
+                remainingShots--;
+                updateShotsCounter();
+                
+                // Update frame counter to show progress
+                updateFrameCounter();
+            }
+            
+            // Apply consistent image enhancements 
+            function applyImageEnhancements(context, width, height) {
+                // Add subtle vignette effect for professional look
+                const gradient = context.createRadialGradient(
+                    width/2, height/2, height*0.3,
+                    width/2, height/2, height*0.7
+                );
+                gradient.addColorStop(0, 'rgba(0,0,0,0)');
+                gradient.addColorStop(1, 'rgba(0,0,0,0.3)');
+                
+                context.fillStyle = gradient;
+                context.globalCompositeOperation = 'multiply';
+                context.fillRect(0, 0, width, height);
+                context.globalCompositeOperation = 'source-over';
+                
+                // Add subtle brightness/contrast adjustments
+                // Note: For more advanced image processing, consider using a library
+            }
+            
+            // Update frame counter to show progress
+            function updateFrameCounter() {
+                const capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+                const dots = document.querySelectorAll('.frame-dot');
+                
+                // Update dots based on how many photos have been taken
+                dots.forEach((dot, index) => {
+                    if (index < capturedImages.length) {
+                        dot.style.backgroundColor = 'var(--primary-color)';
+                    }
+                });
             }
             
             function startCapture() {
@@ -819,40 +1171,7 @@
                 }
             }
             
-            function capturePhoto() {
-                const context = canvas.getContext('2d');
-                
-                // Set canvas to match video dimensions for consistent aspect ratio
-                const videoWidth = video.videoWidth;
-                const videoHeight = video.videoHeight;
-                
-                // Create a square crop from the center of the video
-                const size = Math.min(videoWidth, videoHeight);
-                const startX = (videoWidth - size) / 2;
-                const startY = (videoHeight - size) / 2;
-                
-                // Set canvas size to the square crop dimensions
-                canvas.width = size;
-                canvas.height = size;
-                
-                // Draw the cropped region to maintain aspect ratio
-                context.drawImage(
-                    video,
-                    startX, startY, size, size,
-                    0, 0, size, size
-                );
-                
-                // Get image data
-                const imageData = canvas.toDataURL('image/jpeg', 0.85);
-                
-                // Add to gallery and save
-                addPhotoToGallery(imageData);
-                
-                // Update shots counter
-                remainingShots--;
-                updateShotsCounter();
-            }
-            
+            // Replace the addPhotoToGallery function with this improved version
             function addPhotoToGallery(imageData) {
                 // Create new item for gallery
                 const photoItem = document.createElement('div');
@@ -862,6 +1181,21 @@
                 const img = document.createElement('img');
                 img.src = imageData;
                 img.alt = 'Captured photo';
+                
+                // Debug log to verify image data
+                console.log("Adding image to gallery, data length:", imageData.length);
+                
+                // Make sure image loads properly
+                img.onload = function() {
+                    console.log("Image loaded successfully");
+                };
+                
+                img.onerror = function() {
+                    console.error("Error loading image in gallery");
+                    // Show error indicator
+                    photoItem.style.backgroundColor = "#ffdddd";
+                    photoItem.innerHTML = '<div style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#ff5757;"><i class="fas fa-exclamation-triangle"></i></div>';
+                };
                 
                 // Append image to container
                 photoItem.appendChild(img);
@@ -883,10 +1217,40 @@
                 const galleryContent = gallery.querySelector('.gallery-content');
                 galleryContent.insertBefore(photoItem, galleryContent.firstChild);
                 
-                // Save to localStorage
-                capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
-                capturedImages.unshift(imageData);
-                localStorage.setItem('capturedImages', JSON.stringify(capturedImages));
+                // Save to localStorage with proper error handling
+                try {
+                    capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+                    capturedImages.unshift(imageData);
+                    localStorage.setItem('capturedImages', JSON.stringify(capturedImages));
+                } catch (e) {
+                    console.error("Error saving to localStorage:", e);
+                    // Try saving with a smaller image
+                    try {
+                        // Compress the image more to save space
+                        const compressedData = reduceImageQuality(imageData, 0.6);
+                        capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+                        capturedImages.unshift(compressedData);
+                        localStorage.setItem('capturedImages', JSON.stringify(capturedImages));
+                    } catch (e2) {
+                        console.error("Failed to save even with compression:", e2);
+                    }
+                }
+            }
+            
+            // Add this helper function to reduce image size if needed
+            function reduceImageQuality(dataUrl, quality) {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0);
+                        resolve(canvas.toDataURL('image/jpeg', quality));
+                    };
+                    img.src = dataUrl;
+                });
             }
             
             function loadSavedPhotos() {
@@ -1014,26 +1378,151 @@
                         behavior: 'smooth'
                     });
                 }, 500);
-                
-                // Adjust layout to ensure camera and buttons are visible without scrolling
-                const cameraSection = document.querySelector('.camera-section');
-                const viewportHeight = window.innerHeight;
-                const navHeight = document.querySelector('.nav-bar').offsetHeight;
-                const titleHeight = document.querySelector('.booth-title').offsetHeight;
-                const availableHeight = viewportHeight - navHeight - titleHeight - 40; // 40px for margins
-                
-                // Set camera height to a percentage of available space
-                const cameraHeight = Math.min(availableHeight * 0.5, 300);
-                cameraSection.style.height = `${cameraHeight}px`;
-                cameraSection.style.minHeight = `${cameraHeight}px`;
             }
             
-            // Handle clicks outside the modal to close it
-            window.onclick = function(event) {
-                if (event.target === photoModal) {
-                    closePhotoModal();
+            // Add this code right after the DOMContentLoaded event listener in your script
+            
+            // Force buttons to be visible on mobile
+            if (window.innerWidth <= 767) {
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Force display of control buttons
+                    const controlButtons = document.querySelector('.control-buttons');
+                    const captureBtn = document.getElementById('captureBtn');
+                    const controlSection = document.querySelector('.control-section');
+                    
+                    // Ensure they're displayed with !important styles
+                    if (controlButtons) controlButtons.setAttribute('style', 'display: flex !important; visibility: visible !important; opacity: 1 !important;');
+                    if (captureBtn) captureBtn.setAttribute('style', 'display: flex !important; visibility: visible !important; opacity: 1 !important;');
+                    if (controlSection) controlSection.setAttribute('style', 'display: block !important; visibility: visible !important; opacity: 1 !important;');
+                    
+                    // Ensure the control section is properly positioned
+                    setTimeout(() => {
+                        window.scrollTo(0, 0);
+                    }, 300);
+                });
+            }
+            
+            // Add this function to your JavaScript
+            function addPhotoFrameGuides() {
+                const cameraSection = document.querySelector('.camera-section');
+                
+                // Remove any existing guides
+                document.querySelectorAll('.frame-guide').forEach(el => el.remove());
+                
+                // Create a container for the frame guides
+                const frameGuideContainer = document.createElement('div');
+                frameGuideContainer.className = 'frame-guide';
+                frameGuideContainer.style.position = 'absolute';
+                frameGuideContainer.style.top = '0';
+                frameGuideContainer.style.left = '0';
+                frameGuideContainer.style.right = '0';
+                frameGuideContainer.style.bottom = '0';
+                frameGuideContainer.style.pointerEvents = 'none';
+                frameGuideContainer.style.zIndex = '20';
+                
+                // Add the guide that shows exactly how photos will be cropped
+                const photoGuide = document.createElement('div');
+                photoGuide.style.position = 'absolute';
+                photoGuide.style.width = '100%';
+                photoGuide.style.height = '100%';
+                photoGuide.style.boxSizing = 'border-box';
+                photoGuide.style.border = '2px dashed rgba(255,255,255,0.6)';
+                photoGuide.style.pointerEvents = 'none';
+                photoGuide.style.zIndex = '21';
+                
+                // Create semi-transparent overlays to show what parts will be cropped
+                const overlayTop = document.createElement('div');
+                overlayTop.style.position = 'absolute';
+                overlayTop.style.top = '0';
+                overlayTop.style.left = '0';
+                overlayTop.style.width = '100%';
+                overlayTop.style.height = '10%';
+                overlayTop.style.backgroundColor = 'rgba(0,0,0,0.4)';
+                overlayTop.style.pointerEvents = 'none';
+                overlayTop.style.zIndex = '19';
+                
+                const overlayBottom = document.createElement('div');
+                overlayBottom.style.position = 'absolute';
+                overlayBottom.style.bottom = '0';
+                overlayBottom.style.left = '0';
+                overlayBottom.style.width = '100%';
+                overlayBottom.style.height = '10%';
+                overlayBottom.style.backgroundColor = 'rgba(0,0,0,0.4)';
+                overlayBottom.style.pointerEvents = 'none';
+                overlayBottom.style.zIndex = '19';
+                
+                // Add helper text
+                const helperText = document.createElement('div');
+                helperText.style.position = 'absolute';
+                helperText.style.top = '10px';
+                helperText.style.left = '0';
+                helperText.style.width = '100%';
+                helperText.style.textAlign = 'center';
+                helperText.style.color = 'white';
+                helperText.style.fontSize = '12px';
+                helperText.style.textShadow = '0 1px 2px rgba(0,0,0,0.8)';
+                helperText.style.zIndex = '22';
+                helperText.innerHTML = 'Keep face centered for best results';
+                
+                // Add dividing lines for 4 photos
+                const totalPhotos = 4;
+                for (let i = 1; i < totalPhotos; i++) {
+                    const divider = document.createElement('div');
+                    divider.style.position = 'absolute';
+                    divider.style.left = '0';
+                    divider.style.right = '0';
+                    divider.style.top = `${(i * 100) / totalPhotos}%`;
+                    divider.style.height = '1px';
+                    divider.style.backgroundColor = 'rgba(255,255,255,0.6)';
+                    divider.style.zIndex = '21';
+                    
+                    frameGuideContainer.appendChild(divider);
                 }
-            };
+                
+                // Add all elements to the guide container
+                frameGuideContainer.appendChild(photoGuide);
+                frameGuideContainer.appendChild(overlayTop);
+                frameGuideContainer.appendChild(overlayBottom);
+                frameGuideContainer.appendChild(helperText);
+                
+                // Add the guide container to the camera section
+                cameraSection.appendChild(frameGuideContainer);
+                
+                // Add a face position guide
+                const faceGuide = document.createElement('div');
+                faceGuide.style.position = 'absolute';
+                faceGuide.style.top = '30%';
+                faceGuide.style.left = '50%';
+                faceGuide.style.width = '70px';
+                faceGuide.style.height = '70px';
+                faceGuide.style.borderRadius = '50%';
+                faceGuide.style.border = '2px dashed rgba(255,255,255,0.5)';
+                faceGuide.style.transform = 'translate(-50%, -50%)';
+                faceGuide.style.pointerEvents = 'none';
+                faceGuide.style.zIndex = '21';
+                
+                frameGuideContainer.appendChild(faceGuide);
+            }
+            
+            // Add this to your existing JavaScript
+            if (window.innerWidth <= 767) {
+                document.addEventListener('DOMContentLoaded', function() {
+                    const controlSection = document.querySelector('.control-section');
+                    if (controlSection) {
+                        // Get all the elements
+                        const controlButtons = controlSection.querySelector('.control-buttons');
+                        const shotsCounter = controlSection.querySelector('.shots-counter');
+                        const cameraControls = controlSection.querySelector('.camera-controls');
+                        const timerPanel = controlSection.querySelector('.timer-panel');
+                        
+                        // Reorder elements - remove and append in desired order
+                        if (controlButtons) controlSection.appendChild(controlButtons);
+                        if (shotsCounter) controlSection.appendChild(shotsCounter);
+                        if (cameraControls) controlSection.appendChild(cameraControls);
+                        if (timerPanel) controlSection.appendChild(timerPanel);
+                    }
+                });
+            }
         });
     </script>
 </body>
