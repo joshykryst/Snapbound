@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Redirect to the new path structure
-            window.location.href = 'selectphotos/index.php';
+            window.location.href = 'selectphotos';
         });
     }
     
