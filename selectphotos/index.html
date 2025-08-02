@@ -401,24 +401,24 @@
 <body class="booth-page">
     <!-- Navigation -->
     <nav class="nav-bar">
-        <div class="nav-container">
-            <a href="../index.html" class="logo">
-                <img src="../S.png" alt="Logo" class="logo-img">
-                <span class="logo-text">Snap<span class="logo-highlight">Bound</span></span>
-            </a>
-            <div class="nav-links">
-                <a href="../index.html#home" class="nav-link"><i class="fas fa-home"></i> Home</a>
-                <a href="../index.html#features" class="nav-link"><i class="fas fa-camera-retro"></i> Features</a>
-                <a href="../index.html#how-it-works" class="nav-link"><i class="fas fa-question-circle"></i> How It Works</a>
-                <a href="../index.html#about" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
-            </div>
-            <div class="mobile-menu-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+    <div class="nav-container">
+        <a href="https://snapbound.studio" class="logo">
+            <img src="../S.png" alt="Logo" class="logo-img">
+            <span class="logo-text">Snap<span class="logo-highlight">Bound</span></span>
+        </a>
+        <div class="nav-links">
+            <a href="https://snapbound.studio/#home" class="nav-link"><i class="fas fa-home"></i> Home</a>
+            <a href="https://snapbound.studio/#features" class="nav-link"><i class="fas fa-camera-retro"></i> Features</a>
+            <a href="https://snapbound.studio/#how-it-works" class="nav-link"><i class="fas fa-question-circle"></i> How It Works</a>
+            <a href="https://snapbound.studio/#about" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
         </div>
-    </nav>
+        <div class="mobile-menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</nav>
 
     <div class="select-photos-container">
         <h1 class="page-title">Create Your <span>PhotoStrip</span></h1>
@@ -460,7 +460,7 @@
         </div>
 
         <div class="selection-controls">
-            <a href="../picture.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Camera</a>
+            <a href="https://snapbound.studio/picture/" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Camera</a>
             <button id="downloadStrip"><i class="fas fa-download"></i> Download PhotoStrip</button>
             <button id="downloadPhotos"><i class="fas fa-images"></i> Download All Photos</button>
         </div>
@@ -1072,7 +1072,7 @@ function showDebugInfo() {
             if (imageCount === 0) {
                 // Create some test images if needed
                 const testImages = [
-                    'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAABAAEDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKABQFUAZOBz60YGc4HPrRRQB/9k='
+                    'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAABAAEDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKABQFUAZOBz60YGc4HPrRRQB/9k='
                 ];
                 
                 localStorage.setItem('capturedImages', JSON.stringify(testImages));
