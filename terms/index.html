@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - SnapBound</title>
+    <link rel="stylesheet" href="index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Page-specific styles */
+        .terms-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 150px 20px 80px;
+        }
+        
+        .terms-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .terms-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--dark-color);
+        }
+        
+        .terms-header p {
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .terms-date {
+            display: inline-block;
+            background: rgba(255, 87, 87, 0.1);
+            color: var(--primary-color);
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            margin-top: 20px;
+        }
+        
+        .terms-content {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 40px;
+        }
+        
+        .terms-section {
+            margin-bottom: 40px;
+        }
+        
+        .terms-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .terms-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .terms-section h2::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+        
+        .terms-section h3 {
+            font-size: 1.3rem;
+            margin: 25px 0 15px;
+            color: var(--dark-color);
+        }
+        
+        .terms-section p, .terms-section li {
+            margin-bottom: 15px;
+            line-height: 1.7;
+            color: #555;
+        }
+        
+        .terms-section ul, .terms-section ol {
+            padding-left: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .terms-section li {
+            margin-bottom: 10px;
+        }
+        
+        .terms-footer {
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--dark-color);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .highlight-box {
+            background-color: rgba(255, 87, 87, 0.05);
+            border-left: 4px solid var(--primary-color);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .highlight-box p:last-child {
+            margin-bottom: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .terms-container {
+                padding: 120px 15px 60px;
+            }
+            
+            .terms-header h1 {
+                font-size: 2rem;
+            }
+            
+            .terms-content {
+                padding: 30px 20px;
+            }
+            
+            .terms-section h2 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="S.png" alt="Logo" class="logo-img">
+                <span class="logo-text">Snap<span class="logo-highlight">Bound</span></span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html#home" class="nav-link"><i class="fas fa-home"></i> Home</a>
+                <a href="index.html#features" class="nav-link"><i class="fas fa-camera-retro"></i> Features</a>
+                <a href="index.html#how-it-works" class="nav-link"><i class="fas fa-question-circle"></i> How It Works</a>
+                <a href="index.html#about" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
+            </div>
+            <div class="auth-buttons">
+                <a href="picture.html" class="start-btn">Start Creating <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Terms of Service Content -->
+    <div class="terms-container">
+        <div class="terms-header">
+            <h1>Terms of <span class="highlight">Service</span></h1>
+            <p>Please read these Terms of Service carefully before using SnapBound PhotoBooth. By accessing or using our service, you agree to be bound by these Terms.</p>
+            <div class="terms-date">Last Updated: August 1, 2025</div>
+        </div>
+        
+        <div class="terms-content">
+            <div class="terms-section">
+                <h2>1. Introduction</h2>
+                <p>Welcome to SnapBound ("we," "our," or "us"). By accessing or using our PhotoBooth web application and services (collectively, the "Services"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, please do not use our Services.</p>
+                
+                <div class="highlight-box">
+                    <p>SnapBound is a web-based photo booth application that allows users to capture, customize, and share photos. These Terms govern your use of our platform and any features, content, or services offered through SnapBound.</p>
+                </div>
+            </div>
+            
+            <div class="terms-section">
+                <h2>2. Use of Services</h2>
+                
+                <h3>2.1 Eligibility</h3>
+                <p>You must be at least 13 years of age to use our Services. By using SnapBound, you represent and warrant that you meet this requirement and have the legal capacity to enter into these Terms.</p>
+                
+                <h3>2.2 Account Responsibility</h3>
+                <p>While SnapBound doesn't currently require account creation, you are responsible for all activity that occurs through your use of our Services, including any photos captured, edited, or shared.</p>
+                
+                <h3>2.3 Acceptable Use</h3>
+                <p>When using our Services, you agree not to:</p>
+                <ul>
+                    <li>Violate any applicable laws or regulations</li>
+                    <li>Infringe upon the rights of others, including privacy and intellectual property rights</li>
+                    <li>Capture, edit, or share content that is illegal, harmful, threatening, abusive, harassing, defamatory, vulgar, obscene, or otherwise objectionable</li>
+                    <li>Attempt to gain unauthorized access to our Services or systems</li>
+                    <li>Interfere with or disrupt the integrity or performance of our Services</li>
+                    <li>Engage in any activity that could damage, disable, overburden, or impair our Services</li>
+                </ul>
+            </div>
+            
+            <div class="terms-section">
+                <h2>3. User Content</h2>
+                
+                <h3>3.1 Ownership</h3>
+                <p>You retain all ownership rights to the photos and content you create through SnapBound. By using our Services, you grant us a non-exclusive, royalty-free, worldwide license to use, store, and display your content for the purpose of providing and improving our Services.</p>
+                
+                <h3>3.2 Content Restrictions</h3>
+                <p>You are solely responsible for the content you capture, edit, or share through our Services. You agree not to create or share content that:</p>
+                <ul>
+                    <li>Infringes on the intellectual property rights of others</li>
+                    <li>Contains private or personally identifiable information about others without their consent</li>
+                    <li>Violates any law or regulation</li>
+                    <li>Is harmful, fraudulent, deceptive, threatening, harassing, defamatory, obscene, or otherwise objectionable</li>
+                </ul>
+                
+                <div class="highlight-box">
+                    <p><strong>Important:</strong> While we do not actively monitor or review content created through SnapBound, we reserve the right to remove any content that violates these Terms or that we find objectionable for any reason, without prior notice.</p>
+                </div>
+            </div>
+            
+            <div class="terms-section">
+                <h2>4. Privacy</h2>
+                <p>Your privacy is important to us. Our Privacy Policy explains how we collect, use, and protect your information when you use our Services. By using SnapBound, you agree to our collection and use of information in accordance with our Privacy Policy.</p>
+                
+                <h3>4.1 Camera and Storage Access</h3>
+                <p>SnapBound requires access to your device's camera to function properly. We temporarily store photos you capture in your browser's localStorage for your convenience. These photos are not permanently stored on our servers unless specifically indicated during the use of certain features.</p>
+            </div>
+            
+            <div class="terms-section">
+                <h2>5. Intellectual Property</h2>
+                
+                <h3>5.1 Our Content</h3>
+                <p>The SnapBound service, including its logo, design, text, graphics, interfaces, and the selection and arrangement thereof, is owned by us and protected by intellectual property laws. You may not use, reproduce, distribute, modify, create derivative works of, publicly display, or publicly perform any of our content without our prior written permission.</p>
+                
+                <h3>5.2 Feedback</h3>
+                <p>If you provide us with any feedback or suggestions regarding our Services, you grant us the right to use such feedback for any purpose without compensation to you.</p>
+            </div>
+            
+            <div class="terms-section">
+                <h2>6. Disclaimer of Warranties</h2>
+                <p>SnapBound is provided on an "as is" and "as available" basis. We make no warranties, express or implied, regarding the reliability, availability, timeliness, suitability, accuracy, or completeness of our Services or any content thereon.</p>
+                
+                <p>We do not guarantee that:</p>
+                <ul>
+                    <li>The service will be available at any particular time or location</li>
+                    <li>The service will function without interruption or errors</li>
+                    <li>Defects will be corrected</li>
+                    <li>The service or the servers that make it available are free of viruses or other harmful components</li>
+                </ul>
+            </div>
+            
+            <div class="terms-section">
+                <h2>7. Limitation of Liability</h2>
+                <p>To the maximum extent permitted by law, we shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues, whether incurred directly or indirectly, or any loss of data, use, goodwill, or other intangible losses resulting from:</p>
+                <ul>
+                    <li>Your use of or inability to use our Services</li>
+                    <li>Any unauthorized access to or use of our servers and/or any personal information stored therein</li>
+                    <li>Any interruption or cessation of transmission to or from our Services</li>
+                    <li>Any bugs, viruses, trojan horses, or the like that may be transmitted to or through our Services</li>
+                </ul>
+            </div>
+            
+            <div class="terms-section">
+                <h2>8. Changes to Terms</h2>
+                <p>We may modify these Terms at any time. When we make changes, we will update the "Last Updated" date at the top of this page. Your continued use of our Services after such modifications constitutes your acceptance of the revised Terms. We encourage you to review these Terms periodically.</p>
+            </div>
+            
+            <div class="terms-section">
+                <h2>9. Termination</h2>
+                <p>We reserve the right to suspend or terminate your access to our Services at any time and for any reason, including but not limited to a violation of these Terms. Upon termination, your right to use the Services will immediately cease.</p>
+            </div>
+            
+            <div class="terms-section">
+                <h2>10. Contact Us</h2>
+                <p>If you have any questions about these Terms or our Services, please contact us at:</p>
+                <p>Email: <a href="mailto:joshkrysten@gmail.com" style="color: var(--primary-color);">joshkrysten@gmail.com</a><br>
+                
+                Phone: (639) 625410980</p>
+            </div>
+        </div>
+        
+        <div class="terms-footer">
+            <a href="index.html" class="back-button"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="S.png" alt="Logo" class="logo-img">
+                <span class="logo-text">SnapBound</span>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Navigate</h4>
+                    <a href="index.html#home">Home</a>
+                    <a href="index.html#features">Features</a>
+                    <a href="index.html#how-it-works">How It Works</a>
+                    <a href="index.html#about">About</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Support</h4>
+                    <a href="#">Help Center</a>
+                    <a href="#">FAQ</a>
+                    <a href="#">Contact Us</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Legal</h4>
+                    <a href="terms.html">Terms of Service</a>
+                    <a href="#">Privacy Policy</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Follow Us</h4>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 SnapBound PhotoBooth. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="index.js"></script>
+</body>
+</html>
