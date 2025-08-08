@@ -702,7 +702,9 @@ function updateStripPreviews() {
     // Add a small text preview at bottom to show text color with Inter Tight font
     const textPreview = document.createElement('div');
     textPreview.className = 'strip-text-preview';
-    textPreview.textContent = 'Unpacked'; // Ensure it says "Unpacked"
+    const previewText = 'Unpacked';
+    textPreview.textContent = previewText; // Force it to be "Unpacked"
+    console.log('Preview text set to:', previewText);
     textPreview.style.color = selectedTextColor;
     textPreview.style.textAlign = 'center';
     textPreview.style.padding = '10px 5px';
@@ -819,9 +821,18 @@ async function createPhotoStrip(images) {
             ctx.shadowOffsetY = 3;
         }
         
-        // Add watermark text - FORCE "Unpacked" text
-        console.log('Adding watermark: Unpacked');
-        ctx.fillText('Unpacked', canvas.width / 2, canvas.height - 70);
+        // FORCE watermark text to be "Unpacked" - with extra debugging
+        const watermarkText = 'Unpacked';
+        console.log('Watermark text being added:', watermarkText);
+        console.log('Text color:', selectedTextColor);
+        console.log('Font:', ctx.font);
+        
+        // Double-check by setting the text again
+        ctx.fillStyle = selectedTextColor;
+        ctx.fillText(watermarkText, canvas.width / 2, canvas.height - 70);
+        
+        // Add a second confirmation log
+        console.log('Watermark "' + watermarkText + '" added to photostrip at position:', canvas.width / 2, canvas.height - 70);
         
         // Reset shadow
         ctx.shadowColor = 'transparent';
