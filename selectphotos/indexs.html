@@ -15,34 +15,6 @@
     <link rel="apple-touch-icon" sizes="167x167" href="../S.png">
     
     <link rel="stylesheet" href="../picture.css">
-    
-    <!-- Updated font loading with proper weights -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,750;1,750&display=swap" rel="stylesheet">
-    
-    <!-- Test if font is working by adding this style -->
-    <style>
-        .font-test {
-            font-family: "Inter Tight", sans-serif;
-            font-weight: 750;
-            font-size: 32px; /* Increased from 24px */
-            margin: 10px;
-        }
-        
-        /* Ensure the font is applied to preview as well */
-        .strip-text-preview {
-            margin-top: auto;
-            font-size: 32px; /* Increased from 24px */
-            font-weight: 750;
-            font-family: "Inter Tight", sans-serif !important;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.2);
-            padding: 10px 0;
-            letter-spacing: 0.5px;
-        }
-    </style>
-    
-    <!-- Keep existing fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
@@ -365,12 +337,11 @@
 
         .strip-text-preview {
             margin-top: auto;
-            font-size: 32px; /* Increased from 24px */
-            font-weight: 750;
-            font-family: "Inter Tight", sans-serif !important;
+            font-size: 24px; /* Increased from 18px */
+            font-weight: bold;
             text-shadow: 0 1px 3px rgba(0,0,0,0.2);
-            padding: 10px 0;
-            letter-spacing: 0.5px;
+            padding: 10px 0; /* Added padding */
+            letter-spacing: 0.5px; /* Added letter spacing */
         }
 
         @media (max-width: 768px) {
@@ -584,9 +555,6 @@ footer {
         </div>
     </div>
 
-  
-    
-
     <!-- Footer -->
 <footer>
     <div class="footer-container">
@@ -629,6 +597,7 @@ footer {
     </div>
 </footer>
 
+    <script src="index.js"></script>
     <script>
 const DEBUG_MODE = true;
 
@@ -699,18 +668,15 @@ function updateStripPreviews() {
         mainStrip.appendChild(placeholder);
     }
     
-    // Add a small text preview at bottom to show text color with Inter Tight font
+    // Add a small text preview at bottom to show text color - UPDATED SIZE HERE
     const textPreview = document.createElement('div');
     textPreview.className = 'strip-text-preview';
-    const previewText = 'Unpacked';
-    textPreview.textContent = previewText; // Force it to be "Unpacked"
-    console.log('Preview text set to:', previewText);
+    textPreview.textContent = 'SnapBound';
     textPreview.style.color = selectedTextColor;
     textPreview.style.textAlign = 'center';
-    textPreview.style.padding = '10px 5px';
-    textPreview.style.fontWeight = '750';
-    textPreview.style.fontSize = '32px'; // Increased from 24px
-    textPreview.style.fontFamily = '"Inter Tight", sans-serif';
+    textPreview.style.padding = '10px 5px'; // More vertical padding
+    textPreview.style.fontWeight = 'bold';
+    textPreview.style.fontSize = '24px'; // Increased from 18px
     mainStrip.appendChild(textPreview);
     
     // Set the strip background color and check for text color
@@ -722,45 +688,324 @@ function updateStripPreviews() {
     }
 }
 
+// First, define all functions before using them
+function updateStripPreviews() {
+    const mainStrip = document.getElementById('mainStrip');
+    mainStrip.innerHTML = ''; // Clear existing content
+    
+    // Create 4 placeholders
+    for (let i = 0; i < 4; i++) {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'photo-placeholder';
+        
+        // Add selected photo if available
+        if (selectedPhotos[i]) {
+            const img = document.createElement('img');
+            img.src = selectedPhotos[i].src;
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'cover';
+            placeholder.appendChild(img);
+        }
+        
+        mainStrip.appendChild(placeholder);
+    }
+}
+
+function displayCapturedImages() {
+    const photosGrid = document.getElementById('photosGrid');
+    if (!photosGrid) {
+        console.error('Photos grid element not found!');
+        return;
+    }
+    
+    photosGrid.innerHTML = '';
+    
+    // Get images from localStorage with debugging
+    try {
+        const capturedImagesRaw = localStorage.getItem('capturedImages');
+        console.log('Raw localStorage data:', capturedImagesRaw);
+        
+        if (!capturedImagesRaw) {
+            console.error('No captured images data in localStorage');
+            photosGrid.innerHTML = '<p style="text-align: center; padding: 40px; color: #666;">No photos available. Please capture some photos first.</p>';
+            return;
+        }
+        
+        const capturedImages = JSON.parse(capturedImagesRaw);
+        console.log('Found images:', capturedImages.length);
+        
+        if (!Array.isArray(capturedImages) || capturedImages.length === 0) {
+            photosGrid.innerHTML = '<p style="text-align: center; padding: 40px; color: #666;">No photos available. Please capture some photos first.</p>';
+            return;
+        }
+
+        // Display each image
+        capturedImages.forEach((imageData, index) => {
+            const imgContainer = document.createElement('div');
+            imgContainer.className = 'photo-container';
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.className = 'photo-checkbox';
+            checkbox.id = `photo-${index}`;
+            
+            checkbox.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    if (selectedPhotos.length >= MAX_PHOTOS) {
+                        e.target.checked = false;
+                        alert('You can only select 4 photos!');
+                        return;
+                    }
+                    selectedPhotos.push({index, src: imageData});
+                } else {
+                    selectedPhotos = selectedPhotos.filter(photo => photo.index !== index);
+                }
+                updateStripPreviews();
+                updateSelectedCounter();
+            });
+            
+            const img = document.createElement('img');
+            img.src = imageData;
+            img.alt = `Photo ${index + 1}`;
+            img.setAttribute('data-original-src', imageData);
+            
+            imgContainer.appendChild(checkbox);
+            imgContainer.appendChild(img);
+            photosGrid.appendChild(imgContainer);
+        });
+    } catch (err) {
+        console.error('Error parsing captured images:', err);
+        photosGrid.innerHTML = '<p style="text-align: center; padding: 40px; color: #666;">Error loading photos. Please try again.</p>';
+    }
+}
+
+function updateSelectedCounter() {
+    const counter = document.getElementById('selectedCounter');
+    if (counter) {
+        counter.textContent = `${selectedPhotos.length}/4 photos selected`;
+    }
+}
+
+function clearPreviousPhotos() {
+    selectedPhotos = [];
+    updateStripPreviews();
+    updateSelectedCounter();
+}
+
+// Add this to your existing global variables
+let selectedStrip = 'Red';
+let selectedEffect = 'normal';
+let selectedPhotos = [];
+let selectedTextColor = '#ffffff'; // Default white text
+const MAX_PHOTOS = 4;
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Add this at the start
+    checkAndResetPhotos();
+    
+    // Initialize color picker with wheel only
+    const colorPicker = new iro.ColorPicker("#colorPicker", {
+        width: 280,
+        color: "#ff5757",
+        layout: [
+            { 
+                component: iro.ui.Wheel,
+                options: {
+                    borderWidth: 0,
+                    wheelLightness: false, // Disable lightness variation
+                    wheelAngle: 0,
+                    wheelDirection: 'anticlockwise'
+                }
+            },
+            {
+                component: iro.ui.Slider, // Add brightness slider
+                options: {
+                    sliderType: 'value',
+                    borderWidth: 0
+                }
+            }
+        ]
+    });
+
+    // Update strip color when picker changes
+    colorPicker.on('color:change', function(color) {
+        const mainStrip = document.getElementById('mainStrip');
+        mainStrip.style.backgroundColor = color.hexString;
+        selectedStrip = color.hexString;
+        
+        // Update color value display
+        document.getElementById('colorValue').textContent = color.hexString;
+        
+        // Check if color is light or dark and adjust strip text color
+        const isLight = isLightColor(color.hexString);
+        mainStrip.style.color = isLight ? '#333333' : '#ffffff';
+        
+        // Store the text color preference for use when creating the final strip
+        selectedTextColor = isLight ? '#333333' : '#ffffff';
+    });
+
+    // Display captured images immediately
+    displayCapturedImages();
+
+    // Effect selection
+    document.querySelectorAll('.effect-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.effect-btn').forEach(b => 
+                b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedEffect = btn.textContent.toLowerCase().trim().replace(/ .*/,''); // Get first word only
+            updatePreviewsWithEffect();
+        });
+    });
+
+    // Download strip button
+    document.getElementById('downloadStrip').addEventListener('click', () => {
+        if (selectedPhotos.length !== 4) {
+            alert('Please select exactly 4 photos');
+            return;
+        }
+        const selectedImages = selectedPhotos.map(photo => photo.src);
+        createPhotoStrip(selectedImages);
+    });
+    
+    // Download all photos button
+    document.getElementById('downloadPhotos').addEventListener('click', () => {
+        const capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+        if (capturedImages.length === 0) {
+            alert('No photos available to download');
+            return;
+        }
+        
+        // Create a zip file of all photos
+        downloadAllPhotos(capturedImages);
+    });
+
+    // Initialize the page
+    displayCapturedImages();
+    updateSelectedCounter();
+    
+    // Mobile menu toggle
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    
+    if (mobileMenuToggle) {
+        mobileMenuToggle.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+            this.classList.toggle('active');
+        });
+    }
+    
+    // Set initial text color based on the default strip color
+    const initialStripColor = "#ff5757";
+    const isLightInitialColor = isLightColor(initialStripColor);
+    selectedTextColor = isLightInitialColor ? '#333333' : '#ffffff';
+
+    // Update the main strip to reflect these initial values
+    const mainStrip = document.getElementById('mainStrip');
+    if (mainStrip) {
+        mainStrip.style.backgroundColor = initialStripColor;
+        mainStrip.style.color = selectedTextColor;
+    }
+
+    // Check photos in localStorage - Debugging
+    checkPhotosInLocalStorage();
+});
+
+function downloadAllPhotos(images) {
+    // Simple implementation - download one by one
+    // In a real app, you might want to use a library like JSZip to create a zip file
+    images.forEach((imageData, index) => {
+        const link = document.createElement('a');
+        link.href = imageData;
+        link.download = `snapbound-photo-${index+1}.jpg`;
+        link.click();
+    });
+}
+
+function applyEffectToImageData(imageData, effect) {
+    const data = imageData.data;
+    for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        
+        switch(effect) {
+            case 'black':
+                const avg = (r + g + b) / 3;
+                data[i] = data[i + 1] = data[i + 2] = avg;
+                break;
+            case 'sepia':
+                data[i] = Math.min(255, (r * 0.393) + (g * 0.769) + (b * 0.189));
+                data[i + 1] = Math.min(255, (r * 0.349) + (g * 0.686) + (b * 0.168));
+                data[i + 2] = Math.min(255, (r * 0.272) + (g * 0.534) + (b * 0.131));
+                break;
+            case 'vintage':
+                data[i] = Math.min(255, r * 1.1);
+                data[i + 1] = Math.min(255, g * 0.9);
+                data[i + 2] = Math.min(255, b * 0.9);
+                break;
+            case 'high':
+                data[i] = Math.min(255, r * 1.5);
+                data[i + 1] = Math.min(255, g * 1.5);
+                data[i + 2] = Math.min(255, b * 1.5);
+                break;
+        }
+    }
+}
+
 async function createPhotoStrip(images) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     
-    canvas.width = 400;
-    canvas.height = 1250;
-    const cornerRadius = 15;
+    // Set dimensions for 2 inches × 6 inches at 300 DPI for high-quality printing
+    const DPI = 300; // Standard print quality
+    canvas.width = 2 * DPI;  // 2 inches × 300 DPI = 600 pixels wide
+    canvas.height = 6 * DPI; // 6 inches × 300 DPI = 1800 pixels high
+    const outerCornerRadius = 40; // For the entire photostrip
     
     try {
-        const photoWidth = 360;
-        const photoHeight = 270;
-        const xOffset = (canvas.width - photoWidth) / 2;
-        const yGap = 15;
+        // Create a temporary canvas for the rounded rectangle background
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = canvas.height;
+        const tempCtx = tempCanvas.getContext('2d');
+        
+        // Draw rounded rectangle for the entire strip
+        tempCtx.beginPath();
+        tempCtx.moveTo(outerCornerRadius, 0);
+        tempCtx.lineTo(canvas.width - outerCornerRadius, 0);
+        tempCtx.quadraticCurveTo(canvas.width, 0, canvas.width, outerCornerRadius);
+        tempCtx.lineTo(canvas.width, canvas.height - outerCornerRadius);
+        tempCtx.quadraticCurveTo(canvas.width, canvas.height, canvas.width - outerCornerRadius, canvas.height);
+        tempCtx.lineTo(outerCornerRadius, canvas.height);
+        tempCtx.quadraticCurveTo(0, canvas.height, 0, canvas.height - outerCornerRadius);
+        tempCtx.lineTo(0, outerCornerRadius);
+        tempCtx.quadraticCurveTo(0, 0, outerCornerRadius, 0);
+        tempCtx.closePath();
+        
+        // Fill the rounded rectangle with the selected background color
+        tempCtx.fillStyle = selectedStrip;
+        tempCtx.fill();
+        
+        // Now draw on our main canvas
+        ctx.drawImage(tempCanvas, 0, 0);
+        
+        // UPDATED PHOTO DIMENSIONS - SMALLER PHOTOS WITH NO CURVED SIDES
+        const photoWidth = 500;      // Smaller width (83% of strip width)
+        const photoHeight = 350;     // Smaller height for proper aspect ratio
+        const xOffset = (canvas.width - photoWidth) / 2; // Center images horizontally
+        const topMargin = 40;        // More space at top
+        const yGap = 40;             // More space between photos
 
-        // Fill background with selected color
-        ctx.fillStyle = selectedStrip;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // Load and draw each image with curved corners
+        // Load and draw each image - RECTANGULAR PHOTOS (no curved sides)
         for (let i = 0; i < images.length; i++) {
             try {
                 const img = await loadImage(images[i]);
-                const yOffset = 25 + (i * (photoHeight + yGap));
+                const yOffset = topMargin + (i * (photoHeight + yGap));
                 
-                // Create curved corners
-                ctx.save();
-                ctx.beginPath();
-                ctx.moveTo(xOffset + cornerRadius, yOffset);
-                ctx.lineTo(xOffset + photoWidth - cornerRadius, yOffset);
-                ctx.quadraticCurveTo(xOffset + photoWidth, yOffset, xOffset + photoWidth, yOffset + cornerRadius);
-                ctx.lineTo(xOffset + photoWidth, yOffset + photoHeight - cornerRadius);
-                ctx.quadraticCurveTo(xOffset + photoWidth, yOffset + photoHeight, xOffset + photoWidth - cornerRadius, yOffset + photoHeight);
-                ctx.lineTo(xOffset + cornerRadius, yOffset + photoHeight);
-                ctx.quadraticCurveTo(xOffset, yOffset + photoHeight, xOffset, yOffset + photoHeight - cornerRadius);
-                ctx.lineTo(xOffset, yOffset + cornerRadius);
-                ctx.quadraticCurveTo(xOffset, yOffset, xOffset + cornerRadius, yOffset);
-                ctx.closePath();
-                ctx.clip();
-
+                // No clipping path - directly draw rectangular photos
+                
                 // Calculate dimensions to maintain aspect ratio
                 const imgAspect = img.naturalWidth / img.naturalHeight;
                 const frameAspect = photoWidth / photoHeight;
@@ -768,82 +1013,63 @@ async function createPhotoStrip(images) {
                 let drawWidth, drawHeight, offsetX, offsetY;
                 
                 if (imgAspect > frameAspect) {
+                    // Image is wider than frame - scale to match height
                     drawHeight = photoHeight;
                     drawWidth = drawHeight * imgAspect;
-                    offsetX = xOffset - (drawWidth - photoWidth) / 2;
+                    offsetX = xOffset + (photoWidth - drawWidth) / 2;
                     offsetY = yOffset;
                 } else {
+                    // Image is taller than frame - scale to match width
                     drawWidth = photoWidth;
                     drawHeight = drawWidth / imgAspect;
                     offsetX = xOffset;
                     offsetY = yOffset + (photoHeight - drawHeight) / 2;
                 }
                 
+                // Draw image with preserved aspect ratio
                 ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
-                ctx.restore();
             } catch (err) {
-                console.error('Error loading image:', err);
+                console.error('Error processing image:', err);
             }
         }
         
-        // Wait for fonts to be ready before adding watermark
-        await document.fonts.ready;
+        // Add text watermark at bottom with proper font size
+        ctx.fillStyle = selectedTextColor;
         
-        // Load Inter Tight font explicitly
-        try {
-            await document.fonts.load('750 52px "Inter Tight"');
-            console.log('Inter Tight font loaded successfully');
-            
-            // Apply the font and set text color
-            ctx.fillStyle = selectedTextColor;
-            ctx.font = '750 52px "Inter Tight", sans-serif';
-            
-        } catch (error) {
-            console.error('Font loading failed:', error);
-            // Use fallback font
-            ctx.fillStyle = selectedTextColor;
-            ctx.font = 'bold 52px "Arial", sans-serif';
-        }
-        
+        // Font size scaled for 2×6 inch print at 300 DPI
+        const fontSize = 90; // Large font size for visibility
+        ctx.font = `bold ${fontSize}px "Poppins", sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         
         // Add text shadow for better visibility
         if (selectedTextColor === '#ffffff') {
-            ctx.shadowColor = 'rgba(0,0,0,0.7)';
-            ctx.shadowBlur = 8;
+            // Add subtle shadow for white text
+            ctx.shadowColor = 'rgba(0,0,0,0.5)';
+            ctx.shadowBlur = 4;
             ctx.shadowOffsetX = 0;
-            ctx.shadowOffsetY = 4;
+            ctx.shadowOffsetY = 2;
         } else {
-            ctx.shadowColor = 'rgba(255,255,255,0.7)';
-            ctx.shadowBlur = 8;
+            // Add subtle shadow for dark text
+            ctx.shadowColor = 'rgba(255,255,255,0.5)';
+            ctx.shadowBlur = 4;
             ctx.shadowOffsetX = 0;
-            ctx.shadowOffsetY = 3;
+            ctx.shadowOffsetY = 1;
         }
         
-        // FORCE watermark text to be "Unpacked" - with extra debugging
-        const watermarkText = 'Unpacked';
-        console.log('Watermark text being added:', watermarkText);
-        console.log('Text color:', selectedTextColor);
-        console.log('Font:', ctx.font);
-        
-        // Double-check by setting the text again
-        ctx.fillStyle = selectedTextColor;
-        ctx.fillText(watermarkText, canvas.width / 2, canvas.height - 70);
-        
-        // Add a second confirmation log
-        console.log('Watermark "' + watermarkText + '" added to photostrip at position:', canvas.width / 2, canvas.height - 70);
+        // Position text at the bottom
+        ctx.fillText('SnapBound', canvas.width / 2, canvas.height - 90);
         
         // Reset shadow
         ctx.shadowColor = 'transparent';
         ctx.shadowBlur = 0;
         ctx.shadowOffsetX = 0;
         ctx.shadowOffsetY = 0;
-
+        
         // Download using timestamp
         const timestamp = new Date().getTime();
-        downloadCanvas(canvas, `unpacked-photostrip-${timestamp}.jpg`);
-
+        downloadCanvas(canvas, `photostrip-${timestamp}.jpg`);
+        
     } catch (error) {
         console.error('Error creating photo strip:', error);
         alert('Error creating photo strip. Please try again.');
@@ -936,263 +1162,66 @@ function updatePreviewsWithEffect() {
     }
 }
 
-// Add this to your existing global variables
-let selectedStrip = '#ff5757'; // Set to default color value
-let selectedEffect = 'normal';
-let selectedPhotos = [];
-let selectedTextColor = '#ffffff'; // Default white text
-const MAX_PHOTOS = 4;
+// Add this function to your script section
+function isLightColor(hexColor) {
+    // Convert hex to RGB
+    const hex = hexColor.replace('#', '');
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+    
+    // Calculate relative luminance using the formula for perceived brightness
+    // https://www.w3.org/TR/WCAG20-TECHS/G18.html
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    
+    // Return true if color is light (luminance > 0.5)
+    return luminance > 0.5;
+}
 
-function displayCapturedImages() {
-    const photosGrid = document.getElementById('photosGrid');
-    if (!photosGrid) {
-        console.error('Photos grid element not found!');
-        return;
-    }
-    
-    photosGrid.innerHTML = '';
-    
-    // Get images from localStorage with debugging
-    try {
+// Add this function to your script
+function showDebugInfo() {
+    // Only show in development mode
+    if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+        // Create debug element
+        const debugEl = document.createElement('div');
+        debugEl.className = 'debug-bar';
+        
+        // Get localStorage info
         const capturedImagesRaw = localStorage.getItem('capturedImages');
-        console.log('Raw localStorage data:', capturedImagesRaw ? 'Data found' : 'No data');
+        const imageCount = capturedImagesRaw ? JSON.parse(capturedImagesRaw).length : 0;
         
-        if (!capturedImagesRaw) {
-            console.error('No captured images data in localStorage');
-            photosGrid.innerHTML = '<p style="text-align: center; padding: 40px; color: #666;">No photos available. Please capture some photos first.</p>';
-            return;
-        }
+        // Create debug content
+        debugEl.innerHTML = `
+            <strong>Debug Info:</strong><br>
+            localStorage items: ${localStorage.length}<br>
+            capturedImages: ${imageCount} photos<br>
+            selectedPhotos: ${selectedPhotos.length} selected<br>
+            <button id="debugFixBtn">Fix Storage</button>
+        `;
         
-        const capturedImages = JSON.parse(capturedImagesRaw);
-        console.log('Found images:', capturedImages.length);
+        // Add to body
+        document.body.appendChild(debugEl);
         
-        if (!Array.isArray(capturedImages) || capturedImages.length === 0) {
-            photosGrid.innerHTML = '<p style="text-align: center; padding: 40px; color: #666;">No photos available. Please capture some photos first.</p>';
-            return;
-        }
-
-        // Display each image with better error handling
-        capturedImages.forEach((imageData, index) => {
-            // Validate image data
-            if (!imageData || !imageData.startsWith('data:image/')) {
-                console.warn(`Invalid image data at index ${index}`);
-                return;
+        // Add fix button functionality
+        document.getElementById('debugFixBtn').addEventListener('click', function() {
+            // If there are no captured images but we know there should be
+            if (imageCount === 0) {
+                // Create some test images if needed
+                const testImages = [
+                    'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAABAAEDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKABQFUAZOBz60YGc4HPrRRQB/9k='
+                ];
+                
+                localStorage.setItem('capturedImages', JSON.stringify(testImages));
+                showNotification('Added test image data. Refresh page.');
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                // Just for development - clear some storage
+                localStorage.removeItem('capturedImages');
+                location.reload();
             }
-
-            const imgContainer = document.createElement('div');
-            imgContainer.className = 'photo-container';
-            
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.className = 'photo-checkbox';
-            checkbox.id = `photo-${index}`;
-            
-            checkbox.addEventListener('change', (e) => {
-                if (e.target.checked) {
-                    if (selectedPhotos.length >= MAX_PHOTOS) {
-                        e.target.checked = false;
-                        alert('You can only select 4 photos!');
-                        return;
-                    }
-                    selectedPhotos.push({index, src: imageData});
-                } else {
-                    selectedPhotos = selectedPhotos.filter(photo => photo.index !== index);
-                }
-                updateStripPreviews();
-                updateSelectedCounter();
-            });
-            
-            const img = document.createElement('img');
-            img.src = imageData;
-            img.alt = `Photo ${index + 1}`;
-            img.setAttribute('data-original-src', imageData);
-            
-            // Add error handling for image loading
-            img.onerror = function() {
-                console.error(`Failed to load image at index ${index}`);
-                this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkVycm9yIExvYWRpbmc8L3RleHQ+PC9zdmc+';
-            };
-            
-            img.onload = function() {
-                console.log(`Image ${index + 1} loaded successfully`);
-            };
-            
-            imgContainer.appendChild(checkbox);
-            imgContainer.appendChild(img);
-            photosGrid.appendChild(imgContainer);
-        });
-        
-        console.log(`Successfully displayed ${capturedImages.length} photos`);
-        
-    } catch (err) {
-        console.error('Error parsing captured images:', err);
-        photosGrid.innerHTML = '<p style="text-align: center; padding: 40px; color: #666;">Error loading photos. Please try again.</p>';
-    }
-}
-
-function updateSelectedCounter() {
-    const counter = document.getElementById('selectedCounter');
-    if (counter) {
-        counter.textContent = `${selectedPhotos.length}/4 photos selected`;
-    }
-}
-
-function applyEffectToImageData(imageData, effect) {
-    const data = imageData.data;
-    for (let i = 0; i < data.length; i += 4) {
-        const r = data[i];
-        const g = data[i + 1];
-        const b = data[i + 2];
-        
-        switch(effect) {
-            case 'black':
-                const avg = (r + g + b) / 3;
-                data[i] = data[i + 1] = data[i + 2] = avg;
-                break;
-            case 'sepia':
-                data[i] = Math.min(255, (r * 0.393) + (g * 0.769) + (b * 0.189));
-                data[i + 1] = Math.min(255, (r * 0.349) + (g * 0.686) + (b * 0.168));
-                data[i + 2] = Math.min(255, (r * 0.272) + (g * 0.534) + (b * 0.131));
-                break;
-            case 'vintage':
-                data[i] = Math.min(255, r * 1.1);
-                data[i + 1] = Math.min(255, g * 0.9);
-                data[i + 2] = Math.min(255, b * 0.9);
-                break;
-            case 'high':
-                data[i] = Math.min(255, r * 1.5);
-                data[i + 1] = Math.min(255, g * 1.5);
-                data[i + 2] = Math.min(255, b * 1.5);
-                break;
-        }
-    }
-}
-
-function downloadAllPhotos(images) {
-    // Simple implementation - download one by one
-    images.forEach((imageData, index) => {
-        const link = document.createElement('a');
-        link.href = imageData;
-        link.download = `unpacked-photo-${index+1}.jpg`;
-        link.click();
-    });
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Page loaded, checking for photos...');
-    
-    // Add debugging
-    debugLocalStorage();
-    
-    // Check if we have photos
-    checkAndResetPhotos();
-    
-    // Initialize color picker with wheel only
-    const colorPicker = new iro.ColorPicker("#colorPicker", {
-        width: 280,
-        color: "#ff5757",
-        layout: [
-            { 
-                component: iro.ui.Wheel,
-                options: {
-                    borderWidth: 0,
-                    wheelLightness: false,
-                    wheelAngle: 0,
-                    wheelDirection: 'anticlockwise'
-                }
-            },
-            {
-                component: iro.ui.Slider,
-                options: {
-                    sliderType: 'value',
-                    borderWidth: 0
-                }
-            }
-        ]
-    });
-
-    // Add color picker event handler
-    colorPicker.on('color:change', function(color) {
-        selectedStrip = color.hexString;
-        document.getElementById('colorValue').textContent = color.hexString;
-        
-        // Update text color based on background brightness
-        const isLight = isLightColor(color.hexString);
-        selectedTextColor = isLight ? '#333333' : '#ffffff';
-        
-        // Update the strip preview
-        updateStripPreviews();
-    });
-
-    // Display captured images immediately with debugging
-    console.log('Calling displayCapturedImages...');
-    displayCapturedImages();
-    
-    // Effect selection
-    document.querySelectorAll('.effect-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.effect-btn').forEach(b => 
-                b.classList.remove('active'));
-            btn.classList.add('active');
-            selectedEffect = btn.textContent.toLowerCase().trim().replace(/ .*/,''); // Get first word only
-            updatePreviewsWithEffect();
-        });
-    });
-
-    // Download strip button
-    document.getElementById('downloadStrip').addEventListener('click', () => {
-        if (selectedPhotos.length !== 4) {
-            alert('Please select exactly 4 photos');
-            return;
-        }
-        const selectedImages = selectedPhotos.map(photo => photo.src);
-        createPhotoStrip(selectedImages);
-    });
-    
-    // Download all photos button
-    document.getElementById('downloadPhotos').addEventListener('click', () => {
-        const capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
-        if (capturedImages.length === 0) {
-            alert('No photos available to download');
-            return;
-        }
-        
-        // Create a zip file of all photos
-        downloadAllPhotos(capturedImages);
-    });
-
-    // Initialize the page
-    displayCapturedImages();
-    updateSelectedCounter();
-    
-    // Mobile menu toggle
-    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-    const navLinks = document.querySelector('.nav-links');
-    
-    if (mobileMenuToggle) {
-        mobileMenuToggle.addEventListener('click', function() {
-            navLinks.classList.toggle('active');
-            this.classList.toggle('active');
         });
     }
-    
-    // Set initial text color based on the default strip color
-    const initialStripColor = "#ff5757";
-    const isLightInitialColor = isLightColor(initialStripColor);
-    selectedTextColor = isLightInitialColor ? '#333333' : '#ffffff';
-
-    // Update the main strip to reflect these initial values
-    const mainStrip = document.getElementById('mainStrip');
-    if (mainStrip) {
-        mainStrip.style.backgroundColor = initialStripColor;
-        mainStrip.style.color = selectedTextColor;
-    }
-
-    // Check photos in localStorage - Debugging
-    checkPhotosInLocalStorage();
-});
-
-// ...existing code...
+}
     </script>
 </body>
 </html>
