@@ -184,7 +184,12 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transform: none; /* Ensure no mirroring/inversion */
+            transform: scaleX(-1); /* Mirror the video horizontally */
+        }
+        
+        /* Add a class for when using back camera (no mirroring needed) */
+        #webcam.back-camera {
+            transform: none;
         }
         
         .camera-overlay {
@@ -1065,6 +1070,13 @@
                     console.log('Camera access granted!');
                     stream = mediaStream;
                     video.srcObject = mediaStream;
+                    
+                    // Apply appropriate transform based on camera type
+                    if (facingMode === 'user') {
+                        video.classList.remove('back-camera');
+                    } else {
+                        video.classList.add('back-camera');
+                    }
                     
                     // Get actual camera settings
                     const track = stream.getVideoTracks()[0];
