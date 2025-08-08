@@ -494,8 +494,33 @@
             position: absolute;
             top: 10px;
             right: 15px;
-            font-size: 24px;
+            font-size: 36px;
+            width: 44px;
+            height: 44px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 100;
+            line-height: 0.8;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+            border: 2px solid white;
+            font-weight: bold;
+        }
+        
+        .close-modal:hover {
+            background-color: var(--primary-color);
+            transform: scale(1.1);
+        }
+        
+        /* Make sure the X is properly aligned */
+        .close-modal span {
+            display: block;
+            margin-top: -2px;
         }
         
         #modalImage {
@@ -975,7 +1000,7 @@
                     return;
                 }
                 
-                window.location.href = '../selectphotos';
+                window.location.href = '../selectphotos/';
             });
             
             // Functions
@@ -1444,12 +1469,63 @@
             }
             
             function downloadPhoto() {
-                const link = document.createElement('a');
-                link.href = modalImage.src;
-                link.download = 'snapbound-photo-' + new Date().getTime() + '.jpg';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+                // Create a new canvas with the exact dimensions of the display strip
+                const stripCanvas = document.createElement('canvas');
+                const stripWidth = 300; // Match width from select photos display
+                const stripHeight = 800; // Match height from select photos display
+                
+                stripCanvas.width = stripWidth;
+                stripCanvas.height = stripHeight;
+                const stripCtx = stripCanvas.getContext('2d');
+                
+                // Fill with the background color (match the teal from your display)
+                stripCtx.fillStyle = '#80c0c0'; // Adjust this color to match your teal background
+                stripCtx.fillRect(0, 0, stripWidth, stripHeight);
+                
+                // Load the current image
+                const img = new Image();
+                img.onload = function() {
+                    // Calculate dimensions to maintain aspect ratio
+                    const photoHeight = stripHeight / 4 - 10; // 4 photos with small gap
+                    const photoWidth = stripWidth - 40; // 20px padding on each side
+                    
+                    // Draw 4 images vertically with small gaps
+                    const photos = JSON.parse(localStorage.getItem('capturedImages')) || [];
+                    const selectedPhotos = photos.slice(0, 4); // Get first 4 photos
+                    
+                    // Draw each photo
+                    for (let i = 0; i < Math.min(selectedPhotos.length, 4); i++) {
+                        const photoImg = new Image();
+                        photoImg.onload = function() {
+                            // Draw photo with proper dimensions
+                            stripCtx.drawImage(
+                                photoImg, 
+                                20, // x position (20px from left)
+                                i * (photoHeight + 10) + 10, // y position with gap
+                                photoWidth, 
+                                photoHeight
+                            );
+                            
+                            // Add watermark at bottom if this is the last photo
+                            if (i === Math.min(selectedPhotos.length, 4) - 1) {
+                                stripCtx.font = 'bold 24px Poppins';
+                                stripCtx.fillStyle = '#333';
+                                stripCtx.textAlign = 'center';
+                                stripCtx.fillText('Unpacked', stripWidth / 2, stripHeight - 20);
+                                
+                                // Download the completed strip
+                                const link = document.createElement('a');
+                                link.download = 'unpacked-photostrip-' + new Date().getTime() + '.jpg';
+                                link.href = stripCanvas.toDataURL('image/jpeg', 0.9);
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                            }
+                        };
+                        photoImg.src = selectedPhotos[i];
+                    }
+                };
+                img.src = modalImage.src;
             }
             
             function sharePhoto() {
