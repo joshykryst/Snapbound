@@ -15,7 +15,16 @@ class TemplateManager {
                 method: 'POST',
                 body: formData
             });
-            return await response.json();
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            if (!data.success) {
+                throw new Error(data.error || 'Failed to save template');
+            }
+            return data;
         } catch (error) {
             console.error('Error adding template:', error);
             throw error;
@@ -25,6 +34,9 @@ class TemplateManager {
     async getTemplates() {
         try {
             const response = await fetch(this.apiUrl);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             return await response.json();
         } catch (error) {
             console.error('Error fetching templates:', error);
@@ -37,7 +49,14 @@ class TemplateManager {
             const response = await fetch(`${this.apiUrl}?id=${id}`, {
                 method: 'DELETE'
             });
-            return await response.json();
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            if (!data.success) {
+                throw new Error(data.error || 'Failed to delete template');
+            }
+            return data;
         } catch (error) {
             console.error('Error deleting template:', error);
             throw error;
