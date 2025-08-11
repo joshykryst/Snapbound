@@ -299,19 +299,17 @@
 
         function handleFiles(files) {
             if (files.length > 0) {
-                const file = files[0];
-                if (file.type.startsWith('image/')) {
-                    // Handle image upload
+                currentFile = files[0];
+                if (currentFile.type.startsWith('image/')) {
                     const reader = new FileReader();
                     reader.onload = (e) => {
-                        // Create preview
                         const preview = document.createElement('img');
                         preview.src = e.target.result;
                         preview.style.maxWidth = '100%';
                         dropZone.innerHTML = '';
                         dropZone.appendChild(preview);
                     };
-                    reader.readAsDataURL(file);
+                    reader.readAsDataURL(currentFile);
                 }
             }
         }
@@ -324,6 +322,63 @@
                 card.classList.add('active');
             });
         });
+    </script>
+    <script src="templates.js"></script>
+    <script>
+        const templateManager = new TemplateManager();
+        const saveBtn = document.querySelector('.save-btn');
+        const templateNameInput = document.querySelector('input[type="text"]');
+        const spacingInput = document.querySelector('input[type="number"][step="0.05"]');
+        let currentFile = null;
+
+        saveBtn.addEventListener('click', async () => {
+            if (!currentFile) {
+                alert('Please upload a template image first');
+                return;
+            }
+
+            const template = {
+                file: currentFile,
+                name: templateNameInput.value,
+                isCustomizable: document.querySelector('.option-card:last-child').classList.contains('active'),
+                spacing: parseFloat(spacingInput.value)
+            };
+
+            try {
+                await templateManager.addTemplate(template);
+                alert('Template saved successfully!');
+                loadTemplates(); // Refresh the templates list
+            } catch (error) {
+                alert('Error saving template: ' + error.message);
+            }
+        });
+
+        async function loadTemplates() {
+            const templatesList = document.querySelector('.templates-list');
+            const templates = await templateManager.getTemplates();
+            
+            templatesList.innerHTML = '<h2>Saved Templates</h2>';
+            templates.forEach(template => {
+                const card = document.createElement('div');
+                card.className = 'template-card';
+                card.innerHTML = `
+                    <div class="template-thumb">
+                        <img src="${template.image_path}" alt="${template.name}">
+                    </div>
+                    <div class="template-info">
+                        <h3>${template.name}</h3>
+                        <p>Spacing: ${template.spacing}inch | ${template.is_customizable ? 'Customizable' : 'Fixed'}</p>
+                    </div>
+                    <div class="template-actions">
+                        <button class="action-btn delete-btn" data-id="${template.id}">Delete</button>
+                    </div>
+                `;
+                templatesList.appendChild(card);
+            });
+        }
+
+        // Load templates when page loads
+        loadTemplates();
     </script>
 </body>
 </html>

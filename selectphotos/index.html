@@ -1242,6 +1242,72 @@ function debugLocalStorage() {
     
     console.log('=== End Debug ===');
 }
-    </script>
+</script>
+
+<!-- Add this after your existing scripts -->
+<script src="../admin/templates.js"></script>
+<script>
+    const templateManager = new TemplateManager();
+    
+    async function loadTemplateOptions() {
+        const templates = await templateManager.getTemplates();
+        const templateSelect = document.createElement('div');
+        templateSelect.className = 'template-selector';
+        templateSelect.innerHTML = `
+            <h3>Select Template Style</h3>
+            <div class="template-options">
+                ${templates.map(template => `
+                    <div class="template-option" data-id="${template.id}">
+                        <img src="${template.image_path}" alt="${template.name}">
+                        <h4>${template.name}</h4>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        
+        // Add to your page where appropriate
+        document.querySelector('.strip-options').appendChild(templateSelect);
+    }
+
+    // Load templates when page loads
+    loadTemplateOptions();
+</script>
+
+<style>
+    .template-selector {
+        margin: 20px 0;
+    }
+
+    .template-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .template-option {
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        padding: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .template-option:hover {
+        border-color: var(--primary-color);
+    }
+
+    .template-option img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+
+    .template-option h4 {
+        margin-top: 10px;
+        text-align: center;
+    }
+</style>
 </body>
 </html>
