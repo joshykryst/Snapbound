@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>SnapBound | Admin</title>
+    
+    <!-- Add favicon using S.png -->
+    <link rel="icon" type="image/png" href="../S.png">
+
+    <!-- Apple touch icons for iOS devices -->
+    <link rel="apple-touch-icon" href="../S.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="../S.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../S.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="../S.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="permissions-policy" content="camera=*">
+    <style>
+        /* Base styles */
+        :root {
+            --primary-color: #FF5757;
+            --secondary-color: #3A86FF;
+            --accent-color: #FFBE0B;
+            --dark-color: #2B2D42;
+            --light-color: #F8F9FA;
+            --text-color: #333;
+            --bg-color: #FFFFFF;
+            --gradient-primary: linear-gradient(135deg, #FF5757 0%, #FF8A5B 100%);
+            --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Navigation */
+        .nav-bar {
+            background-color: var(--bg-color);
+            padding: 0.8rem 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            gap: 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+        }
+        
+        .logo-img {
+            height: 40px;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+        
+        .logo-highlight {
+            color: var(--primary-color);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 0.8rem;
+            border-radius: 5px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        
+        .nav-link i {
+            font-size: 0.9rem;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-color);
+            background-color: rgba(255, 87, 87, 0.08);
+        }
+        
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+        
+        .mobile-menu-toggle span {
+            width: 30px;
+            height: 3px;
+            background-color: var(--text-color);
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+        
+        /* Main styles */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            margin-top: 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        /* Template upload styles */
+        .upload-section {
+            background-color: var(--light-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        .upload-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .upload-instructions {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .upload-input {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .upload-input input {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .upload-input input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        
+        .upload-input button {
+            padding: 10px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+        
+        .upload-input button:hover {
+            background: #e63946;
+        }
+        
+        /* Template grid styles */
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .template-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .template-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .template-actions {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            display: flex;
+            gap: 5px;
+        }
+        
+        .template-actions button {
+            background: rgba(255, 255, 255, 0.8);
+            color: var(--dark-color);
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+        
+        .template-actions button:hover {
+            background: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Footer styles */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 40px 0;
+            font-size: 0.9rem;
+        }
+        
+        .footer-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .footer-logo .logo-img {
+            height: 50px;
+            margin-right: 10px;
+        }
+        
+        .footer-logo .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .footer-column h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .footer-column a {
+            color: white;
+            text-decoration: none;
+            margin: 5px 0;
+            transition: color 0.3s;
+        }
+        
+        .footer-column a:hover {
+            color: var(--primary-color);
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .social-icons a {
+            color: white;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+        
+        .social-icons a:hover {
+            color: var(--primary-color);
+        }
+        
+        .copyright {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body class="admin-page">
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <a href="https://snapbound.studio" class="logo">
+                <img src="../S.png" alt="Logo" class="logo-img">
+                <span class="logo-text">Snap<span class="logo-highlight">Bound</span></span>
+            </a>
+            <div class="nav-links">
+                <a href="https://snapbound.studio/#home" class="nav-link"><i class="fas fa-home"></i> Home</a>
+                <a href="https://snapbound.studio/#features" class="nav-link"><i class="fas fa-camera-retro"></i> Features</a>
+                <a href="https://snapbound.studio/#how-it-works" class="nav-link"><i class="fas fa-question-circle"></i> How It Works</a>
+                <a href="https://snapbound.studio/#about" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
+            </div>
+            <div class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Admin Panel</h1>
+        
+        <!-- Template Upload Section -->
+        <div class="upload-section">
+            <div class="upload-title">Upload New Template</div>
+            <div class="upload-instructions">
+                Templates must be exactly 600x1800 pixels (2"x6" at 300dpi).
+            </div>
+            <div class="upload-input">
+                <input type="file" id="templateUpload" accept="image/*">
+                <button id="uploadBtn">
+                    <i class="fas fa-upload"></i> Upload Template
+                </button>
+            </div>
+        </div>
+        
+        <!-- Template Grid -->
+        <div class="template-grid" id="templateGrid">
+            <!-- Templates will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="../S.png" alt="Logo" class="logo-img">
+                <span class="logo-text">SnapBound</span>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Navigate</h4>
+                    <a href="https://snapbound.studio/#home">Home</a>
+                    <a href="https://snapbound.studio/#features">Features</a>
+                    <a href="https://snapbound.studio/#how-it-works">How It Works</a>
+                    <a href="https://snapbound.studio/#about">About</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Support</h4>
+                    <a href="#">Help Center</a>
+                    <a href="#">FAQ</a>
+                    <a href="#">Contact Us</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Legal</h4>
+                    <a href="https://snapbound.studio/terms/">Terms of Service</a>
+                    <a href="https://snapbound.studio/privacy/">Privacy Policy</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Follow Us</h4>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 SnapBound PhotoBooth. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('templateUpload').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            // Check dimensions and convert to base64
+            const img = new Image();
+            img.src = URL.createObjectURL(file);
+            
+            img.onload = () => {
+                if (img.width !== 600 || img.height !== 1800) {
+                    alert('Template must be exactly 600x1800 pixels (2"x6" at 300dpi)');
+                    return;
+                }
+                
+                // Convert to base64 and store
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function() {
+                    const template = {
+                        id: Date.now().toString(),
+                        name: file.name,
+                        url: reader.result,
+                        timestamp: Date.now()
+                    };
+                    saveTemplate(template);
+                };
+            };
+        });
+
+        async function saveTemplate(template) {
+            try {
+                const formData = new FormData();
+                formData.append('templateData', template.url);
+                formData.append('name', template.name);
+
+                const response = await fetch('upload_template.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('Template uploaded successfully');
+                    loadTemplates();
+                } else {
+                    throw new Error(result.error || 'Failed to save template');
+                }
+            } catch (err) {
+                console.error('Error saving template:', err);
+                alert('Failed to save template');
+            }
+        }
+
+        function loadTemplates() {
+            const templates = JSON.parse(localStorage.getItem('photoboothTemplates')) || [];
+            const grid = document.getElementById('templateGrid');
+            
+            if (templates.length === 0) {
+                grid.innerHTML = '<p>No templates uploaded yet</p>';
+                return;
+            }
+            
+            grid.innerHTML = templates.map(template => `
+                <div class="template-item">
+                    <img src="${template.url}" alt="${template.name}">
+                    <div class="template-actions">
+                        <button onclick="deleteTemplate('${template.id}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function deleteTemplate(id) {
+            if (!confirm('Are you sure you want to delete this template?')) return;
+            
+            try {
+                let templates = JSON.parse(localStorage.getItem('photoboothTemplates')) || [];
+                templates = templates.filter(t => t.id !== id);
+                localStorage.setItem('photoboothTemplates', JSON.stringify(templates));
+                alert('Template deleted successfully');
+                loadTemplates();
+            } catch (err) {
+                console.error('Error deleting template:', err);
+                alert('Failed to delete template');
+            }
+        }
+
+        // Load templates on page load
+        loadTemplates();
+    </script>
+</body>
+</html>
