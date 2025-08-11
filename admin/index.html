@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapBound Admin - Template Manager</title>
+    <link rel="icon" type="image/png" href="../S.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #FF5757;
+            --secondary-color: #3A86FF;
+            --accent-color: #FFBE0B;
+            --dark-color: #2B2D42;
+            --light-color: #F8F9FA;
+            --text-color: #333;
+            --bg-color: #FFFFFF;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .template-manager {
+            background: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .template-upload {
+            border: 2px dashed #ddd;
+            padding: 40px;
+            text-align: center;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .template-upload:hover {
+            border-color: var(--primary-color);
+        }
+
+        .template-preview {
+            width: 200px;
+            height: 600px;
+            background: #f5f5f5;
+            margin: 20px auto;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .template-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .template-settings {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .setting-group {
+            margin-bottom: 20px;
+        }
+
+        .setting-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            width: 100px;
+        }
+
+        .unit {
+            color: #666;
+        }
+
+        .template-options {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .option-card {
+            flex: 1;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-card.active {
+            border-color: var(--primary-color);
+            background: rgba(255, 87, 87, 0.1);
+        }
+
+        .option-card i {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .save-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            display: block;
+            margin: 30px auto 0;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 87, 87, 0.3);
+        }
+
+        .templates-list {
+            margin-top: 40px;
+        }
+
+        .template-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .template-thumb {
+            width: 100px;
+            height: 300px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .template-info {
+            flex: 1;
+        }
+
+        .template-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .edit-btn {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>Template Manager</h1>
+            <p>Create and manage photostrip templates</p>
+        </div>
+
+        <div class="template-manager">
+            <div class="template-upload" id="dropZone">
+                <i class="fas fa-cloud-upload-alt fa-3x" style="color: #666; margin-bottom: 15px;"></i>
+                <h3>Upload Template</h3>
+                <p>Drag and drop template image or click to browse</p>
+                <input type="file" id="templateUpload" accept="image/*" style="display: none;">
+            </div>
+
+            <div class="template-settings">
+                <div class="template-options">
+                    <div class="option-card active">
+                        <i class="fas fa-lock"></i>
+                        <h4>Fixed Template</h4>
+                        <p>Use template as is</p>
+                    </div>
+                    <div class="option-card">
+                        <i class="fas fa-palette"></i>
+                        <h4>Color Customizable</h4>
+                        <p>Allow color modifications</p>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <label>Template Dimensions</label>
+                    <div class="input-group">
+                        <input type="number" value="2" readonly> <span class="unit">×</span>
+                        <input type="number" value="6" readonly> <span class="unit">inches</span>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <label>Photo Spacing</label>
+                    <div class="input-group">
+                        <input type="number" value="0.25" step="0.05" min="0.1" max="1">
+                        <span class="unit">inches</span>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <label>Template Name</label>
+                    <input type="text" placeholder="Enter template name" style="width: 100%;">
+                </div>
+
+                <button class="save-btn">Save Template</button>
+            </div>
+        </div>
+
+        <div class="templates-list">
+            <h2>Saved Templates</h2>
+            <!-- Template cards will be dynamically added here -->
+        </div>
+    </div>
+
+    <script>
+        // Template upload handling
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('templateUpload');
+
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = 'var(--primary-color)';
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.style.borderColor = '#ddd';
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#ddd';
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type.startsWith('image/')) {
+                    // Handle image upload
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        // Create preview
+                        const preview = document.createElement('img');
+                        preview.src = e.target.result;
+                        preview.style.maxWidth = '100%';
+                        dropZone.innerHTML = '';
+                        dropZone.appendChild(preview);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+
+        // Template options handling
+        const optionCards = document.querySelectorAll('.option-card');
+        optionCards.forEach(card => {
+            card.addEventListener('click', () => {
+                optionCards.forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
