@@ -16,6 +16,9 @@
             padding: 20px;
             margin-top: 100px;
             margin-bottom: 50px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
         }
 
         .page-title {
@@ -24,6 +27,7 @@
             font-weight: 700;
             margin-bottom: 2rem;
             color: var(--dark-color);
+            grid-column: 1 / -1;
         }
         
         .page-title span {
@@ -36,6 +40,7 @@
             margin-bottom: 20px;
             position: relative;
             color: var(--dark-color);
+            grid-column: 1 / -1;
         }
         
         .section-header:after {
@@ -52,19 +57,14 @@
 
         .strip-layout {
             display: flex;
-            gap: 40px;
-            padding: 30px;
-            justify-content: center;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            margin: 30px 0;
+            flex-direction: column;
+            gap: 20px;
         }
 
         .preview-section {
-            flex: 0 0 auto;
+            position: sticky;
+            top: 120px;
+            align-self: flex-start;
         }
 
         .strip-preview {
@@ -94,57 +94,137 @@
             object-fit: cover;
         }
 
-        .color-picker-section {
-            flex: 0 0 300px;
-            padding: 20px;
-            background: rgba(255,255,255,0.5);
-            border-radius: var(--border-radius);
-            text-align: center;
+        .options-section {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
         }
 
-        .color-picker-section h3 {
-            margin-bottom: 15px;
-            color: var(--dark-color);
-            font-weight: 500;
-        }
-
-        #colorPicker {
-            margin: 20px auto;
-        }
-
-        .color-value {
-            margin-top: 15px;
-            font-size: 16px;
-            color: var(--dark-color);
-            padding: 8px 15px;
+        .options-card {
             background: white;
-            display: inline-block;
-            border-radius: 25px;
-            font-weight: 500;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .color-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .color-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+
+        .color-preview:hover {
+            transform: scale(1.1);
+        }
+
+        .color-palette {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .custom-color-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .color-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .color-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #666;
         }
 
         .effect-options {
             display: flex;
-            gap: 10px;
-            margin: 20px 0;
             flex-wrap: wrap;
+            gap: 10px;
             justify-content: center;
         }
 
-        .effect-btn {
-            padding: 10px 20px;
-            border: 2px solid var(--primary-color);
-            background: transparent;
-            color: var(--primary-color);
-            border-radius: 50px;
+        .effect-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            transition: var(--transition);
-            font-family: inherit;
+            transition: all 0.3s;
+            background: white;
+            border: 2px solid #eee;
         }
 
-        .effect-btn.active {
-            background: var(--primary-color);
-            color: white;
+        .effect-circle.active {
+            border-color: var(--primary-color);
+            background: rgba(255, 87, 87, 0.1);
+            transform: scale(1.05);
+        }
+
+        .effect-circle i {
+            font-size: 20px;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+
+        .effect-circle span {
+            font-size: 10px;
+            text-align: center;
         }
 
         .photos-grid {
@@ -156,6 +236,7 @@
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
             margin: 30px 0;
+            grid-column: 1 / -1;
         }
 
         .photo-container {
@@ -219,6 +300,7 @@
             gap: 20px;
             margin-top: 40px;
             flex-wrap: wrap;
+            grid-column: 1 / -1;
         }
 
         .selection-controls button {
@@ -282,6 +364,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            grid-column: 1 / -1;
         }
         
         /* Notification styles */
@@ -323,22 +406,22 @@
 
         .strip-text-preview {
             margin-top: auto;
-            font-size: 24px; /* Increased from 18px */
+            font-size: 24px;
             font-weight: bold;
             text-shadow: 0 1px 3px rgba(0,0,0,0.2);
-            padding: 10px 0; /* Added padding */
-            letter-spacing: 0.5px; /* Added letter spacing */
+            padding: 10px 0;
+            letter-spacing: 0.5px;
+            text-align: center;
         }
 
         @media (max-width: 768px) {
-            .strip-layout {
-                padding: 20px;
-                flex-direction: column;
-                align-items: center;
+            .select-photos-container {
+                grid-template-columns: 1fr;
             }
             
-            .color-picker-section {
-                width: 100%;
+            .preview-section {
+                position: static;
+                margin: 0 auto;
             }
             
             .selection-controls {
@@ -382,6 +465,7 @@
             <i class="fas fa-image"></i> <span id="selectedCounter">0/4 photos selected</span>
         </div>
         
+        <!-- Left Column - Photo Strip Preview -->
         <div class="strip-layout">
             <div class="preview-section">
                 <div class="strip-preview" id="mainStrip">
@@ -391,22 +475,68 @@
                     <div class="photo-placeholder"></div>
                 </div>
             </div>
-            <div class="color-picker-section">
-                <h3><i class="fas fa-palette"></i> Customize Strip Color</h3>
-                <div id="colorPicker"></div>
-                <div class="color-value">
-                    <span id="colorValue">#FF5757</span>
+        </div>
+        
+        <!-- Right Column - Options -->
+        <div class="options-section">
+            <!-- Color Options Card -->
+            <div class="options-card color-options">
+                <h3><i class="fas fa-palette"></i> Strip Color</h3>
+                <div class="color-palette">
+                    <div class="color-preview" style="background: #FF5757;" data-color="#FF5757"></div>
+                    <div class="color-preview" style="background: #4CAF50;" data-color="#4CAF50"></div>
+                    <div class="color-preview" style="background: #2196F3;" data-color="#2196F3"></div>
+                    <div class="color-preview" style="background: #9C27B0;" data-color="#9C27B0"></div>
+                    <div class="color-preview" style="background: #FF9800;" data-color="#FF9800"></div>
+                    <div class="color-preview" style="background: #607D8B;" data-color="#607D8B"></div>
+                    <button class="custom-color-btn" id="customColorBtn">
+                        <i class="fas fa-sliders-h"></i>
+                    </button>
+                </div>
+                <div class="color-value" style="margin-top: 15px;">
+                    Current: <span id="colorValue">#FF5757</span>
+                </div>
+            </div>
+            
+            <!-- Effect Options Card -->
+            <div class="options-card">
+                <h3><i class="fas fa-magic"></i> Photo Effect</h3>
+                <div class="effect-options">
+                    <div class="effect-circle active" data-effect="normal">
+                        <i class="fas fa-image"></i>
+                        <span>Normal</span>
+                    </div>
+                    <div class="effect-circle" data-effect="black">
+                        <i class="fas fa-adjust"></i>
+                        <span>B&W</span>
+                    </div>
+                    <div class="effect-circle" data-effect="sepia">
+                        <i class="fas fa-sun"></i>
+                        <span>Sepia</span>
+                    </div>
+                    <div class="effect-circle" data-effect="vintage">
+                        <i class="fas fa-history"></i>
+                        <span>Vintage</span>
+                    </div>
+                    <div class="effect-circle" data-effect="high">
+                        <i class="fas fa-bolt"></i>
+                        <span>Contrast</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <h2 class="section-header">Choose Photo Effect</h2>
-        <div class="effect-options">
-            <button class="effect-btn active"><i class="fas fa-image"></i> Normal</button>
-            <button class="effect-btn"><i class="fas fa-adjust"></i> Black & White</button>
-            <button class="effect-btn"><i class="fas fa-sun"></i> Sepia</button>
-            <button class="effect-btn"><i class="fas fa-history"></i> Vintage</button>
-            <button class="effect-btn"><i class="fas fa-bolt"></i> High Contrast</button>
+        <!-- Color Picker Modal -->
+        <div class="color-modal" id="colorModal">
+            <div class="modal-content">
+                <button class="close-modal" id="closeModal">&times;</button>
+                <h3>Custom Color</h3>
+                <div id="colorPicker"></div>
+                <div class="color-value" style="margin-top: 15px;">
+                    Selected: <span id="modalColorValue">#FF5757</span>
+                </div>
+                <button id="applyColor" style="margin-top: 20px; width: 100%;">Apply Color</button>
+            </div>
         </div>
 
         <h2 class="section-header">Select Your Photos</h2>
@@ -447,10 +577,12 @@ function checkAndResetPhotos() {
     }
 }
 
-// Update the updateStripPreviews function to include text preview
 function updateStripPreviews() {
     const mainStrip = document.getElementById('mainStrip');
     mainStrip.innerHTML = ''; // Clear existing content
+    
+    // Set the strip background color immediately
+    mainStrip.style.backgroundColor = selectedStrip;
     
     // Create 4 placeholders
     for (let i = 0; i < 4; i++) {
@@ -470,48 +602,14 @@ function updateStripPreviews() {
         mainStrip.appendChild(placeholder);
     }
     
-    // Add a small text preview at bottom to show text color - UPDATED SIZE HERE
+    // Add text preview with automatic color contrast
     const textPreview = document.createElement('div');
     textPreview.className = 'strip-text-preview';
     textPreview.textContent = 'SnapBound';
+    const isLight = isLightColor(selectedStrip);
+    selectedTextColor = isLight ? '#333333' : '#ffffff';
     textPreview.style.color = selectedTextColor;
-    textPreview.style.textAlign = 'center';
-    textPreview.style.padding = '10px 5px'; // More vertical padding
-    textPreview.style.fontWeight = 'bold';
-    textPreview.style.fontSize = '24px'; // Increased from 18px
     mainStrip.appendChild(textPreview);
-    
-    // Set the strip background color and check for text color
-    if (selectedStrip) {
-        mainStrip.style.backgroundColor = selectedStrip;
-        const isLight = isLightColor(selectedStrip);
-        selectedTextColor = isLight ? '#333333' : '#ffffff';
-        textPreview.style.color = selectedTextColor;
-    }
-}
-
-// First, define all functions before using them
-function updateStripPreviews() {
-    const mainStrip = document.getElementById('mainStrip');
-    mainStrip.innerHTML = ''; // Clear existing content
-    
-    // Create 4 placeholders
-    for (let i = 0; i < 4; i++) {
-        const placeholder = document.createElement('div');
-        placeholder.className = 'photo-placeholder';
-        
-        // Add selected photo if available
-        if (selectedPhotos[i]) {
-            const img = document.createElement('img');
-            img.src = selectedPhotos[i].src;
-            img.style.width = '100%';
-            img.style.height = '100%';
-            img.style.objectFit = 'cover';
-            placeholder.appendChild(img);
-        }
-        
-        mainStrip.appendChild(placeholder);
-    }
 }
 
 function displayCapturedImages() {
@@ -596,7 +694,7 @@ function clearPreviousPhotos() {
 }
 
 // Add this to your existing global variables
-let selectedStrip = 'Red';
+let selectedStrip = '#FF5757';
 let selectedEffect = 'normal';
 let selectedPhotos = [];
 let selectedTextColor = '#ffffff'; // Default white text
@@ -606,22 +704,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add this at the start
     checkAndResetPhotos();
     
-    // Initialize color picker with wheel only
+    // Initialize color picker in modal
     const colorPicker = new iro.ColorPicker("#colorPicker", {
         width: 280,
-        color: "#ff5757",
+        color: selectedStrip,
         layout: [
             { 
                 component: iro.ui.Wheel,
                 options: {
                     borderWidth: 0,
-                    wheelLightness: false, // Disable lightness variation
+                    wheelLightness: false,
                     wheelAngle: 0,
                     wheelDirection: 'anticlockwise'
                 }
             },
             {
-                component: iro.ui.Slider, // Add brightness slider
+                component: iro.ui.Slider,
                 options: {
                     sliderType: 'value',
                     borderWidth: 0
@@ -630,36 +728,53 @@ document.addEventListener('DOMContentLoaded', () => {
         ]
     });
 
-    // Update strip color when picker changes
+    // Modal functionality
+    const colorModal = document.getElementById('colorModal');
+    const customColorBtn = document.getElementById('customColorBtn');
+    const closeModal = document.getElementById('closeModal');
+    const applyColor = document.getElementById('applyColor');
+    
+    customColorBtn.addEventListener('click', () => {
+        colorModal.classList.add('active');
+    });
+    
+    closeModal.addEventListener('click', () => {
+        colorModal.classList.remove('active');
+    });
+    
+    applyColor.addEventListener('click', () => {
+        selectedStrip = colorPicker.color.hexString;
+        document.getElementById('colorValue').textContent = selectedStrip;
+        updateStripPreviews();
+        colorModal.classList.remove('active');
+    });
+    
     colorPicker.on('color:change', function(color) {
-        const mainStrip = document.getElementById('mainStrip');
-        mainStrip.style.backgroundColor = color.hexString;
-        selectedStrip = color.hexString;
-        
-        // Update color value display
-        document.getElementById('colorValue').textContent = color.hexString;
-        
-        // Check if color is light or dark and adjust strip text color
-        const isLight = isLightColor(color.hexString);
-        mainStrip.style.color = isLight ? '#333333' : '#ffffff';
-        
-        // Store the text color preference for use when creating the final strip
-        selectedTextColor = isLight ? '#333333' : '#ffffff';
+        document.getElementById('modalColorValue').textContent = color.hexString;
+    });
+
+    // Preset color selection
+    document.querySelectorAll('.color-preview').forEach(preview => {
+        preview.addEventListener('click', () => {
+            selectedStrip = preview.getAttribute('data-color');
+            document.getElementById('colorValue').textContent = selectedStrip;
+            updateStripPreviews();
+        });
+    });
+
+    // Effect selection
+    document.querySelectorAll('.effect-circle').forEach(circle => {
+        circle.addEventListener('click', () => {
+            document.querySelectorAll('.effect-circle').forEach(c => 
+                c.classList.remove('active'));
+            circle.classList.add('active');
+            selectedEffect = circle.getAttribute('data-effect');
+            updatePreviewsWithEffect();
+        });
     });
 
     // Display captured images immediately
     displayCapturedImages();
-
-    // Effect selection
-    document.querySelectorAll('.effect-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.effect-btn').forEach(b => 
-                b.classList.remove('active'));
-            btn.classList.add('active');
-            selectedEffect = btn.textContent.toLowerCase().trim().replace(/ .*/,''); // Get first word only
-            updatePreviewsWithEffect();
-        });
-    });
 
     // Download strip button
     document.getElementById('downloadStrip').addEventListener('click', () => {
@@ -686,6 +801,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize the page
     displayCapturedImages();
     updateSelectedCounter();
+    updateStripPreviews();
     
     // Mobile menu toggle
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
@@ -699,16 +815,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Set initial text color based on the default strip color
-    const initialStripColor = "#ff5757";
-    const isLightInitialColor = isLightColor(initialStripColor);
+    const isLightInitialColor = isLightColor(selectedStrip);
     selectedTextColor = isLightInitialColor ? '#333333' : '#ffffff';
-
-    // Update the main strip to reflect these initial values
-    const mainStrip = document.getElementById('mainStrip');
-    if (mainStrip) {
-        mainStrip.style.backgroundColor = initialStripColor;
-        mainStrip.style.color = selectedTextColor;
-    }
 });
 
 function downloadAllPhotos(images) {
@@ -1001,7 +1109,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add debug info after a short delay
     setTimeout(showDebugInfo, 1000);
     
-    // Rest of your code...
+    selectedStrip = '#FF5757';
+    document.getElementById('colorValue').textContent = selectedStrip;
+    updateStripPreviews();
 });
     </script>
 </body>
