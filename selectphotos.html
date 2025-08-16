@@ -648,7 +648,7 @@ function displayCapturedImages() {
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.className = 'photo-checkbox';
-            checkbox.id = `photo-${index}`;
+            checkbox.id = photo-${index};
             
             checkbox.addEventListener('change', (e) => {
                 if (e.target.checked) {
@@ -667,7 +667,7 @@ function displayCapturedImages() {
             
             const img = document.createElement('img');
             img.src = imageData;
-            img.alt = `Photo ${index + 1}`;
+            img.alt = Photo ${index + 1};
             img.setAttribute('data-original-src', imageData);
             
             imgContainer.appendChild(checkbox);
@@ -683,7 +683,7 @@ function displayCapturedImages() {
 function updateSelectedCounter() {
     const counter = document.getElementById('selectedCounter');
     if (counter) {
-        counter.textContent = `${selectedPhotos.length}/4 photos selected`;
+        counter.textContent = ${selectedPhotos.length}/4 photos selected;
     }
 }
 
@@ -825,7 +825,7 @@ function downloadAllPhotos(images) {
     images.forEach((imageData, index) => {
         const link = document.createElement('a');
         link.href = imageData;
-        link.download = `snapbound-photo-${index+1}.jpg`;
+        link.download = snapbound-photo-${index+1}.jpg;
         link.click();
     });
 }
@@ -953,7 +953,7 @@ async function createPhotoStrip(images) {
 
         // Download using timestamp
         const timestamp = new Date().getTime();
-        downloadCanvas(canvas, `photostrip-${timestamp}.jpg`);
+        downloadCanvas(canvas, photostrip-${timestamp}.jpg);
 
     } catch (error) {
         console.error('Error creating photo strip:', error);
@@ -1098,7 +1098,7 @@ function showDebugInfo() {
             showNotification('Added test image data. Refresh page.');
             setTimeout(() => location.reload(), 1500);
         } else {
-            showNotification(`Found ${imageCount} photos in storage`);
+            showNotification(Found ${imageCount} photos in storage);
             setTimeout(() => location.reload(), 1500);
         }
     });
