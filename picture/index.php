@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>SnapBound | Photo Booth</title>
+    
+    <!-- Add favicon using S.png -->
+    <link rel="icon" type="image/png" href="../S.png">
+
+    <!-- Apple touch icons for iOS devices -->
+    <link rel="apple-touch-icon" href="../S.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="../S.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../S.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="../S.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="navbar.css">
+
+    <meta name="permissions-policy" content="camera=*">
+    <style>
+
+
+        /* Base styles */
+        :root {
+            --primary-color: #FF5757;
+            --secondary-color: #3A86FF;
+            --accent-color: #FFBE0B;
+            --dark-color: #2B2D42;
+            --light-color: #F8F9FA;
+            --text-color: #333;
+            --bg-color: #FFFFFF;
+            --gradient-primary: linear-gradient(135deg, #FF5757 0%, #FF8A5B 100%);
+            --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+
+
+        
+       /* Main Content Styles */
+.booth-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    margin-top: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.booth-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.highlight {
+    color: var(--primary-color);
+}
+        
+        /* New Layout - Camera first, then buttons, then gallery */
+        .booth-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        /* Camera Section */
+        .camera-section {
+            width: 90%;
+            height: 0;
+            padding-bottom: 50.625%; /* 16:9 aspect ratio for landscape */
+            background-color: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            margin: 0 auto 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        #webcam {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1); /* Mirror the video horizontally */
+        }
+        
+        /* Add a class for when using back camera (no mirroring needed) */
+        #webcam.back-camera {
+            transform: none;
+        }
+        
+        .camera-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+        }
+        
+        .overlay-corner {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 3px solid white;
+        }
+        
+        .top-left {
+            top: 20px;
+            left: 20px;
+            border-right: none;
+            border-bottom: none;
+        }
+        
+        .top-right {
+            top: 20px;
+            right: 20px;
+            border-left: none;
+            border-bottom: none;
+        }
+        
+        .bottom-left {
+            bottom: 20px;
+            left: 20px;
+            border-right: none;
+            border-top: none;
+        }
+        
+        .bottom-right {
+            bottom: 20px;
+            right: 20px;
+            border-left: none;
+            border-top: none;
+        }
+        
+        .countdown {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 100px;
+            font-weight: 700;
+            color: white;
+            z-index: 10;
+            display: none;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Control Buttons Section */
+        .control-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+        }
+        
+        .timer-panel {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+        }
+        
+        .panel-label {
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .timer-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .timer-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 30px;
+            background-color: white;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            transition: var(--transition);
+            border: 2px solid #e0e0e0;
+        }
+        
+        .timer-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .camera-controls {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        .control-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            background-color: var(--light-color);
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        
+        .control-btn:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .control-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+        
+        .capture-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 30px;
+            background: var(--gradient-primary);
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(255, 87, 87, 0.3);
+        }
+        
+        .capture-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 87, 87, 0.4);
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 30px;
+            background-color: var(--light-color);
+            color: var(--text-color);
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        
+        .btn:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .reset-btn {
+            color: #f44336;
+        }
+        
+        .reset-btn:hover {
+            background-color: rgba(244, 67, 54, 0.1);
+        }
+        
+        .photo-requirement {
+            background-color: var(--primary-color);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+        
+        /* Gallery Section */
+        .gallery-section {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            background-color: var(--light-color);
+        }
+        
+        .gallery-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .gallery-header h3 {
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .gallery-empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            color: #999;
+            text-align: center;
+        }
+        
+        .gallery-empty-state i {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .gallery-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-start;
+        }
+        
+        .photo-item {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 100%; /* Square photos */
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: var(--transition);
+            background-color: #f0f0f0; /* Light background for empty items */
+        }
+        
+        .photo-item img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block; /* Ensure image is displayed as block */
+        }
+        
+        .shots-counter {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            background-color: var(--light-color);
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        /* Modal */
+        .photo-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            max-width: 90%;
+            width: 500px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            position: relative;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 36px;
+            width: 44px;
+            height: 44px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 100;
+            line-height: 0.8;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+            border: 2px solid white;
+            font-weight: bold;
+        }
+        
+        .close-modal:hover {
+            background-color: var(--primary-color);
+            transform: scale(1.1);
+        }
+        
+        /* Make sure the X is properly aligned */
+        .close-modal span {
+            display: block;
+            margin-top: -2px;
+        }
+        
+        #modalImage {
+            max-width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            background-color: var(--light-color);
+            color: var(--text-color);
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        
+        .modal-btn:first-child {
+            background: var(--gradient-primary);
+            color: white;
+        }
+        
+        /* Mobile Styles */
+        @media (max-width: 767px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-toggle {
+                display: flex;
+            }
+            
+            .booth-container {
+                padding: 15px;
+                margin-top: 70px;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 10px;
+                min-height: calc(100vh - 70px);
+                padding-bottom: 50px;
+                position: relative;
+                overflow-y: auto;
+            }
+            
+            .booth-title {
+                font-size: 1.4rem;
+                margin-bottom: 5px;
+                text-align: center;
+            }
+            
+            /* Camera section - make it smaller to leave room for buttons */
+            .camera-section {
+                order: 1;
+                width: 100%;
+                height: auto;
+                aspect-ratio: 16 / 9;
+                margin: 0 auto 10px;
+                border-radius: 8px;
+                overflow: hidden;
+                max-height: 40vh; /* Increase from 25vh to give camera more space */
+                position: relative;
+                box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            }
+            
+            /* Reorder the control section elements */
+            .control-section {
+                order: 2;
+                position: static !important;
+                display: flex !important;
+                flex-direction: column !important;
+                visibility: visible !important;
+                background-color: white !important;
+                padding: 10px !important;
+                margin-top: 0 !important; /* Remove negative margin */
+                z-index: 100 !important;
+            }
+            
+            /* Change the order of elements within control section */
+            .control-section > * {
+                order: 5; /* Default high order */
+            }
+            
+            /* Main action buttons should appear first (right after camera) */
+            .control-buttons {
+                order: 1 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 10px !important;
+                margin-bottom: 15px !important;
+                width: 100% !important;
+            }
+            
+            /* Shots counter */
+            .shots-counter {
+                order: 2 !important;
+            }
+            
+            /* Camera controls (switch camera) moves after action buttons */
+            .camera-controls {
+                order: 3 !important;
+            }
+            
+            /* Timer panel comes last */
+            .timer-panel {
+                order: 4 !important;
+            }
+        }
+        
+        /* Ensure camera display has the same landscape style on all devices */
+        @media (min-width: 768px) {
+            .camera-section {
+                width: 80%;
+                padding-bottom: 45%; /* Maintain 16:9 aspect ratio */
+                max-width: 800px;
+            }
+            
+            /* Desktop button layout */
+            .control-buttons {
+                display: flex;
+                justify-content: space-between;
+                gap: 15px;
+            }
+            
+            .other-buttons {
+                display: contents;
+            }
+        }
+        
+        /* Add this to your CSS, right before the Mobile Styles media query */
+        
+        /* Desktop layout with gallery on left side of camera */
+        @media (min-width: 768px) {
+            /* Change booth-layout to horizontal on desktop */
+            .booth-layout {
+                flex-direction: row;
+                gap: 20px;
+            }
+            
+            /* Make camera section narrower to leave room for gallery */
+            .camera-section {
+                width: 65%;
+                padding-bottom: 36.5625%; /* Maintain 16:9 aspect ratio */
+                margin: 0;
+            }
+            
+            /* Position gallery on the left */
+            .gallery-section {
+                order: -1; /* Move before the camera */
+                width: 30%;
+                height: auto;
+                max-height: 500px;
+                overflow-y: auto;
+                margin-top: 0;
+            }
+            
+            /* Gallery content layout for vertical display */
+            .gallery-content {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            /* Make photo items larger */
+            .photo-item {
+                width: 100%;
+                height: 0;
+                padding-bottom: 100%; /* Square photos */
+            }
+        }
+        
+        /* Footer styles */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 40px 0;
+            font-size: 0.9rem;
+        }
+        
+        .footer-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .footer-logo .logo-img {
+            height: 50px;
+            margin-right: 10px;
+        }
+        
+        .footer-logo .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .footer-column h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .footer-column a {
+            color: white;
+            text-decoration: none;
+            margin: 5px 0;
+            transition: color 0.3s;
+        }
+        
+        .footer-column a:hover {
+            color: var(--primary-color);
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .social-icons a {
+            color: white;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+        
+        .social-icons a:hover {
+            color: var(--primary-color);
+        }
+        
+        .copyright {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body class="booth-page">
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <a href="https://snapbound.studio" class="logo">
+                <img src="../S.png" alt="Logo" class="logo-img">
+                <span class="logo-text">Snap<span class="logo-highlight">Bound</span></span>
+            </a>
+            <div class="nav-links">
+                <a href="https://snapbound.studio/#home" class="nav-link"><i class="fas fa-home"></i> Home</a>
+                <a href="https://snapbound.studio/#features" class="nav-link"><i class="fas fa-camera-retro"></i> Features</a>
+                <a href="https://snapbound.studio/#how-it-works" class="nav-link"><i class="fas fa-question-circle"></i> How It Works</a>
+                <a href="https://snapbound.studio/#about" class="nav-link"><i class="fas fa-info-circle"></i> About</a>
+            </div>
+            <div class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="booth-container">
+        <h1 class="booth-title">Capture Your <span class="highlight">Moments</span></h1>
+        
+        <div class="booth-layout">
+            <!-- Camera Section -->
+            <div class="camera-section">
+                <video id="webcam" autoplay playsinline></video>
+                <div class="countdown" id="countdown"></div>
+                <canvas id="canvas" style="display:none;"></canvas>
+                <div class="camera-overlay">
+                    <div class="overlay-corner top-left"></div>
+                    <div class="overlay-corner top-right"></div>
+                    <div class="overlay-corner bottom-left"></div>
+                    <div class="overlay-corner bottom-right"></div>
+                </div>
+            </div>
+              
+            <!-- Gallery Section (now will appear on left on desktop) -->
+            <div class="gallery-section" id="gallery">
+                <div class="gallery-header">
+                    <h3><i class="fas fa-images"></i> Your Photos</h3>
+                </div>
+                <div class="gallery-empty-state">
+                    <i class="fas fa-camera-retro"></i>
+                    <p>Captured photos will appear here</p>
+                </div>
+                <div class="gallery-content"></div>
+            </div>
+        </div>
+        
+        <!-- Controls Section (stays below camera) -->
+        <div class="control-section">
+            <!-- Main action buttons first -->
+            <div class="control-buttons">
+                <button id="captureBtn" class="capture-btn"><i class="fas fa-camera"></i> Take Picture</button>
+                <div class="other-buttons">
+                    <button id="createStrip" class="btn">
+                        <i class="fas fa-images"></i> Create PhotoStrip
+                        <span class="photo-requirement">4</span>
+                    </button>
+                    <button id="resetBtn" class="btn reset-btn"><i class="fas fa-trash"></i> Reset Photos</button>
+                </div>
+            </div>
+            
+            <!-- Shots counter -->
+            <div class="shots-counter" id="shotsCounter">
+                <i class="fas fa-camera"></i> <span>10 shots left</span>
+            </div>
+            
+            <!-- Camera controls (switch camera) -->
+            <div class="camera-controls">
+                <button id="switchCamera" class="control-btn">
+                    <i class="fas fa-sync"></i> Switch Camera
+                </button>
+            </div>
+            
+            <!-- Timer panel last -->
+            <div class="timer-panel">
+                <div class="panel-label"><i class="fas fa-stopwatch"></i> Choose Timer</div>
+                <div class="timer-controls">
+                    <button class="timer-btn active" data-seconds="0">No Timer</button>
+                    <button class="timer-btn" data-seconds="3">3s</button>
+                    <button class="timer-btn" data-seconds="5">5s</button>
+                    <button class="timer-btn" data-seconds="8">8s</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for photo preview -->
+    <div class="photo-modal" id="photoModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <img id="modalImage" src="" alt="Preview">
+            <div class="modal-actions">
+                <button class="modal-btn" id="downloadBtn"><i class="fas fa-download"></i> Download</button>
+                <button class="modal-btn" id="shareBtn"><i class="fas fa-share-alt"></i> Share</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="../S.png" alt="Logo" class="logo-img">
+                <span class="logo-text">SnapBound</span>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Navigate</h4>
+                    <a href="https://snapbound.studio/#home">Home</a>
+                    <a href="https://snapbound.studio/#features">Features</a>
+                    <a href="https://snapbound.studio/#how-it-works">How It Works</a>
+                    <a href="https://snapbound.studio/#about">About</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Support</h4>
+                    <a href="#">Help Center</a>
+                    <a href="#">FAQ</a>
+                    <a href="#">Contact Us</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Legal</h4>
+                    <a href="https://snapbound.studio/terms/">Terms of Service</a>
+                    <a href="https://snapbound.studio/privacy/">Privacy Policy</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Follow Us</h4>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 SnapBound PhotoBooth. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Variables
+            let stream = null;
+            let selectedTimer = 0;
+            let captureInterval = null;
+            let capturedImages = [];
+            let remainingShots = 10;
+            
+            // DOM Elements
+            const video = document.getElementById('webcam');
+            const canvas = document.getElementById('canvas');
+            const captureBtn = document.getElementById('captureBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const switchCameraBtn = document.getElementById('switchCamera');
+            const countdown = document.getElementById('countdown');
+            const shotsCounter = document.getElementById('shotsCounter');
+            const gallery = document.getElementById('gallery');
+            const photoModal = document.getElementById('photoModal');
+            const modalImage = document.getElementById('modalImage');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const shareBtn = document.getElementById('shareBtn');
+            const closeModal = document.querySelector('.close-modal');
+            const timerBtns = document.querySelectorAll('.timer-btn');
+            const createStripBtn = document.getElementById('createStrip');
+            
+            // Initialize camera
+            initCamera();
+            
+            // Load saved photos
+            loadSavedPhotos();
+            
+            // Update shots counter
+            updateShotsCounter();
+            
+            // Event listeners
+            captureBtn.addEventListener('click', startCapture);
+            resetBtn.addEventListener('click', resetPhotos);
+            switchCameraBtn.addEventListener('click', switchCamera);
+            closeModal.addEventListener('click', closePhotoModal);
+            downloadBtn.addEventListener('click', downloadPhoto);
+            shareBtn.addEventListener('click', sharePhoto);
+            
+            // Timer selection
+            timerBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    timerBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    selectedTimer = parseInt(this.getAttribute('data-seconds'));
+                });
+            });
+            
+            // Create strip button
+            createStripBtn.addEventListener('click', function() {
+                const capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+                
+                if (capturedImages.length < 4) {
+                    alert('Please capture at least 4 photos before creating a photo strip!');
+                    return;
+                }
+                
+                window.location.href = 'selectphotos.php';
+            });
+            
+            // Functions
+            function initCamera(facingMode = 'user') {
+                // First, check if camera access is available at all
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    showCameraError("Your browser doesn't support camera access. Please try a different browser.");
+                    return;
+                }
+                
+                // Add a loading indicator that's more visible
+                const cameraSection = document.querySelector('.camera-section');
+                const loadingIndicator = document.createElement('div');
+                loadingIndicator.id = 'cameraLoading';
+                loadingIndicator.innerHTML = `
+                    <div style="position:absolute; top:0; left:0; right:0; bottom:0; 
+                               background:rgba(0,0,0,0.7); display:flex; flex-direction:column;
+                               align-items:center; justify-content:center; z-index:100;">
+                        <div style="width:40px; height:40px; border:3px solid #fff; 
+                                   border-top-color:var(--primary-color); border-radius:50%;
+                                   animation:spin 1s linear infinite;"></div>
+                        <div style="color:white; font-size:16px; margin-top:10px;">
+                            Loading camera...
+                        </div>
+                    </div>
+                    <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+                `;
+                cameraSection.appendChild(loadingIndicator);
+                
+                // Log camera initialization attempt
+                console.log('Initializing camera with facingMode:', facingMode);
+                
+                // Stop any existing stream
+                if (stream) {
+                    stream.getTracks().forEach(track => {
+                        track.stop();
+                        console.log('Stopped previous track:', track.kind);
+                    });
+                }
+                
+                // Define camera constraints
+                const constraints = {
+                    audio: false,
+                    video: {
+                        facingMode: facingMode,
+                        width: { ideal: 720 },
+                        height: { ideal: 1280 }
+                    }
+                };
+                
+                // Request camera access with a timeout
+                const timeoutPromise = new Promise((_, reject) => {
+                    setTimeout(() => reject(new Error('Camera access timeout after 10 seconds')), 10000);
+                });
+                
+                // Try to get camera access with timeout
+                Promise.race([
+                    navigator.mediaDevices.getUserMedia(constraints),
+                    timeoutPromise
+                ])
+                .then(mediaStream => {
+                    console.log('Camera access granted!');
+                    stream = mediaStream;
+                    video.srcObject = mediaStream;
+                    
+                    // Apply appropriate transform based on camera type
+                    if (facingMode === 'user') {
+                        video.classList.remove('back-camera');
+                    } else {
+                        video.classList.add('back-camera');
+                    }
+                    
+                    // Get actual camera settings
+                    const track = stream.getVideoTracks()[0];
+                    const settings = track.getSettings();
+                    console.log('Camera settings:', settings);
+                    
+                    video.onloadedmetadata = () => {
+                        // Remove loading indicator
+                        document.getElementById('cameraLoading')?.remove();
+                        video.play()
+                            .then(() => {
+                                console.log('Video playback started');
+                                // Add frame guides after camera loads
+                                addPhotoFrameGuides();
+                            })
+                            .catch(err => {
+                                console.error('Error playing video:', err);
+                                showCameraError("Camera available but couldn't start video: " + err.message);
+                            });
+                    };
+                })
+                .catch(err => {
+                    console.error('Camera access error:', err);
+                    document.getElementById('cameraLoading')?.remove();
+                    showCameraError(err.message || 'Failed to access camera. Please check permissions.');
+                });
+            }
+            
+            // Add this helper function to show camera errors
+            function showCameraError(message) {
+                const cameraSection = document.querySelector('.camera-section');
+                const errorDiv = document.createElement('div');
+                errorDiv.style.position = 'absolute';
+                errorDiv.style.top = '0';
+                errorDiv.style.left = '0';
+                errorDiv.style.right = '0';
+                errorDiv.style.bottom = '0';
+                errorDiv.style.display = 'flex';
+                errorDiv.style.flexDirection = 'column';
+                errorDiv.style.alignItems = 'center';
+                errorDiv.style.justifyContent = 'center';
+                errorDiv.style.background = 'rgba(0,0,0,0.9)';
+                errorDiv.style.color = 'white';
+                errorDiv.style.padding = '20px';
+                errorDiv.style.textAlign = 'center';
+                errorDiv.style.zIndex = '200';
+                
+                errorDiv.innerHTML = `
+                    <i class="fas fa-exclamation-circle" style="font-size:40px; color:var(--primary-color); margin-bottom:15px;"></i>
+                    <h3 style="margin-bottom:10px;">Camera Error</h3>
+                    <p style="margin-bottom:15px;">${message}</p>
+                    <button id="retryCameraBtn" style="padding:8px 16px; background:var(--primary-color); 
+                            color:white; border:none; border-radius:20px; cursor:pointer;">
+                        <i class="fas fa-redo"></i> Retry Camera
+                    </button>
+                `;
+                
+                cameraSection.appendChild(errorDiv);
+                
+                // Add retry button handler
+                document.getElementById('retryCameraBtn').addEventListener('click', function() {
+                    errorDiv.remove();
+                    initCamera('user');
+                });
+            }
+            
+            // Function to ensure consistent framing across devices
+            function applyConsistentFraming(videoElement, actualSettings) {
+                // Standard photostrip aspect ratio is 3:4 (portrait)
+                const standardRatio = 3/4;
+                
+                // Get the actual video aspect ratio
+                const actualRatio = actualSettings.width / actualSettings.height;
+                
+                // We need to adjust the video display based on actual ratio vs standard ratio
+                if (Math.abs(actualRatio - standardRatio) > 0.05) { // If ratios differ significantly
+                    if (actualRatio > standardRatio) {
+                        // Video is wider than our target ratio - crop sides
+                        const displayWidth = videoElement.offsetHeight * standardRatio;
+                        const cropPercentage = (displayWidth / videoElement.offsetWidth) * 100;
+                        
+                        videoElement.style.width = 'auto';
+                        videoElement.style.height = '100%';
+                        videoElement.style.maxWidth = 'none';
+                        videoElement.style.objectPosition = 'center';
+                    } else {
+                        // Video is taller than our target ratio - crop top/bottom
+                        const displayHeight = videoElement.offsetWidth / standardRatio;
+                        const cropPercentage = (displayHeight / videoElement.offsetHeight) * 100;
+                        
+                        videoElement.style.width = '100%';
+                        videoElement.style.height = 'auto';
+                        videoElement.style.maxHeight = 'none';
+                        videoElement.style.objectPosition = 'center';
+                    }
+                }
+                
+                // Add consistent frame guides for PhotoStrip
+                addPhotoStripGuides();
+            }
+            
+            // Add visual guides to show where photos will appear in strip
+            function addPhotoStripGuides() {
+                // Remove any existing guides
+                document.querySelectorAll('.photostrip-guide').forEach(el => el.remove());
+                
+                const cameraSection = document.querySelector('.camera-section');
+                const totalPhotos = 4;
+                
+                // Add guide lines that show the 4 photo sections
+                for (let i = 1; i < totalPhotos; i++) {
+                    const guideLine = document.createElement('div');
+                    guideLine.className = 'photostrip-guide';
+                    guideLine.style.position = 'absolute';
+                    guideLine.style.left = '0';
+                    guideLine.style.right = '0';
+                    guideLine.style.top = `${(i * 100) / totalPhotos}%`;
+                    guideLine.style.height = '1px';
+                    guideLine.style.backgroundColor = 'rgba(255,255,255,0.5)';
+                    guideLine.style.zIndex = '12';
+                    guideLine.style.pointerEvents = 'none';
+                    
+                    cameraSection.appendChild(guideLine);
+                }
+                
+                // Add frame counter dots
+                const frameCounter = document.createElement('div');
+                frameCounter.className = 'frame-counter';
+                frameCounter.style.position = 'absolute';
+                frameCounter.style.top = '10px';
+                frameCounter.style.right = '10px';
+                frameCounter.style.zIndex = '12';
+                frameCounter.style.pointerEvents = 'none';
+                
+                for (let i = 0; i < totalPhotos; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'frame-dot';
+                    dot.style.width = '8px';
+                    dot.style.height = '8px';
+                    dot.style.borderRadius = '50%';
+                    dot.style.backgroundColor = 'rgba(255,255,255,0.7)';
+                    dot.style.display = 'inline-block';
+                    dot.style.margin = '0 3px';
+                    
+                    frameCounter.appendChild(dot);
+                }
+                
+                cameraSection.appendChild(frameCounter);
+            }
+            
+            // Modified capturePhoto function for landscape photos
+            function capturePhoto() {
+                const context = canvas.getContext('2d');
+                
+                // For landscape photos to capture multiple people, use 16:9 ratio
+                const canvasWidth = 800;  // Standardized width for landscape
+                const canvasHeight = 450; // Standardized height (16:9 ratio)
+                
+                // Resize canvas to our standard size for consistent output
+                canvas.width = canvasWidth;
+                canvas.height = canvasHeight;
+                
+                // Get the current video dimensions
+                const videoWidth = video.videoWidth;
+                const videoHeight = video.videoHeight;
+                
+                // Calculate how to center and crop the image to maintain 16:9 ratio
+                let sourceX, sourceY, sourceWidth, sourceHeight;
+                
+                if (videoWidth / videoHeight > canvasWidth / canvasHeight) {
+                    // Video is wider than our target ratio
+                    sourceHeight = videoHeight;
+                    sourceWidth = sourceHeight * (canvasWidth / canvasHeight);
+                    sourceX = (videoWidth - sourceWidth) / 2;
+                    sourceY = 0;
+                } else {
+                    // Video is taller than our target ratio
+                    sourceWidth = videoWidth;
+                    sourceHeight = sourceWidth * (canvasHeight / canvasWidth);
+                    sourceX = 0;
+                    sourceY = (videoHeight - sourceHeight) / 2;
+                }
+                
+                // Draw the image to canvas (no mirroring)
+                context.drawImage(
+                    video,
+                    sourceX, sourceY, sourceWidth, sourceHeight,
+                    0, 0, canvasWidth, canvasHeight
+                );
+                
+                // Apply consistent post-processing for all devices
+                applyImageEnhancements(context, canvasWidth, canvasHeight);
+                
+                // Get the final image data
+                const imageData = canvas.toDataURL('image/jpeg', 0.92);
+                
+                // Continue with existing functionality
+                addPhotoToGallery(imageData);
+                remainingShots--;
+                updateShotsCounter();
+                
+                // Update frame counter to show progress
+                updateFrameCounter();
+            }
+            
+            // Apply consistent image enhancements 
+            function applyImageEnhancements(context, width, height) {
+                // Add subtle vignette effect for professional look
+                const gradient = context.createRadialGradient(
+                    width/2, height/2, height*0.3,
+                    width/2, height/2, height*0.7
+                );
+                gradient.addColorStop(0, 'rgba(0,0,0,0)');
+                gradient.addColorStop(1, 'rgba(0,0,0,0.3)');
+                
+                context.fillStyle = gradient;
+                context.globalCompositeOperation = 'multiply';
+                context.fillRect(0, 0, width, height);
+                context.globalCompositeOperation = 'source-over';
+                
+                // Add subtle brightness/contrast adjustments
+                // Note: For more advanced image processing, consider using a library
+            }
+            
+            // Update frame counter to show progress
+            function updateFrameCounter() {
+                const capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+                const dots = document.querySelectorAll('.frame-dot');
+                
+                // Update dots based on how many photos have been taken
+                dots.forEach((dot, index) => {
+                    if (index < capturedImages.length) {
+                        dot.style.backgroundColor = 'var(--primary-color)';
+                    }
+                });
+            }
+            
+            function startCapture() {
+                if (remainingShots <= 0) {
+                    alert('You have reached the maximum number of shots!');
+                    return;
+                }
+                
+                if (selectedTimer > 0) {
+                    // Start countdown
+                    let timeLeft = selectedTimer;
+                    countdown.style.display = 'block';
+                    countdown.textContent = timeLeft;
+                    
+                    captureInterval = setInterval(() => {
+                        timeLeft--;
+                        countdown.textContent = timeLeft;
+                        
+                        if (timeLeft <= 0) {
+                            clearInterval(captureInterval);
+                            countdown.style.display = 'none';
+                            capturePhoto();
+                        }
+                    }, 1000);
+                } else {
+                    // No timer, capture immediately
+                    capturePhoto();
+                }
+            }
+            
+            // Fix the addPhotoToGallery function - there's an extra closing bracket causing the syntax error
+            function addPhotoToGallery(imageData) {
+                // Create new item for gallery
+                const photoItem = document.createElement('div');
+                photoItem.className = 'photo-item';
+                
+                // Create image element
+                const img = document.createElement('img');
+                img.src = imageData;
+                img.alt = 'Captured photo';
+                
+                // Debug log to verify image data
+                console.log("Adding image to gallery, data length:", imageData.length);
+                
+                // Make sure image loads properly
+                img.onload = function() {
+                    console.log("Image loaded successfully");
+                };
+                
+                img.onerror = function() {
+                    console.error("Error loading image in gallery");
+                    // Show error indicator
+                    photoItem.style.backgroundColor = "#ffdddd";
+                    photoItem.innerHTML = '<div style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#ff5757;"><i class="fas fa-exclamation-triangle"></i></div>';
+                };
+                
+                // Append image to container
+                photoItem.appendChild(img);
+                
+                // Get gallery elements
+                const emptyState = gallery.querySelector('.gallery-empty-state');
+                
+                // Hide empty state if this is the first photo
+                if (emptyState) {
+                    emptyState.style.display = 'none';
+                }
+                
+                // Add click handler to show modal
+                photoItem.addEventListener('click', function() {
+                    showPhotoModal(imageData);
+                });
+                
+                // Add photo to beginning of gallery (newest first)
+                const galleryContent = gallery.querySelector('.gallery-content');
+                galleryContent.insertBefore(photoItem, galleryContent.firstChild);
+                
+                // Save to localStorage with proper error handling
+                try {
+                    capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+                    capturedImages.unshift(imageData);
+                    localStorage.setItem('capturedImages', JSON.stringify(capturedImages));
+                } catch (e) {
+                    console.error("Error saving to localStorage:", e);
+                    // Try saving with a smaller image
+                    try {
+                        // Compress the image more to save space
+                        reduceImageQuality(imageData, 0.6).then(compressedData => {
+                            capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+                            capturedImages.unshift(compressedData);
+                            localStorage.setItem('capturedImages', JSON.stringify(capturedImages));
+                        });
+                    } catch (e2) {
+                        console.error("Failed to save even with compression:", e2);
+                    }
+                }
+            }
+            
+            // Add this helper function to reduce image size if needed
+            function reduceImageQuality(dataUrl, quality) {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0);
+                        resolve(canvas.toDataURL('image/jpeg', quality));
+                    };
+                    img.src = dataUrl;
+                });
+            }
+            
+            function loadSavedPhotos() {
+                capturedImages = JSON.parse(localStorage.getItem('capturedImages')) || [];
+                const emptyState = gallery.querySelector('.gallery-empty-state');
+                const galleryContent = gallery.querySelector('.gallery-content');
+                
+                if (capturedImages.length > 0) {
+                    // Hide empty state
+                    if (emptyState) {
+                        emptyState.style.display = 'none';
+                    }
+                    
+                    // Add each photo to the gallery
+                    capturedImages.forEach(imageData => {
+                        const photoItem = document.createElement('div');
+                        photoItem.className = 'photo-item';
+                        
+                        const img = document.createElement('img');
+                        img.src = imageData;
+                        img.alt = 'Saved photo';
+                        
+                        photoItem.appendChild(img);
+                        
+                        // Add click handler
+                        photoItem.addEventListener('click', function() {
+                            showPhotoModal(imageData);
+                        });
+                        
+                        galleryContent.appendChild(photoItem);
+                    });
+                    
+                    // Update remaining shots
+                    remainingShots = Math.max(0, 10 - capturedImages.length);
+                    updateShotsCounter();
+                }
+            }
+            
+            function showPhotoModal(imageData) {
+                modalImage.src = imageData;
+                photoModal.style.display = 'flex';
+                
+                // Preload image before animation
+                modalImage.onload = function() {
+                    setTimeout(() => {
+                        photoModal.style.opacity = '1';
+                    }, 10);
+                };
+            }
+            
+            function closePhotoModal() {
+                photoModal.style.opacity = '0';
+                setTimeout(() => {
+                    photoModal.style.display = 'none';
+                }, 300);
+            }
+            
+            function downloadPhoto() {
+                // Create a new canvas with the exact dimensions of the display strip
+                const stripCanvas = document.createElement('canvas');
+                const stripWidth = 300; // Match width from select photos display
+                const stripHeight = 800; // Match height from select photos display
+                
+                stripCanvas.width = stripWidth;
+                stripCanvas.height = stripHeight;
+                const stripCtx = stripCanvas.getContext('2d');
+                
+                // Fill with the background color (match the teal from your display)
+                stripCtx.fillStyle = '#80c0c0'; // Adjust this color to match your teal background
+                stripCtx.fillRect(0, 0, stripWidth, stripHeight);
+                
+                // Load the current image
+                const img = new Image();
+                img.onload = function() {
+                    // Calculate dimensions to maintain aspect ratio
+                    const photoHeight = stripHeight / 4 - 10; // 4 photos with small gap
+                    const photoWidth = stripWidth - 40; // 20px padding on each side
+                    
+                    // Draw 4 images vertically with small gaps
+                    const photos = JSON.parse(localStorage.getItem('capturedImages')) || [];
+                    const selectedPhotos = photos.slice(0, 4); // Get first 4 photos
+                    
+                    // Draw each photo
+                    for (let i = 0; i < Math.min(selectedPhotos.length, 4); i++) {
+                        const photoImg = new Image();
+                        photoImg.onload = function() {
+                            // Draw photo with proper dimensions
+                            stripCtx.drawImage(
+                                photoImg, 
+                                20, // x position (20px from left)
+                                i * (photoHeight + 10) + 10, // y position with gap
+                                photoWidth, 
+                                photoHeight
+                            );
+                            
+                            // Add watermark at bottom if this is the last photo
+                            if (i === Math.min(selectedPhotos.length, 4) - 1) {
+                                stripCtx.font = 'bold 24px Poppins';
+                                stripCtx.fillStyle = '#333';
+                                stripCtx.textAlign = 'center';
+                                stripCtx.fillText('Unpacked', stripWidth / 2, stripHeight - 20);
+                                
+                                // Download the completed strip
+                                const link = document.createElement('a');
+                                link.download = 'unpacked-photostrip-' + new Date().getTime() + '.jpg';
+                                link.href = stripCanvas.toDataURL('image/jpeg', 0.9);
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                            }
+                        };
+                        photoImg.src = selectedPhotos[i];
+                    }
+                };
+                img.src = modalImage.src;
+            }
+            
+            function sharePhoto() {
+                if (navigator.share) {
+                    fetch(modalImage.src)
+                        .then(res => res.blob())
+                        .then(blob => {
+                            const file = new File([blob], 'snapbound-photo.jpg', { type: 'image/jpeg' });
+                            navigator.share({
+                                title: 'My SnapBound Photo',
+                                text: 'Check out my photo from SnapBound!',
+                                files: [file]
+                            }).catch(error => {
+                                console.log('Error sharing:', error);
+                                alert('Could not share the photo. Try downloading it instead.');
+                            });
+                        });
+                } else {
+                    alert('Web Share API is not supported in your browser. Please use the download button instead.');
+                }
+            }
+            
+            function resetPhotos() {
+                if (confirm('Are you sure you want to delete all captured photos?')) {
+                    // Clear localStorage
+                    localStorage.removeItem('capturedImages');
+                    
+                    // Reset gallery
+                    const galleryContent = gallery.querySelector('.gallery-content');
+                    galleryContent.innerHTML = '';
+                    
+                    // Show empty state
+                    const emptyState = gallery.querySelector('.gallery-empty-state');
+                    if (emptyState) {
+                        emptyState.style.display = 'flex';
+                    }
+                    
+                    // Reset shots counter
+                    remainingShots = 10;
+                    capturedImages = [];
+                    updateShotsCounter();
+                }
+            }
+            
+            function updateShotsCounter() {
+                // Update the shots counter display
+                const counterSpan = shotsCounter.querySelector('span');
+                if (counterSpan) {
+                    counterSpan.textContent = `${remainingShots} shots left`;
+                }
+                
+                // Disable capture button if no shots left
+                if (remainingShots <= 0) {
+                    captureBtn.disabled = true;
+                    captureBtn.style.opacity = '0.5';
+                    captureBtn.style.cursor = 'not-allowed';
+                } else {
+                    captureBtn.disabled = false;
+                    captureBtn.style.opacity = '1';
+                    captureBtn.style.cursor = 'pointer';
+                }
+                
+                // Update the create photostrip button
+                if (capturedImages.length >= 4) {
+                    createStripBtn.style.background = 'var(--gradient-primary)';
+                    createStripBtn.style.color = 'white';
+                } else {
+                    createStripBtn.style.background = 'var(--light-color)';
+                    createStripBtn.style.color = 'var(--text-color)';
+                }
+            }
+            
+            function switchCamera() {
+                // Toggle between front and back camera
+                const currentFacingMode = stream.getVideoTracks()[0].getSettings().facingMode;
+                const newFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+                initCamera(newFacingMode);
+            }
+            
+            // Add dividing lines for 4 photos
+            const totalPhotos = 4;
+            for (let i = 1; i < totalPhotos; i++) {
+                const divider = document.createElement('div');
+                divider.style.position = 'absolute';
+                divider.style.left = '0';
+                divider.style.right = '0';
+                divider.style.top = `${(i * 100) / totalPhotos}%`;
+                divider.style.height = '1px';
+                divider.style.backgroundColor = 'rgba(255,255,255,0.6)';
+                divider.style.zIndex = '21';
+                
+                frameGuideContainer.appendChild(divider);
+            }
+            
+            // Add all elements to the guide container
+            frameGuideContainer.appendChild(photoGuide);
+            frameGuideContainer.appendChild(overlayTop);
+            frameGuideContainer.appendChild(overlayBottom);
+            frameGuideContainer.appendChild(helperText);
+            
+            // Add the guide container to the camera section
+            cameraSection.appendChild(frameGuideContainer);
+            
+            // Add a face position guide
+            const faceGuide = document.createElement('div');
+            faceGuide.style.position = 'absolute';
+            faceGuide.style.top = '30%';
+            faceGuide.style.left = '50%';
+            faceGuide.style.width = '70px';
+            faceGuide.style.height = '70px';
+            faceGuide.style.borderRadius = '50%';
+            faceGuide.style.border = '2px dashed rgba(255,255,255,0.5)';
+            faceGuide.style.transform = 'translate(-50%, -50%)';
+            faceGuide.style.pointerEvents = 'none';
+            faceGuide.style.zIndex = '21';
+            
+            frameGuideContainer.appendChild(faceGuide);
+        });
+        
+        // Add this function right before the initCamera function or where other helper functions are defined
+
+        function addPhotoFrameGuides() {
+            // Create a container for all the frame guides
+            const cameraSection = document.querySelector('.camera-section');
+            const frameGuideContainer = document.createElement('div');
+            frameGuideContainer.className = 'frame-guide-container';
+            frameGuideContainer.style.position = 'absolute';
+            frameGuideContainer.style.top = '0';
+            frameGuideContainer.style.left = '0';
+            frameGuideContainer.style.width = '100%';
+            frameGuideContainer.style.height = '100%';
+            frameGuideContainer.style.pointerEvents = 'none';
+            frameGuideContainer.style.zIndex = '20';
+            
+            // Create photo guide overlay
+            const photoGuide = document.createElement('div');
+            photoGuide.className = 'photo-guide';
+            photoGuide.style.position = 'absolute';
+            photoGuide.style.top = '0';
+            photoGuide.style.left = '0';
+            photoGuide.style.width = '100%';
+            photoGuide.style.height = '100%';
+            photoGuide.style.border = '2px solid rgba(255,255,255,0.5)';
+            photoGuide.style.boxSizing = 'border-box';
+            
+            // Create helper text
+            const helperText = document.createElement('div');
+            helperText.className = 'helper-text';
+            helperText.textContent = 'Keep face centered for best results';
+            helperText.style.position = 'absolute';
+            helperText.style.top = '10px';
+            helperText.style.left = '0';
+            helperText.style.width = '100%';
+            helperText.style.textAlign = 'center';
+            helperText.style.color = 'white';
+            helperText.style.fontSize = '12px';
+            helperText.style.textShadow = '0 1px 3px rgba(0,0,0,0.8)';
+            
+            // Add overlay for top and bottom
+            const overlayTop = document.createElement('div');
+            overlayTop.className = 'overlay-top';
+            overlayTop.style.position = 'absolute';
+            overlayTop.style.top = '0';
+            overlayTop.style.left = '0';
+            overlayTop.style.width = '100%';
+            overlayTop.style.height = '5%';
+            overlayTop.style.background = 'linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%)';
+            
+            const overlayBottom = document.createElement('div');
+            overlayBottom.className = 'overlay-bottom';
+            overlayBottom.style.position = 'absolute';
+            overlayBottom.style.bottom = '0';
+            overlayBottom.style.left = '0';
+            overlayBottom.style.width = '100%';
+            overlayBottom.style.height = '5%';
+            overlayBottom.style.background = 'linear-gradient(to top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 100%)';
+            
+            // Add dividing lines for 4 photos
+            const totalPhotos = 4;
+            for (let i = 1; i < totalPhotos; i++) {
+                const divider = document.createElement('div');
+                divider.style.position = 'absolute';
+                divider.style.left = '0';
+                divider.style.right = '0';
+                divider.style.top = `${(i * 100) / totalPhotos}%`;
+                divider.style.height = '1px';
+                divider.style.backgroundColor = 'rgba(255,255,255,0.6)';
+                divider.style.zIndex = '21';
+                
+                frameGuideContainer.appendChild(divider);
+            }
+            
+            // Add all elements to the guide container
+            frameGuideContainer.appendChild(photoGuide);
+            frameGuideContainer.appendChild(overlayTop);
+            frameGuideContainer.appendChild(overlayBottom);
+            frameGuideContainer.appendChild(helperText);
+            
+            // Add the guide container to the camera section
+            cameraSection.appendChild(frameGuideContainer);
+            
+            // Add a face position guide
+            const faceGuide = document.createElement('div');
+            faceGuide.style.position = 'absolute';
+            faceGuide.style.top = '30%';
+            faceGuide.style.left = '50%';
+            faceGuide.style.width = '70px';
+            faceGuide.style.height = '70px';
+            faceGuide.style.borderRadius = '50%';
+            faceGuide.style.border = '2px dashed rgba(255,255,255,0.5)';
+            faceGuide.style.transform = 'translate(-50%, -50%)';
+            faceGuide.style.pointerEvents = 'none';
+            faceGuide.style.zIndex = '21';
+            
+            frameGuideContainer.appendChild(faceGuide);
+        }
+        
+        // Add this function definition inside your DOMContentLoaded event handler before it's called
+
+        function updateShotsCounter() {
+            // Update the shots counter display
+            const counterSpan = shotsCounter.querySelector('span');
+            if (counterSpan) {
+                counterSpan.textContent = `${remainingShots} shots left`;
+            }
+            
+            // Disable capture button if no shots left
+            if (remainingShots <= 0) {
+                captureBtn.disabled = true;
+                captureBtn.style.opacity = '0.5';
+                captureBtn.style.cursor = 'not-allowed';
+            } else {
+                captureBtn.disabled = false;
+                captureBtn.style.opacity = '1';
+                captureBtn.style.cursor = 'pointer';
+            }
+            
+            // Update the create photostrip button
+            if (capturedImages.length >= 4) {
+                createStripBtn.style.background = 'var(--gradient-primary)';
+                createStripBtn.style.color = 'white';
+            } else {
+                createStripBtn.style.background = 'var(--light-color)';
+                createStripBtn.style.color = 'var(--text-color)';
+            }
+        }
+    </script>
+</body>
+</html>
